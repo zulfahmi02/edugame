@@ -501,7 +501,7 @@
 
     .parents-section {
       padding: 120px 8% 140px;
-      background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 50%, #fce7f3 100%);
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       backdrop-filter: blur(12px);
       border-radius: 50px 50px 0 0;
       position: relative;
@@ -624,7 +624,7 @@
       left: 0;
       width: 100%;
       height: 5px;
-      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
       background-size: 200% 100%;
       animation: gradientShift 3s ease infinite;
     }
@@ -646,7 +646,7 @@
       margin-bottom: 24px;
       color: #1e3a8a;
       font-weight: 800;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       position: relative;
@@ -884,6 +884,62 @@
     .dropdown-icon {
       font-size: 1.2rem;
     }
+
+    /* Weekly Games Styles */
+    .weekly-games-section {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 50px 4% 80px; /* Reduced horizontal padding for wider look */
+        position: relative;
+        overflow: visible; /* Changed from hidden to visible */
+        border-radius: 40px;
+        margin-top: 50px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 20px 50px rgba(30, 58, 138, 0.1);
+    }
+
+    .weekly-card {
+        animation: pulse-glow 3s infinite;
+        border: 3px solid #60a5fa; /* Soft Blue */
+        position: relative;
+        background: white;
+        padding-bottom: 60px; /* More space at the bottom */
+        overflow: visible; /* Ensure badge can be seen outside */
+    }
+    
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4); }
+        50% { box-shadow: 0 0 20px 5px rgba(96, 165, 250, 0.2); transform: translateY(-5px); }
+        100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+    }
+
+    .weekly-card:hover {
+        border-color: #3b82f6;
+        animation: none;
+        transform: translateY(-10px) scale(1.02);
+    }
+
+    .new-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: linear-gradient(135deg, #fbbf24, #d97706); /* Back to Gold/Orange Theme */
+        color: white;
+        padding: 5px 15px;
+        border-radius: 8px; /* Square with slight curve, NOT round/pill */
+        font-weight: 800;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 6px rgba(217, 119, 6, 0.3);
+        transform: rotate(5deg); /* Subtle tilt */
+        z-index: 10;
+        border: 2px solid white;
+        animation: float-badge 2s infinite ease-in-out;
+    }
+
+    @keyframes float-badge {
+        0%, 100% { transform: rotate(10deg) translateY(0); }
+        50% { transform: rotate(10deg) translateY(-4px); }
+    }
   </style>
 </head>
 
@@ -951,6 +1007,46 @@
 
       <div class="hero-image">
         <img src="{{ asset('images/anakbelajar.jpg') }}" alt="Anak belajar">
+      </div>
+    </section>
+
+    <!-- Weekly Games Section -->
+    <section class="weekly-games-section">
+      <div style="text-align: center; margin-bottom: 60px; position: relative; z-index: 2;">
+        <h2 style="font-size: 3rem; font-weight: 800; color: #1e3a8a; margin-bottom: 15px;">
+          🔥 Game Spesial Minggu Ini
+        </h2>
+        <p style="font-size: 1.2rem; color: #475569;">Cobain game terbaru yang baru aja rilis! Jangan sampai ketinggalan serunya! 🚀</p>
+      </div>
+
+      <div class="games-grid">
+        @php
+            $weeklyGames = \App\Models\Game::where('is_active', true)->latest()->take(3)->get();
+        @endphp
+
+        @forelse($weeklyGames as $game)
+            <div class="game-card weekly-card">
+                <div class="new-badge">NEW ⚡</div>
+                <div class="card-icon">🎮</div>
+                <h3>{{ $game->title }}</h3>
+                <p>{{ Str::limit($game->description, 80) }}</p>
+                
+                @if($game->slug == 'mencocokan-bahasa-inggris-arab' || $game->slug == 'tts-alat-tulis' || $game->slug == 'menghitung-huruf-hijaiyah')
+                     <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="game-btn">🚀 Mainkan</button>
+                     </form>
+                @else
+                    <!-- For custom games -->
+                     <a href="{{ route('games.show', $game->slug) }}" class="game-btn" style="text-decoration: none; display: inline-block;">🚀 Mainkan</a>
+                @endif
+            </div>
+        @empty
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: rgba(255,255,255,0.5); border-radius: 20px;">
+                <h3>🚧 Belum ada game minggu ini</h3>
+                <p>Tunggu update selanjutnya ya!</p>
+            </div>
+        @endforelse
       </div>
     </section>
 
