@@ -995,6 +995,7 @@
     </section>
 
     <!-- Weekly Games Section -->
+
     <section class="weekly-games-section">
       <div style="text-align: center; margin-bottom: 60px; position: relative; z-index: 2;">
         <h2 style="font-size: 3rem; font-weight: 800; color: #1e3a8a; margin-bottom: 15px;">
