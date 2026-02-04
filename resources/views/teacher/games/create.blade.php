@@ -292,7 +292,7 @@
 
         <div class="form-card">
             @if($templates->count() > 0)
-                <form action="{{ route('teacher.games.store') }}" method="POST">
+                <form action="{{ route('teacher.games.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Pilih Template -->
@@ -328,10 +328,34 @@
                             <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi singkat tentang game ini...">{{ old('description') }}</textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Kategori</label>
-                            <input type="text" class="form-control" id="category" name="category" value="{{ old('category') }}" placeholder="Contoh: Matematika, IPA, Sejarah" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Kategori</label>
+                                <input type="text" class="form-control" id="category" name="category" value="{{ old('category') }}" placeholder="Contoh: Matematika, IPA, Sejarah" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="class" class="form-label">Pilih Kelas</label>
+                                <select class="form-select" id="class" name="class">
+                                    <option value="">Semua Kelas</option>
+                                    @for($i = 1; $i <= 6; $i++)
+                                        <option value="{{ $i }}" {{ old('class') == $i ? 'selected' : '' }}>Kelas {{ $i }}</option>
+                                    @endfor
+                                </select>
+                                <small class="text-muted">Game hanya muncul untuk siswa di kelas ini.</small>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Gambar Game Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">🖼️ Gambar Game (Opsional)</h3>
+                        <div class="mb-3">
+                            <label for="game_images" class="form-label">Upload Gambar</label>
+                            <input type="file" class="form-control" id="game_images" name="game_images[]" 
+                                   accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
+                            <small class="text-muted">Upload hingga 5 gambar (PNG, JPG, WEBP). Maksimal 2MB per file. Gambar akan membuat game lebih menarik!</small>
+                        </div>
+                        <div id="image-preview" class="d-flex gap-2 flex-wrap mt-2"></div>
                     </div>
 
                     <button type="submit" class="btn-submit">
@@ -348,6 +372,48 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Image preview functionality
+        document.getElementById('game_images')?.addEventListener('change', function(e) {
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+            
+            if (this.files && this.files.length > 0) {
+                // Limit to 5 files
+                if (this.files.length > 5) {
+                    alert('Maksimal 5 gambar yang bisa diupload');
+                    this.value = '';
+                    return;
+                }
+                
+                [...this.files].forEach((file, index) => {
+                    // Check file size (2MB = 2048KB)
+                    if (file.size > 2048 * 1024) {
+                        alert(`File ${file.name} terlalu besar. Maksimal 2MB per file.`);
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.style.position = 'relative';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '8px';
+                        img.style.border = '2px solid #e5e7eb';
+                        
+                        div.appendChild(img);
+                        preview.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

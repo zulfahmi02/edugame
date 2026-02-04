@@ -114,59 +114,75 @@
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .logo {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #ffffff, #ffffff);
-      border-radius: 16px;
+      width: 65px;
+      height: 65px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: white;
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
       transition: all 0.3s ease;
     }
 
     .logo:hover {
-      transform: scale(1.05) rotate(5deg);
+      transform: translateY(-3px);
     }
 
     .logo-text {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #1e293b;
+      letter-spacing: -0.5px;
     }
 
     .subtitle {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       color: #64748b;
       margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* MOBILE MENU TOGGLE */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #1e293b;
+      cursor: pointer;
+      z-index: 1001;
+      padding: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu-toggle:hover {
+      transform: scale(1.1);
+      color: #3b82f6;
     }
 
     nav ul {
       list-style: none;
       display: flex;
       align-items: center;
-      gap: 48px;
+      gap: 40px;
     }
 
     nav a {
       color: #1e293b;
       text-decoration: none;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 12px;
+      padding: 10px 20px;
+      border-radius: 25px;
       transition: all 0.3s ease;
       position: relative;
+      background: rgba(59, 130, 246, 0.05);
     }
 
     nav a:hover {
+      background: rgba(59, 130, 246, 0.1);
       color: #3b82f6;
       transform: translateY(-2px);
     }
@@ -181,10 +197,11 @@
       background: linear-gradient(90deg, #3b82f6, #1d4ed8);
       transition: all 0.3s ease;
       transform: translateX(-50%);
+      border-radius: 2px;
     }
 
     nav a:hover::after {
-      width: 80%;
+      width: 60%;
     }
 
     /* Login Cards Styling */
@@ -339,6 +356,7 @@
       background: linear-gradient(135deg, #1e3a8a, #3b82f6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      animation: fadeInUp 1s ease-out;
     }
 
     .hero p {
@@ -733,23 +751,43 @@
     }
 
     @media (max-width: 1024px) {
+      header {
+        padding: 15px 4%;
+      }
+
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .logo {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+      }
+
+      nav ul {
+        gap: 24px;
+      }
+
       .hero {
         flex-direction: column;
         text-align: center;
-        padding: 100px 5%;
+        padding: 100px 5% 80px;
       }
 
       .hero-content {
         max-width: 100%;
-      }
-
-      .hero-image {
-        max-width: 70%;
-        margin-top: 50px;
+        padding: 30px;
       }
 
       .hero h1 {
-        font-size: 3rem;
+        font-size: 2.8rem;
+      }
+
+      .hero-image {
+        max-width: 80%;
+        margin-top: 40px;
+        text-align: center;
       }
 
       .parents-content {
@@ -767,15 +805,51 @@
       }
 
       .parents-section {
-        padding: 100px 5%;
+        padding: 80px 5%;
       }
     }
 
     @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: white;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        padding: 100px 40px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        z-index: 999;
+      }
+
+      nav.active {
+        right: 0;
+      }
+
       nav ul {
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 30px;
+      }
+
+      nav a {
+        font-size: 1.3rem;
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
       }
 
       .login-cards {
@@ -800,7 +874,24 @@
       }
 
       .parents-text h2 {
+        font-size: 2.2rem;
+      }
+
+      .games-section {
+        padding: 60px 5% 80px;
+      }
+
+      .games-section h2 {
         font-size: 2.5rem;
+      }
+
+      .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      footer {
+        padding: 60px 5% 20px !important;
       }
     }
 
@@ -923,6 +1014,23 @@
         transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease; /* Smoother easing */
     }
 
+    /* Title Animation */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Footer Link Hover - Simple Effect */
+    footer a:hover {
+      color: #FFD700 !important;
+      transform: none !important;
+    }
 
   </style>
 </head>
@@ -938,14 +1046,16 @@
 
   <header id="header">
     <div class="logo-container">
-      <div class="logo">🌏</div>
+      <div class="logo">
+        <img src="{{ asset('images/logo/logo.png') }}" alt="Logo" style="width: 100%; height: auto;">
+      </div>
       <div>
         <div class="logo-text">Taman Belajar Sedjati Games⭐</div>
         <div class="subtitle">Belajar Sambil Bermain</div>
       </div>
     </div>
 
-    <nav>
+    <nav id="navbar">
       <ul>
         <li><a href="#home">Home</a></li>
         <li><a href="#games">Games</a></li>
@@ -978,6 +1088,10 @@
         </li>
       </ul>
     </nav>
+
+    <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Navigation">
+      ☰
+    </button>
   </header>
 
   <main>
@@ -1006,7 +1120,11 @@
 
       <div class="games-grid">
         @php
-            $weeklyGames = \App\Models\Game::where('is_active', true)->latest()->take(3)->get();
+            $weeklyGames = \App\Models\Game::where('is_active', true)
+                ->whereNull('teacher_id')
+                ->latest()
+                ->take(3)
+                ->get();
         @endphp
 
         @forelse($weeklyGames as $game)
@@ -1049,42 +1167,46 @@
       <p>Belajar sambil berpetualang yuk🎮</p>
 
       <div class="games-grid">
-        <div class="game-card">
-          <div class="card-icon">🌍</div>
-          <h3>Petualangan Bahasa Arab</h3>
-          <p>Ayo belajar bahasa Arab dengan cara yang seru! Cocokkan kata-kata bahasa Inggris dengan bahasa Arab. Siapa
-            yang paling cepat?</p>
-          <form action="{{ route('games.start', 'mencocokan-bahasa-inggris-arab') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">🚀 Ayo Mainkan
-              Sekarang</button>
-          </form>
-        </div>
+        @php
+            $teacherGames = \App\Models\Game::where('is_active', true)
+                ->whereNotNull('teacher_id')
+                ->latest()
+                ->take(3)
+                ->get();
+        @endphp
 
-        <div class="game-card">
-          <div class="card-icon">🧩</div>
-          <h3>Teka-Teki Silang Seru</h3>
-          <p>Apa kamu bisa menebak benda apakah itu? Isi teka-teki silang dengan nama-nama alat tulis! Asah otakmu!</p>
-          <form action="{{ route('games.start', 'tts-alat-tulis') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">🎮 Ayo Mainkan
-              Sekarang</button>
-          </form>
-        </div>
-
-        <div class="game-card">
-          <div class="card-icon">📖</div>
-          <h3>Petualangan Huruf Hijaiyah</h3>
-          <p>Berapa banyak huruf hijaiyah yang ada? Ayo hitung bersama dan pelajari huruf-huruf Arab dengan cara yang
-            menyenangkan!</p>
-          <form action="{{ route('games.start', 'menghitung-huruf-hijaiyah') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">✨ Ayo Mainkan
-              Sekarang</button>
-          </form>
-        </div>
+        @forelse($teacherGames as $game)
+            <div class="game-card">
+                <div class="card-icon">
+                    @if($game->template)
+                        {{ $game->template->icon }}
+                    @else
+                        📚
+                    @endif
+                </div>
+                <h3>{{ $game->title }}</h3>
+                @if($game->class)
+                    <div style="margin-bottom: 15px;">
+                        <span style="background: #fdf2f2; color: #991b1b; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                            Kelas {{ $game->class }}
+                        </span>
+                    </div>
+                @endif
+                <p>{{ Str::limit($game->description, 80) }}</p>
+                <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
+                    @csrf
+                    <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">
+                        🚀 Ayo Mainkan Sekarang
+                    </button>
+                </form>
+            </div>
+        @empty
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <p style="color: #999;">Belum ada game dari guru tersedia saat ini.</p>
+            </div>
+        @endforelse
       </div>
-      <a href="{{ route('games.index') }}" class="btn-gamelain" style="text-decoration: none;">Lebih banyak game</a>
+      <a href="{{ route('games.index') }}" class="btn-gamelain" style="text-decoration: none;">Lebih banyak game dari Guru</a>
     </section>
 
     <section class="games-section" style="background: linear-gradient(135deg, #caf0f8 0%, #ade8f4 100%);">
@@ -1256,9 +1378,8 @@
     </div>
   </div>
 
-  <!-- Enhanced Footer -->
   <footer
-    style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; padding: 60px 8% 20px; position: relative; z-index: 1; margin-top: 80px;">
+    style="background: linear-gradient(to bottom, #4A90F7, #3B82F6); color: white; padding: 60px 8% 20px; position: relative; z-index: 1; margin-top: 80px; border-top: 1px solid rgba(255,255,255,0.1);">
     <div style="max-width: 1200px; margin: 0 auto;">
       <!-- Footer Content -->
       <div
@@ -1266,8 +1387,12 @@
 
               <!-- About Section -->
               <div>
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                  <div style="font-size: 2.5rem;">🌏</div>
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                  <!-- Logo with Background -->
+                  <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.9); padding: 12px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                    <img src="{{ asset('images/logo/logo.png') }}" alt="Logo" style="width: 100%; height: auto;">
+                  </div>
+                  
                   <div>
                     <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700;">Taman Belajar Sedjati Games</h3>
                     <p style="margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.8);">Belajar Sambil
@@ -1322,9 +1447,15 @@
                     </a>
                   </li>
                   <li style="margin-bottom: 12px;">
+                    <a href="{{ route('teacher.login') }}"
+                      style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
+                      <span>👨‍🏫</span> Login Guru
+                    </a>
+                  </li>
+                  <li style="margin-bottom: 12px;">
                     <a href="{{ route('parent.login') }}"
                       style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                      <span>👨‍🏫</span> Login Guru/Orang Tua
+                      <span>👨‍👩‍👧</span> Login Orang Tua
                     </a>
                   </li>
                   <li style="margin-bottom: 12px;">
@@ -1346,11 +1477,11 @@
                   </li>
                   <li
                     style="margin-bottom: 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;">
-                    <span>📱</span> +62 xxx-xxxx-xxxx
+                    <span>📱</span> +62 822-3734-3764
                   </li>
                   <li
                     style="margin-bottom: 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;">
-                    <span>🌐</span> www.tamanbelajarsedjati.com
+                    <span>🌐</span> https://tamanbelajarsedjati.com/
                   </li>
                 </ul>
               </div>
@@ -1396,6 +1527,31 @@
               header.classList.add('scrolled');
             } else {
               header.classList.remove('scrolled');
+            }
+          });
+
+          // Mobile Menu Toggle logic
+          const menuToggle = document.getElementById('menuToggle');
+          const navbar = document.getElementById('navbar');
+
+          menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            menuToggle.innerHTML = navbar.classList.contains('active') ? '✕' : '☰';
+          });
+
+          // Close mobile menu when clicking a link
+          document.querySelectorAll('#navbar a').forEach(link => {
+            link.addEventListener('click', () => {
+              navbar.classList.remove('active');
+              menuToggle.innerHTML = '☰';
+            });
+          });
+
+          // Close mobile menu when clicking outside
+          document.addEventListener('click', (e) => {
+            if (!navbar.contains(e.target) && !menuToggle.contains(e.target) && navbar.classList.contains('active')) {
+              navbar.classList.remove('active');
+              menuToggle.innerHTML = '☰';
             }
           });
         </script>

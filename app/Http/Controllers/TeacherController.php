@@ -89,32 +89,31 @@ class TeacherController extends Controller
 
         $teacher = Teacher::with('students')->findOrFail(session('teacher_id'));
 
+        // Get all game IDs created by this teacher
+        $teacherGameIds = Game::where('teacher_id', $teacher->id)->pluck('id')->toArray();
+
         // Get filter class from request
         $filterClass = $request->get('class', null);
 
-        // Get students based on filter
+        // Get all completed game sessions for teacher's games
+        $sessionQuery = GameSession::with(['game', 'student'])
+            ->whereIn('game_id', $teacherGameIds)
+            ->whereNotNull('completed_at');
+
         if ($filterClass) {
-            $students = $teacher->students()->where('kelas', $filterClass)->get();
-        } else {
-            $students = $teacher->students;
+            $sessionQuery->whereHas('student', function($q) use ($filterClass) {
+                $q->where('kelas', $filterClass);
+            });
         }
 
+        $allSessions = $sessionQuery->orderBy('completed_at', 'desc')->get();
+
+        // Get unique students who played teacher's games
+        $studentIds = $allSessions->pluck('student_id')->unique()->toArray();
+        $students = Student::whereIn('id', $studentIds)->get();
+
         // Calculate statistics
-        $totalStudents = $teacher->students->count();
-        $totalGamesPlayed = 0;
-        $totalScore = 0;
-        $totalQuestions = 0;
-        $totalCorrect = 0;
-
-        // Get all game sessions for teacher's students
-        $studentIds = $teacher->students->pluck('id')->toArray();
-
-        $allSessions = GameSession::with(['game', 'student'])
-            ->whereIn('student_id', $studentIds)
-            ->whereNotNull('completed_at')
-            ->orderBy('completed_at', 'desc')
-            ->get();
-
+        $totalStudents = count($studentIds);
         $totalGamesPlayed = $allSessions->count();
         $totalScore = $allSessions->sum('total_score');
         $totalQuestions = $allSessions->sum('total_questions');
@@ -123,20 +122,24 @@ class TeacherController extends Controller
         $averageScore = $totalGamesPlayed > 0 ? round($totalScore / $totalGamesPlayed, 2) : 0;
         $overallAccuracy = $totalQuestions > 0 ? round(($totalCorrect / $totalQuestions) * 100, 2) : 0;
 
-        // Get stats per class
+        // Get stats per class (using all sessions of teacher)
         $classStats = [];
         for ($i = 1; $i <= 6; $i++) {
-            $classStudents = $teacher->students()->where('kelas', $i)->count();
-            $classStats[$i] = $classStudents;
+            $classStats[$i] = GameSession::whereIn('game_id', $teacherGameIds)
+                ->whereNotNull('completed_at')
+                ->whereHas('student', function($q) use ($i) {
+                    $q->where('kelas', $i);
+                })->pluck('student_id')->unique()->count();
         }
 
         // Get recent activities (last 10 sessions)
         $recentSessions = $allSessions->take(10);
 
-        // Get top performers (students with highest average score)
+        // Get top performers (students with highest average score on THIS teacher's games)
         $topPerformers = [];
         foreach ($students as $student) {
             $studentSessions = GameSession::where('student_id', $student->id)
+                ->whereIn('game_id', $teacherGameIds)
                 ->whereNotNull('completed_at')
                 ->get();
 
@@ -211,6 +214,7 @@ class TeacherController extends Controller
         }
 
         $templates = GameTemplate::active()->get();
+        
         return view('teacher.games.create', compact('templates'));
     }
 
@@ -224,15 +228,30 @@ class TeacherController extends Controller
         }
 
         $request->validate([
-            'template_id' => 'required|exists:game_templates,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'category' => 'nullable|string',
+            'class' => 'nullable|string|in:1,2,3,4,5,6',
+            'game_images.*' => 'nullable|image|max:2048', // Max 2MB per image
         ]);
 
         // RESTRICTION: Teachers cannot create 'Bahasa Indonesia' games (Weekly Games)
         if ($request->category === 'Bahasa Indonesia') {
             return back()->withInput()->with('error', 'Maaf, kategori "Bahasa Indonesia" hanya untuk Game Mingguan yang dikelola Admin.');
+        }
+
+        // Handle image uploads
+        $gameImages = null;
+        if ($request->hasFile('game_images')) {
+            $images = [];
+            $files = $request->file('game_images');
+            
+            // Limit to 5 images
+            $filesToProcess = array_slice($files, 0, 5);
+            
+            foreach ($filesToProcess as $image) {
+                $path = $image->store('games/images', 'public');
+                $images[] = $path;
+            }
+            $gameImages = json_encode($images);
         }
 
         $game = Game::create([
@@ -242,6 +261,8 @@ class TeacherController extends Controller
             'slug' => $this->generateUniqueSlug($request->title),
             'description' => $request->description,
             'category' => $request->category,
+            'class' => $request->class,
+            'game_images' => $gameImages,
             'is_active' => true,
             'order' => 0,
         ]);
@@ -267,9 +288,6 @@ class TeacherController extends Controller
         return view('teacher.games.edit', compact('game'));
     }
 
-    /**
-     * Update game
-     */
     public function updateGame(Request $request, $id)
     {
         if (!session('teacher_id')) {
@@ -281,31 +299,47 @@ class TeacherController extends Controller
             ->firstOrFail();
 
         $request->validate([
-            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
+            'class' => 'nullable|string|in:1,2,3,4,5,6',
+            'game_images.*' => 'nullable|image|max:2048', // Max 2MB per image
         ]);
 
+        $isActive = $request->has('is_active');
+
         // RESTRICTION: Teachers cannot use 'Bahasa Indonesia' category
-        if ($request->category === 'Bahasa Indonesia') { // Note: Category might not be in the form if not editable, but good to check if it was passed
-             // If category is not in the form, this check might be irrelevant unless we allow changing category on edit.
-             // Looking at edit view (I need to check it), usually category is editable.
-             // Let's assume for now we want to block it if they try to hack it in, 
-             // BUT wait, does the edit form even have category? 
-             // The validation above only validates title, description, is_active. 
-             // Let's check the update call. 
-             // The update call below ONLY updates title, slug, description, is_active. 
-             // It does NOT update category.
-             // So teachers effectively cannot change category after creation anyway based on this controller code.
-             // However, let's keep the code clean. 
+        if ($request->category === 'Bahasa Indonesia') {
+            return back()->withInput()->with('error', 'Maaf, kategori "Bahasa Indonesia" hanya untuk Admin.');
+        }
+
+        // Handle image uploads
+        $gameImages = $game->game_images; // Keep existing images
+        if ($request->hasFile('game_images')) {
+            $existingImages = is_string($gameImages) ? json_decode($gameImages, true) : ($gameImages ?? []);
+            $newImages = [];
+            $files = $request->file('game_images');
+            
+            // Limit total images to 5
+            $totalAllowed = 5 - count($existingImages);
+            $filesToProcess = array_slice($files, 0, $totalAllowed);
+            
+            foreach ($filesToProcess as $image) {
+                $path = $image->store('games/images', 'public');
+                $newImages[] = $path;
+            }
+            
+            // Merge existing and new images
+            $allImages = array_merge($existingImages, $newImages);
+            $gameImages = json_encode($allImages);
         }
 
         $game->update([
             'title' => $request->title,
             'slug' => $this->generateUniqueSlug($request->title, $game->id),
             'description' => $request->description,
-            'is_active' => $request->has('is_active'),
-            // Category is NOT updated here in the original code, so no need to add restriction here unless we change that.
+            'category' => $request->category,
+            'class' => $request->class,
+            'is_active' => $isActive,
+            'game_images' => $gameImages,
         ]);
 
         return redirect()->route('teacher.games')
@@ -513,15 +547,19 @@ class TeacherController extends Controller
             $options = null;
             $correctAnswer = strtoupper(trim((string) $request->correct_answer));
 
-        } elseif (in_array($templateType, ['type_answer', 'math_generator'], true)) {
-            // Text answer
+        } elseif ($templateType === 'iframe_embed') {
             $request->validate([
-                'question_text' => 'required|string',
+                'question_text' => 'nullable|string',
                 'correct_answer' => 'required|string',
             ]);
 
             $options = null;
-            $correctAnswer = trim((string) $request->correct_answer);
+            $correctAnswer = $request->correct_answer; // No trimming/uppercasing to preserve iframe code
+            
+            // Auto-fill if empty
+            if (!$request->question_text) {
+                $request->merge(['question_text' => 'Mainkan game di bawah ini']);
+            }
 
         } else {
             // Default: multiple choice
@@ -684,14 +722,14 @@ class TeacherController extends Controller
 
             $options = null;
             $correctAnswer = strtoupper(trim((string) $request->correct_answer));
-        } elseif (in_array($templateType, ['type_answer', 'math_generator'], true)) {
+        } elseif ($templateType === 'iframe_embed') {
             $request->validate([
                 'question_text' => 'required|string',
                 'correct_answer' => 'required|string',
             ]);
 
             $options = null;
-            $correctAnswer = trim((string) $request->correct_answer);
+            $correctAnswer = $request->correct_answer; // No trimming/uppercasing to preserve iframe code
         } else {
             $needsFour = in_array($templateType, $requiresFourOptionsTypes, true);
 

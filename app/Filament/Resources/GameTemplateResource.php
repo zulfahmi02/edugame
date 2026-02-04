@@ -21,9 +21,9 @@ class GameTemplateResource extends Resource
 
     protected static ?string $pluralLabel = 'Template Game';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationGroup = 'Game Management';
+    protected static ?string $navigationGroup = 'Manajemen Game';
 
     public static function form(Form $form): Form
     {
@@ -76,74 +76,19 @@ class GameTemplateResource extends Resource
                         Forms\Components\Tabs\Tab::make('Kode Template')
                             ->icon('heroicon-o-code-bracket')
                             ->schema([
-                                Forms\Components\Section::make('HTML Template')
-                                    ->description('Tulis kode HTML untuk tampilan game. Gunakan placeholder {{questions}} untuk posisi soal.')
+                                Forms\Components\Section::make('Template All-in-One')
+                                    ->description('Masukkan seluruh kode HTML, <style>, dan <script> di sini. Gunakan placeholder {{question}} untuk posisi soal.')
                                     ->schema([
                                         Forms\Components\Textarea::make('html_template')
-                                            ->label('HTML Code')
-                                            ->rows(15)
-                                            ->placeholder('<!DOCTYPE html>
-<html>
-<head>
-    <title>Game Template</title>
-</head>
-<body>
-    <div id="game-container">
-        {{questions}}
-    </div>
-</body>
-</html>')
+                                            ->label('Kode Template (HTML/CSS/JS)')
+                                            ->rows(25)
+                                            ->placeholder('<!-- Tempelkan kode gabungan di sini -->')
                                             ->columnSpanFull(),
-                                    ])
-                                    ->collapsible(),
-
-                                Forms\Components\Section::make('CSS Style')
-                                    ->description('Tulis kode CSS untuk styling game.')
-                                    ->schema([
-                                        Forms\Components\Textarea::make('css_style')
-                                            ->label('CSS Code')
-                                            ->rows(15)
-                                            ->placeholder('/* Style untuk game */
-#game-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.question {
-    background: #f5f5f5;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}')
-                                            ->columnSpanFull(),
-                                    ])
-                                    ->collapsible()
-                                    ->collapsed(),
-
-                                Forms\Components\Section::make('JavaScript Code')
-                                    ->description('Tulis kode JavaScript untuk logika game.')
-                                    ->schema([
-                                        Forms\Components\Textarea::make('js_code')
-                                            ->label('JavaScript Code')
-                                            ->rows(15)
-                                            ->placeholder('// Game logic
-document.addEventListener("DOMContentLoaded", function() {
-    // Initialize game
-    initGame();
-});
-
-function initGame() {
-    // Your game logic here
-}
-
-function checkAnswer(selected, correct) {
-    return selected === correct;
-}')
-                                            ->columnSpanFull(),
-                                    ])
-                                    ->collapsible()
-                                    ->collapsed(),
+                                        
+                                        // Hidden fields tetap ada di database untuk kompatibilitas, tapi disembunyikan dari UI
+                                        Forms\Components\Hidden::make('css_style'),
+                                        Forms\Components\Hidden::make('js_code'),
+                                    ]),
                             ]),
 
                         Forms\Components\Tabs\Tab::make('Konfigurasi Lanjutan')

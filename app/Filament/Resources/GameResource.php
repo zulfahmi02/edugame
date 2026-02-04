@@ -20,11 +20,11 @@ class GameResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-puzzle-piece';
 
-    protected static ?string $navigationLabel = 'Games';
+    protected static ?string $navigationLabel = 'Game Mingguan';
 
-    protected static ?string $modelLabel = 'Game';
+    protected static ?string $modelLabel = 'Game Mingguan';
 
-    protected static ?string $pluralModelLabel = 'Games';
+    protected static ?string $pluralModelLabel = 'Game Mingguan';
 
     protected static ?string $navigationGroup = 'Manajemen Game';
 
@@ -126,19 +126,15 @@ class GameResource extends Resource
                             ->helperText('Aktifkan jika ingin menggunakan HTML/CSS/JS custom'),
 
                         Forms\Components\Textarea::make('html_template')
-                            ->label('HTML Template')
-                            ->rows(5)
+                            ->label('Kode Template Custom (HTML/CSS/JS)')
+                            ->rows(15)
+                            ->columnSpanFull()
+                            ->placeholder('Masukkan seluruh kode HTML, <style>, dan <script> di sini')
                             ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
 
-                        Forms\Components\Textarea::make('css_style')
-                            ->label('CSS Style')
-                            ->rows(5)
-                            ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
-
-                        Forms\Components\Textarea::make('js_code')
-                            ->label('JavaScript Code')
-                            ->rows(5)
-                            ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
+                        // Hidden fields tetap ada di database untuk kompatibilitas, tapi disembunyikan dari UI
+                        Forms\Components\Hidden::make('css_style'),
+                        Forms\Components\Hidden::make('js_code'),
                     ])
                     ->collapsed()
                     ->columnSpanFull(),

@@ -13,43 +13,67 @@ class GameController extends Controller
     /**
      * Show games index (dashboard for students) - ONLY TEACHER GAMES
      */
-    public function index()
+    public function index(Request $request)
     {
         if (!session('student_id')) {
             return redirect()->route('home')->with('error', 'Silakan login terlebih dahulu');
         }
 
         $student = \App\Models\Student::find(session('student_id'));
+        $selectedCategory = $request->get('category');
         
-        // HANYA game yang dibuat GURU (teacher_id NOT NULL)
-        $games = Game::where('is_active', true)
-            ->whereNotNull('teacher_id') // Filter: hanya game guru
-            ->where('class', $student->kelas) // HANYA game untuk kelas siswa ini
-            ->orderBy('order', 'asc')
-            ->get();
+        // Ambil semua kategori unik yang tersedia untuk kelas siswa ini (untuk tombol filter)
+        $availableCategories = Game::where('is_active', true)
+            ->whereNotNull('teacher_id')
+            ->where('class', $student->kelas)
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category');
 
-        return view('game.index', compact('games', 'student'));
+        // Tampilkan game yang sesuai kelas siswa ini
+        $query = Game::where('is_active', true)
+            ->whereNotNull('teacher_id')
+            ->where('class', $student->kelas);
+
+        if ($selectedCategory) {
+            $query->where('category', $selectedCategory);
+        }
+
+        $games = $query->orderBy('order', 'asc')->get();
+
+        return view('game.index', compact('games', 'student', 'availableCategories', 'selectedCategory'));
     }
 
     /**
      * Show all games - ONLY SPECIAL/ADMIN GAMES
      */
-    public function all()
+    public function all(Request $request)
     {
         if (!session('student_id')) {
             return redirect()->route('home')->with('error', 'Silakan login terlebih dahulu');
         }
 
         $student = \App\Models\Student::find(session('student_id'));
+        $selectedCategory = $request->get('category');
 
-        // HANYA game yang dibuat ADMIN (teacher_id IS NULL)
-        // Game spesial untuk SEMUA siswa (tidak dibatasi kelas)
-        $games = Game::where('is_active', true)
-            ->whereNull('teacher_id') // Filter: hanya game admin/spesial
-            ->orderBy('order', 'asc')
-            ->get();
+        // Filter: hanya game admin (teacher_id NULL) dan sesuaikan dengan kelas siswa
+        $query = Game::where('is_active', true)
+            ->whereNull('teacher_id')
+            ->where(function($q) use ($student) {
+                $q->where('class', $student->kelas)
+                  ->orWhereNull('class'); // Game untuk semua kelas
+            });
 
-        return view('game.all', compact('games', 'student'));
+        // Ambil kategori tersedia untuk filter
+        $availableCategories = (clone $query)->whereNotNull('category')->distinct()->pluck('category');
+
+        if ($selectedCategory) {
+            $query->where('category', $selectedCategory);
+        }
+
+        $games = $query->orderBy('order', 'asc')->get();
+
+        return view('game.all', compact('games', 'student', 'availableCategories', 'selectedCategory'));
     }
 
     /**
@@ -205,9 +229,18 @@ class GameController extends Controller
         $question = Question::findOrFail($request->question_id);
         $answer = $request->answer;
 
-        // Check if answer is correct
-        $isCorrect = $question->checkAnswer($answer);
-        $pointsEarned = $isCorrect ? $question->points : 0;
+        $question->loadMissing('game.template');
+        $templateType = $question->game?->template?->template_type;
+
+        // Special handling for iframe_embed (Manual Scoring)
+        if ($templateType === 'iframe_embed') {
+            $isCorrect = true; // For embed, we assume completion is "correct"
+            $pointsEarned = is_numeric($answer) ? (int)$answer : 0;
+        } else {
+            // Check if answer is correct normally
+            $isCorrect = $question->checkAnswer($answer);
+            $pointsEarned = $isCorrect ? $question->points : 0;
+        }
 
         // Save score
         Score::create([
@@ -247,11 +280,22 @@ class GameController extends Controller
             }
         }
 
-        return response()->json([
-            'correct' => $isCorrect,
-            'points' => $pointsEarned,
-            'correct_answer' => $correctAnswerForUser
-        ]);
+        // Check if there are more questions
+    $answeredQuestionIds = Score::where('game_session_id', $sessionId)
+        ->pluck('question_id')
+        ->toArray();
+
+    $nextQuestion = Question::where('game_id', $session->game_id)
+        ->where('is_active', true)
+        ->whereNotIn('id', $answeredQuestionIds)
+        ->first();
+
+    return response()->json([
+        'correct' => $isCorrect,
+        'points' => $pointsEarned,
+        'correct_answer' => $correctAnswerForUser,
+        'is_last' => !$nextQuestion
+    ]);
     }
 
     /**

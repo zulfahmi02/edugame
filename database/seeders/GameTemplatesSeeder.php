@@ -19,7 +19,6 @@ class GameTemplatesSeeder extends Seeder
             'random_card',
             'crossword',
             'labeled_diagram',
-            'hangman',
             'airplane',
             'whack_a_mole',
             'balloon_pop',
@@ -35,6 +34,8 @@ class GameTemplatesSeeder extends Seeder
             'quick_sort',
             'spell_word',
             'word_search',
+            'arrow_matching',
+            'iframe_embed',
         ];
 
         foreach ($templateFiles as $file) {

@@ -8,7 +8,7 @@ return new class extends Migration {
         Schema::create('parents', function (Blueprint $table) {
             $table->id();
             $table->string('parent_name');
-            $table->string('child_name');
+            $table->string('child_name')->nullable();
             $table->string('email')->unique(); // Tambahkan Email untuk Login
             $table->string('password');       // Tambahkan Password untuk Login
             $table->timestamps();

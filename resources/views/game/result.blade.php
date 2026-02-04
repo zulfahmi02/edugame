@@ -72,5 +72,34 @@
             <a href="{{ route('student.logout') }}" class="btn btn-outline">🚪 Keluar</a>
         </div>
     </div>
+
+    <script>
+        // Synthetic Win Sound
+        function playWinSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            
+            freqs.forEach((f, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ctx.currentTime + (i * 0.15));
+                gain.gain.setValueAtTime(0.1, ctx.currentTime + (i * 0.15));
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.15) + 0.4);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + (i * 0.15));
+                osc.stop(ctx.currentTime + (i * 0.15) + 0.4);
+            });
+        }
+
+        // Play on load
+        window.addEventListener('load', () => {
+            // Suara terkadang diblokir oleh browser jika tidak ada interaksi sebelumnya.
+            // Namun karena ini adalah halaman redirect setelah menjawab soal (interaksi terakhir),
+            // biasanya suara akan tetap berbunyi.
+            playWinSound();
+        });
+    </script>
 </body>
 </html>

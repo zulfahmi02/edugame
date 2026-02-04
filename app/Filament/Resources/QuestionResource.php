@@ -15,6 +15,8 @@ class QuestionResource extends Resource
 {
     protected static ?string $model = Question::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
     protected static ?string $navigationLabel = 'Pertanyaan';

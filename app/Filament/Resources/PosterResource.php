@@ -43,11 +43,12 @@ class PosterResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Gambar Poster')
                             ->image()
-                            ->imageEditor()
                             ->directory('posters')
-                            ->maxSize(5120)
+                            ->maxSize(102400)
+                            ->deletable()
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg', 'image/webp'])
                             ->required()
-                            ->helperText('Maksimal 5MB'),
+                            ->helperText('Maksimal 100MB. Format: PNG, JPG, JPEG, WEBP'),
 
                         Forms\Components\Toggle::make('is_active')
                             ->label('Aktif')

@@ -354,6 +354,53 @@
                     <span style="font-size: 1.5rem;">📜</span> Riwayat Nilai Saya
                 </a>
             @endif
+
+            @if($availableCategories->count() > 0)
+                <div class="filter-section" style="margin-top: 30px; animation: slideIn 0.8s ease-out;">
+                    <p style="font-weight: 700; color: #1e3a8a; margin-bottom: 15px; font-size: 1.2rem;">📚 Pilih Pelajaran:</p>
+                    <div class="filter-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <a href="{{ route('games.all') }}" 
+                           class="filter-btn {{ !$selectedCategory ? 'active' : '' }}">
+                           🌟 Semua
+                        </a>
+                        @foreach($availableCategories as $cat)
+                            <a href="{{ route('games.all', ['category' => $cat]) }}" 
+                               class="filter-btn {{ $selectedCategory == $cat ? 'active' : '' }}">
+                               📖 {{ $cat }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                <style>
+                    .filter-btn {
+                        padding: 10px 25px;
+                        background: white;
+                        color: #1e3a8a;
+                        border: 2px solid #e0f7fa;
+                        border-radius: 50px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                    }
+                    .filter-btn:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                        border-color: #3b82f6;
+                    }
+                    .filter-btn.active {
+                        background: #3b82f6;
+                        color: white !important;
+                        border-color: #3b82f6;
+                        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+                    }
+                    @keyframes slideIn {
+                        from { transform: translateY(-30px); opacity: 0; }
+                        to { transform: translateY(0); opacity: 1; }
+                    }
+                </style>
+            @endif
         </div>
 
         <div class="games-grid">

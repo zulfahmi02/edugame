@@ -407,15 +407,32 @@
                 </div>
             </div>
 
-            <form action="{{ route('teacher.games.update', $game->id) }}" method="POST">
+            <form action="{{ route('teacher.games.update', $game->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="row">
-                    <div class="col-md-8 mb-3">
+                    <div class="col-md-5 mb-3">
                         <label for="title" class="form-label">Judul Game *</label>
                         <input type="text" class="form-control" id="title" name="title"
                             value="{{ old('title', $game->title) }}" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="category" class="form-label">Kategori / Pelajaran *</label>
+                        <input type="text" class="form-control" id="category" name="category"
+                            value="{{ old('category', $game->category) }}" placeholder="Contoh: Matematika, IPA" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="class" class="form-label">Kelas</label>
+                        <select class="form-select" id="class" name="class">
+                            <option value="">Semua Kelas</option>
+                            @for($i = 1; $i <= 6; $i++)
+                                <option value="{{ $i }}" {{ old('class', $game->class) == $i ? 'selected' : '' }}>Kelas {{ $i }}</option>
+                            @endfor
+                        </select>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Status</label>
@@ -430,6 +447,37 @@
                     <label for="description" class="form-label">Deskripsi</label>
                     <textarea class="form-control" id="description" name="description"
                         rows="3">{{ old('description', $game->description) }}</textarea>
+                </div>
+
+                <!-- Gambar Game Section -->
+                <div class="mb-3">
+                    <label class="form-label">📷 Gambar Game</label>
+                    
+                    @if($game->game_images)
+                        @php
+                            $existingImages = is_string($game->game_images) ? json_decode($game->game_images, true) : $game->game_images;
+                        @endphp
+                        @if(is_array($existingImages) && count($existingImages) > 0)
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-2">Gambar yang sudah ada:</small>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    @foreach($existingImages as $image)
+                                        <div style="position: relative;">
+                                            <img src="{{ asset('storage/' . $image) }}" alt="Game Image" 
+                                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+                    <input class="form-control" type="file" id="game_images" name="game_images[]" 
+                        accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
+                    <small class="text-muted">Upload gambar baru (PNG, JPG, WEBP). Maksimal 5 gambar, maks 2MB per file. Gambar baru akan ditambahkan ke gambar yang sudah ada.</small>
+                    
+                    <!-- Preview Area -->
+                    <div id="imagePreview" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;"></div>
                 </div>
 
                 <button type="submit" class="btn-update">
@@ -454,25 +502,30 @@
 	                    @csrf
 	                    <input type="hidden" name="template_type" value="{{ $templateType }}">
 
-                    <div class="mb-3">
-                        <label for="question_text" class="form-label">
-                            @if(in_array($templateType, ['hangman', 'spell_word', 'word_search']))
-                                Petunjuk/Clue *
-                            @elseif($templateType == 'math_generator')
-                                Soal Matematika *
-                            @elseif($templateType == 'true_false')
-                                Pernyataan Benar/Salah *
-                            @elseif($templateType == 'crossword')
-                                Clue/Petunjuk *
-                            @elseif($templateType == 'labeled_diagram')
-                                Petunjuk Label *
-                            @else
-                                Pertanyaan *
-                            @endif
-                        </label>
-                        <textarea class="form-control" id="question_text" name="question_text" rows="2"
-                            placeholder="@if(in_array($templateType, ['hangman']))Contoh: Nama hewan berkaki empat yang suka makan rumput...@elseif(in_array($templateType, ['spell_word']))Contoh: Ejaan bahasa Arab untuk 'rumah'...@elseif(in_array($templateType, ['word_search']))Contoh: Temukan kata yang artinya 'sekolah'...@elseif($templateType == 'math_generator')Contoh: 5 + 3 = ?@elseif($templateType == 'true_false')Masukkan pernyataan benar atau salah...@else Masukkan pertanyaan...@endif" required></textarea>
-                    </div>
+                    @if($templateType !== 'iframe_embed')
+                        <div class="mb-3">
+                            <label for="question_text" class="form-label">
+                                @if(in_array($templateType, ['hangman', 'spell_word', 'word_search']))
+                                    Petunjuk/Clue *
+                                @elseif($templateType == 'math_generator')
+                                    Soal Matematika *
+                                @elseif($templateType == 'true_false')
+                                    Pernyataan Benar/Salah *
+                                @elseif($templateType == 'crossword')
+                                    Clue/Petunjuk *
+                                @elseif($templateType == 'labeled_diagram')
+                                    Petunjuk Label *
+                                @else
+                                    Pertanyaan *
+                                @endif
+                            </label>
+                            <textarea class="form-control" id="question_text" name="question_text" rows="2"
+                                placeholder="@if(in_array($templateType, ['hangman']))Contoh: Nama hewan berkaki empat yang suka makan rumput...@elseif(in_array($templateType, ['spell_word']))Contoh: Ejaan bahasa Arab untuk 'rumah'...@elseif(in_array($templateType, ['word_search']))Contoh: Temukan kata yang artinya 'sekolah'...@elseif($templateType == 'math_generator')Contoh: 5 + 3 = ?@elseif($templateType == 'true_false')Masukkan pernyataan benar atau salah...@else Masukkan pertanyaan...@endif" required></textarea>
+                        </div>
+                    @else
+                        {{-- Untuk template Embed, pertanyaan tidak diperlukan --}}
+                        <input type="hidden" name="question_text" value="Mainkan game di bawah ini">
+                    @endif
 
                     @php
 	                        // Templates that only need text answer (word games)
@@ -619,6 +672,17 @@
                                 required
                             >
                             <small class="text-muted">Isi angka hasil perhitungan. Di game, siswa menjawab lewat keypad angka.</small>
+                        </div>
+
+                    @elseif($templateType === 'iframe_embed')
+                        <!-- Iframe Embed -->
+                        <div class="mb-3">
+                            <label for="correct_answer" class="form-label">Kode HTML Iframe (Embed) *</label>
+                            <textarea class="form-control" id="correct_answer" name="correct_answer" rows="4" 
+                                placeholder="Tempelkan kode iframe di sini..." required></textarea>
+                            <div class="alert alert-info mt-2" style="font-size: 0.9rem;">
+                                💡 <strong>Tips Wordwall:</strong> Pilih "Share" -> "Embed" -> Salin kode <code>&lt;iframe...&gt;</code> lalu tempel di kolom atas.
+                            </div>
                         </div>
 
                     @else
@@ -796,6 +860,57 @@
                 confirmButtonText: 'OK'
             });
         @endif
+
+        // Image Preview Functionality
+        document.getElementById('game_images').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            const files = Array.from(e.target.files);
+            
+            // Validate max 5 images
+            if (files.length > 5) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Terlalu Banyak Gambar!',
+                    text: 'Maksimal 5 gambar yang bisa diupload',
+                    confirmButtonColor: '#f59e0b'
+                });
+                e.target.value = '';
+                return;
+            }
+            
+            // Validate file size (max 2MB per file)
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            for (let file of files) {
+                if (file.size > maxSize) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'File Terlalu Besar!',
+                        text: `File "${file.name}" melebihi 2MB`,
+                        confirmButtonColor: '#f59e0b'
+                    });
+                    e.target.value = '';
+                    preview.innerHTML = '';
+                    return;
+                }
+            }
+            
+            // Show preview
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '2px solid #22c55e';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
     </script>
     <style>
         .swal-custom {

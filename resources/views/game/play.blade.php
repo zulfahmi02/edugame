@@ -46,6 +46,10 @@
         '{{QUESTION}}' => $displayQuestionText,
         '{{question_image_url}}' => $questionImageUrl ?: $gameImageUrl,
         '{{game_image_url}}' => $gameImageUrl,
+        '{{correct_answer}}' => (string) $question->correct_answer,
+        '{{question_number}}' => $session->total_questions + 1,
+        '{{is_first_question}}' => $session->total_questions == 0 ? 'true' : 'false',
+        '{{session_id}}' => $session->id,
     ];
 @endphp
 
@@ -56,6 +60,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $session->game->title }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -94,13 +99,28 @@
         }
 
         .game-container {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px; /* Lebar maksimal yang lebih lega */
+            transition: all 0.3s ease;
+        }
+
+        /* Jika menggunakan template kustom, hilangkan padding dan background bawaan */
+        .game-container.has-custom-template {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            max-width: 100%;
+        }
+
+        /* Style default tetap ada jika bukan kustom */
+        .game-container:not(.has-custom-template) {
             background: white;
             padding: 40px;
             border-radius: 20px;
             max-width: 800px;
-            margin: 0 auto;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-	        }
+        }
 
 	        /* Custom CSS from database will be injected here */
 	        {!! $activeCssStyle !!}
@@ -256,10 +276,10 @@
         </div>
     </div>
 
-	    <div class="game-container">
+	    <div class="game-container {{ $activeHtmlTemplate ? 'has-custom-template' : '' }}">
 	        @if($activeHtmlTemplate)
 	            <!-- Custom template (game override or selected template) -->
-	            <div id="custom-game-template">
+	            <div class="custom-template-container" id="custom-game-template">
 	                {!! str_replace(array_keys($templateReplacements), array_values($templateReplacements), $activeHtmlTemplate) !!}
 	            </div>
 
@@ -303,11 +323,11 @@
 	                <!-- Text input for non-multiple choice -->
 	                <input type="text" id="answer-input" class="default-answer-input" placeholder="Ketik jawaban Anda di sini..." autofocus>
 	            @endif
-	        @endif
 
-	        <button onclick="submitAnswer()" class="btn-submit" id="submit-btn">
-	            Kirim Jawaban
-	        </button>
+                <button onclick="submitAnswer()" class="btn-submit" id="submit-btn">
+                    Kirim Jawaban
+                </button>
+	        @endif
 
 	        <div id="feedback" class="feedback"></div>
 	        <button onclick="nextQuestion()" class="btn-next" id="next-btn">Soal Berikutnya →</button>
@@ -316,10 +336,11 @@
     <script>
         const sessionId = {{ $session->id }};
         const questionId = {{ $question->id }};
-	        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const templateType = '{{ $templateType }}';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-	        // Custom JS from database
-	        {!! $activeJsCode !!}
+        // Custom JS from database
+        {!! str_replace(array_keys($templateReplacements), array_values($templateReplacements), $activeJsCode) !!}
 
             // Ensure answer input exists for template-based games
             document.addEventListener("DOMContentLoaded", function () {
@@ -377,11 +398,43 @@
                 const nextBtn = document.getElementById('next-btn');
 
                 if (data.correct) {
+                    if (templateType === 'iframe_embed') {
+                        Swal.fire({
+                            title: '🎉 Berhasil Dikirim!',
+                            text: 'Skor kamu sudah dicatat oleh Pak/Bu Guru. Mantap!',
+                            icon: 'success',
+                            confirmButtonColor: '#667eea'
+                        });
+                        
+                        // Hide scoring card after success
+                        const scoreSection = document.getElementById('manual-score-section');
+                        if (scoreSection) {
+                            scoreSection.innerHTML = '<div style="background:#f0fdf4; color:#166534; padding:20px; border-radius:15px; border:2px solid #86efac; font-weight:700;">✅ Skor Berhasil Disimpan!</div>';
+                        }
+                    }
+
                     feedback.className = 'feedback correct';
-                    feedback.innerHTML = `✅ Benar! +${data.points} poin`;
+                    feedback.innerHTML = `✅ Berhasil! +${data.points} poin`;
+                    
+                    // Specific tweak: hide default feedback for embed because we have the "Skor Berhasil Disimpan" box
+                    if (templateType === 'iframe_embed') {
+                        feedback.style.display = 'none';
+                    }
                 } else {
                     feedback.className = 'feedback incorrect';
                     feedback.innerHTML = `❌ Salah! Jawaban yang benar: <strong>${data.correct_answer}</strong>`;
+                }
+
+                if (data.is_last) {
+                    nextBtn.innerHTML = 'Selesaikan & Lihat Hasil ✅';
+                    nextBtn.style.background = '#059669';
+                    nextBtn.setAttribute('data-is-last', 'true');
+                    
+                    if (templateType === 'iframe_embed') {
+                        nextBtn.style.padding = '20px';
+                        nextBtn.style.fontSize = '1.2rem';
+                        nextBtn.style.boxShadow = '0 10px 25px rgba(16, 185, 129, 0.4)';
+                    }
                 }
 
                 if (nextBtn) nextBtn.style.display = 'block';
@@ -394,7 +447,12 @@
         }
 
         function nextQuestion() {
-            window.location.href = `/session/${sessionId}/question`;
+            const nextBtn = document.getElementById('next-btn');
+            if (nextBtn && nextBtn.getAttribute('data-is-last') === 'true') {
+                window.location.href = `/session/${sessionId}/finish`;
+            } else {
+                window.location.href = `/session/${sessionId}/question`;
+            }
         }
 
         // Allow Enter key to submit
