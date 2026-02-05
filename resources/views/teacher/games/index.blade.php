@@ -30,7 +30,7 @@
             position: fixed;
             left: 0;
             top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -116,43 +116,7 @@
             border-top: 1px solid #f0f0f0;
         }
 
-        .pro-card {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
 
-        .pro-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-        }
-
-        .pro-subtitle {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-bottom: 0.75rem;
-        }
-
-        .btn-upgrade {
-            width: 100%;
-            background: linear-gradient(135deg, #FF9A5C 0%, #FF7B39 100%);
-            color: white;
-            border: none;
-            padding: 0.6rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-upgrade:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 123, 57, 0.3);
-        }
 
         .user-profile {
             display: flex;
@@ -163,6 +127,8 @@
         .user-avatar {
             width: 40px;
             height: 40px;
+            min-width: 40px;
+            min-height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             display: flex;
@@ -170,6 +136,8 @@
             justify-content: center;
             color: white;
             font-weight: 600;
+            flex-shrink: 0;
+            aspect-ratio: 1;
         }
 
         .user-info {
@@ -334,13 +302,13 @@
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
 
         .game-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
         .game-thumbnail {
@@ -542,7 +510,7 @@
             padding: 4rem 2rem;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .empty-state-icon {
@@ -677,11 +645,6 @@
         </nav>
 
         <div class="sidebar-footer">
-            <div class="pro-card">
-                <div class="pro-title">Pro Plan</div>
-                <div class="pro-subtitle">Unlimited games & advanced analytics</div>
-                <button class="btn-upgrade">Upgrade</button>
-            </div>
             <div class="user-profile">
                 <div class="user-avatar">{{ substr($teacher->name, 0, 1) }}</div>
                 <div class="user-info">
@@ -727,7 +690,9 @@
         <div class="page-title-section">
             <div>
                 <h1 class="page-title">My Games</h1>
-                <p class="page-subtitle">You have {{ $games->count() }} {{ $games->count() == 1 ? 'game' : 'active games' }} available.</p>
+                <p class="page-subtitle">You have {{ $games->count() }}
+                    {{ $games->count() == 1 ? 'game' : 'active games' }} available.
+                </p>
             </div>
             <a href="{{ route('teacher.games.create') }}" class="btn-create-game">
                 <span>➕</span>
@@ -747,7 +712,8 @@
         <div class="games-grid" id="gamesGrid">
             @if($games->count() > 0)
                 @foreach($games as $game)
-                    <div class="game-card" data-status="{{ $game->is_active ? 'published' : 'draft' }}" data-title="{{ strtolower($game->title) }}">
+                    <div class="game-card" data-status="{{ $game->is_active ? 'published' : 'draft' }}"
+                        data-title="{{ strtolower($game->title) }}">
                         <div class="game-thumbnail">
                             @php
                                 $templateColors = [
@@ -760,7 +726,8 @@
                                 $templateName = strtolower($game->template->name ?? 'default');
                                 $bgColor = $templateColors[$templateName] ?? $templateColors['default'];
                             @endphp
-                            <div class="game-thumbnail-placeholder" style="background: {{ $bgColor }}; width: 100%; height: 100%;">
+                            <div class="game-thumbnail-placeholder"
+                                style="background: {{ $bgColor }}; width: 100%; height: 100%;">
                                 <div class="game-thumbnail-icon">{{ $game->template->icon ?? '🎯' }}</div>
                                 <div class="game-thumbnail-text">{{ strtoupper($game->template->name ?? 'GAME') }}</div>
                             </div>
@@ -770,7 +737,7 @@
                         </div>
                         <div class="game-content">
                             <div class="game-category">
-                                GRADE {{ rand(1,6) }} - {{ strtoupper($game->template->name ?? 'GENERAL') }}
+                                GRADE {{ rand(1, 6) }} - {{ strtoupper($game->template->name ?? 'GENERAL') }}
                             </div>
                             <h3 class="game-title">{{ $game->title }}</h3>
                             <div class="game-stats">
@@ -819,16 +786,16 @@
     <script>
         // Tab filtering
         document.querySelectorAll('.tab-item').forEach(tab => {
-            tab.addEventListener('click', function(e) {
+            tab.addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 // Update active tab
                 document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 const filter = this.dataset.filter;
                 const cards = document.querySelectorAll('.game-card');
-                
+
                 cards.forEach(card => {
                     if (filter === 'all' || card.dataset.status === filter) {
                         card.style.display = 'block';
@@ -842,10 +809,10 @@
         });
 
         // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
+        document.getElementById('searchInput').addEventListener('input', function (e) {
             const query = e.target.value.toLowerCase();
             const cards = document.querySelectorAll('.game-card');
-            
+
             cards.forEach(card => {
                 const title = card.dataset.title;
                 if (title.includes(query)) {
@@ -858,7 +825,7 @@
 
         // Delete confirmation (for future use if delete buttons are added)
         document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 Swal.fire({
                     title: '🗑️ Delete Game?',

@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru - Taman BelajarSedjati</title>
+    <title>Dashboard - Teacher Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,92 +15,258 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
+            display: flex;
         }
 
-        .navbar {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
         }
 
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
+        .sidebar-brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-size: 1.5rem;
         }
 
-        .navbar-text {
-            color: rgba(255, 255, 255, 0.9);
-            margin-right: 1rem;
+        .brand-text {
+            display: flex;
+            flex-direction: column;
         }
 
-        .btn-logout {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: #4B8BF4;
             font-weight: 600;
-            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .btn-logout:hover {
-            background: white;
-            color: #f5576c;
+        .sidebar-nav {
+            padding: 1rem 0;
+            flex: 1;
         }
 
-        .container-main {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
         }
 
-        .welcome-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .nav-item:hover {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .nav-item.active {
+            background: #EBF3FF;
+            color: #4B8BF4;
+            border-left-color: #4B8BF4;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 2.5rem;
-            border-radius: 20px;
+            font-weight: 600;
+            flex-shrink: 0;
+            aspect-ratio: 1;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 1.5rem 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-box {
+            position: relative;
+            width: 350px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4B8BF4;
+            box-shadow: 0 0 0 3px rgba(75, 139, 244, 0.1);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(75, 139, 244, 0.3);
         }
 
         .welcome-card h1 {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .welcome-card p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
         }
 
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1.8rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
-            border-left: 5px solid;
+            border-left: 4px solid;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card.students {
-            border-color: #667eea;
+            border-color: #4B8BF4;
         }
 
         .stat-card.games {
@@ -107,79 +274,130 @@
         }
 
         .stat-card.score {
-            border-color: #ffd700;
+            border-color: #fbbf24;
         }
 
         .stat-card.accuracy {
-            border-color: #4ade80;
+            border-color: #22c55e;
         }
 
         .stat-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
         .stat-value {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #1e293b;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
             color: #64748b;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
+        /* Section Card */
         .section-card {
             background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
         }
 
         .section-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: #1e293b;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
+        /* Filter Buttons */
         .filter-buttons {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .btn-filter {
-            padding: 0.5rem 1.2rem;
+            padding: 0.5rem 1rem;
             border: 2px solid #e2e8f0;
             background: white;
-            border-radius: 25px;
+            border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
             cursor: pointer;
+            text-decoration: none;
+            color: #64748b;
         }
 
         .btn-filter:hover {
-            border-color: #f093fb;
-            color: #f093fb;
+            border-color: #4B8BF4;
+            color: #4B8BF4;
         }
 
         .btn-filter.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #4B8BF4;
             color: white;
-            border-color: transparent;
+            border-color: #4B8BF4;
         }
 
+        /* Top Performer */
+        .top-performer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .top-performer-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .performer-rank {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #4B8BF4;
+            margin-right: 1rem;
+            min-width: 35px;
+        }
+
+        .performer-info {
+            flex: 1;
+        }
+
+        .performer-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .performer-stats {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .performer-score {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4B8BF4;
+        }
+
+        /* Table */
         .table-responsive {
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
@@ -189,7 +407,7 @@
         }
 
         thead {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #4B8BF4;
             color: white;
         }
 
@@ -202,6 +420,7 @@
         tbody td {
             padding: 1rem;
             border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
 
         tbody tr:hover {
@@ -209,72 +428,30 @@
         }
 
         .badge-class {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
             color: white;
-            padding: 0.4rem 0.8rem;
+            padding: 0.35rem 0.75rem;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .progress-bar-custom {
-            height: 8px;
+            height: 6px;
             background: #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
-            margin-top: 0.5rem;
+            margin-top: 0.4rem;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+            background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
             border-radius: 10px;
             transition: width 0.3s ease;
         }
 
-        .top-performer-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 10px;
-            margin-bottom: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .top-performer-item:hover {
-            background: #f1f5f9;
-            transform: translateX(5px);
-        }
-
-        .performer-rank {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #f093fb;
-            margin-right: 1rem;
-        }
-
-        .performer-info {
-            flex: 1;
-        }
-
-        .performer-name {
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .performer-stats {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .performer-score {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #f093fb;
-        }
-
+        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -286,67 +463,144 @@
             margin-bottom: 1rem;
         }
 
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand .brand-text,
+            .nav-item span,
+            .sidebar-footer .pro-card,
+            .sidebar-footer .user-info {
+                display: none;
+            }
+
+            .sidebar-brand {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .user-profile {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                padding: 0.5rem 1rem;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                padding: 0;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            body {
+                flex-direction: column;
             }
 
             .welcome-card h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
 
-            .container-main {
-                padding: 0 1rem;
+            .search-box {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('teacher.dashboard') }}" style="text-decoration: none;">
-                👨‍🏫 Dashboard Guru
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">📚</div>
+            <div class="brand-text">
+                <div class="brand-name">EduPlay</div>
+                <div class="brand-subtitle">Teacher Portal</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ route('teacher.dashboard') }}" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                style="border-color: rgba(255,255,255,0.5);">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto" style="margin-left: 2rem;">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('teacher.dashboard') }}"
-                            style="color: white !important; font-weight: 600; padding: 0.5rem 1rem; border-radius: 25px; background: rgba(255,255,255,0.2);">📊
-                            Statistik</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('teacher.games') }}"
-                            style="color: rgba(255,255,255,0.85) !important; font-weight: 600; padding: 0.5rem 1rem; border-radius: 25px; margin-left: 0.5rem;">🎮
-                            Game Saya</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('teacher.schedules') }}"
-                            style="color: rgba(255,255,255,0.85) !important; font-weight: 600; padding: 0.5rem 1rem; border-radius: 25px; margin-left: 0.5rem;">📅
-                            Jadwal</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <span class="navbar-text">
-                        {{ $teacher->name }}
-                    </span>
-                    <a href="{{ route('teacher.logout') }}" class="btn btn-logout">Logout</a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Classes</span>
+            </a>
+            <a href="{{ route('teacher.games') }}" class="nav-item">
+                <span class="nav-icon">🎮</span>
+                <span>Games</span>
+            </a>
+            <a href="{{ route('teacher.schedules') }}" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Results</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{ substr($teacher->name, 0, 1) }}</div>
+                <div class="user-info">
+                    <div class="user-name">{{ $teacher->name }}</div>
+                    <div class="user-email">{{ $teacher->email ?? 'teacher@school.edu' }}</div>
                 </div>
             </div>
         </div>
-    </nav>
+    </aside>
 
-    <div class="container-main">
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search students...">
+            </div>
+            <div class="header-actions">
+                <button class="header-btn">🔔</button>
+                <button class="header-btn">⚙️</button>
+            </div>
+        </div>
+
         <!-- Welcome Card -->
         <div class="welcome-card">
-            <h1>Selamat Datang, {{ $teacher->name }}! 👋</h1>
-            <p>{{ $teacher->subject ? 'Guru ' . $teacher->subject : 'Guru' }} | Monitor perkembangan siswa Anda di sini
-            </p>
+            <h1>Welcome back, {{ $teacher->name }}! 👋</h1>
+            <p>{{ $teacher->subject ? 'Teacher of ' . $teacher->subject : 'Teacher' }} | Monitor your students progress
+                here</p>
         </div>
 
         <!-- Stats Cards -->
@@ -354,41 +608,41 @@
             <div class="stat-card students">
                 <div class="stat-icon">👥</div>
                 <div class="stat-value">{{ $totalStudents }}</div>
-                <div class="stat-label">Total Siswa</div>
+                <div class="stat-label">Total Students</div>
             </div>
 
             <div class="stat-card games">
                 <div class="stat-icon">🎮</div>
                 <div class="stat-value">{{ $totalGamesPlayed }}</div>
-                <div class="stat-label">Game Dimainkan</div>
+                <div class="stat-label">Games Played</div>
             </div>
 
             <div class="stat-card score">
                 <div class="stat-icon">⭐</div>
                 <div class="stat-value">{{ $averageScore }}</div>
-                <div class="stat-label">Rata-rata Skor</div>
+                <div class="stat-label">Average Score</div>
             </div>
 
             <div class="stat-card accuracy">
                 <div class="stat-icon">🎯</div>
                 <div class="stat-value">{{ $overallAccuracy }}%</div>
-                <div class="stat-label">Akurasi Keseluruhan</div>
+                <div class="stat-label">Overall Accuracy</div>
             </div>
         </div>
 
         <!-- Class Distribution -->
         <div class="section-card">
             <div class="section-title">
-                📊 Distribusi Siswa per Kelas
+                📊 Student Distribution by Class
             </div>
             <div class="filter-buttons">
                 <a href="{{ route('teacher.dashboard') }}" class="btn-filter {{ !$filterClass ? 'active' : '' }}">
-                    Semua Kelas ({{ $totalStudents }})
+                    All Classes ({{ $totalStudents }})
                 </a>
                 @for ($i = 1; $i <= 6; $i++)
                     <a href="{{ route('teacher.dashboard', ['class' => $i]) }}"
                         class="btn-filter {{ $filterClass == $i ? 'active' : '' }}">
-                        Kelas {{ $i }} ({{ $classStats[$i] ?? 0 }})
+                        Grade {{ $i }} ({{ $classStats[$i] ?? 0 }})
                     </a>
                 @endfor
             </div>
@@ -398,7 +652,7 @@
         @if(count($topPerformers) > 0)
             <div class="section-card">
                 <div class="section-title">
-                    🏆 Top 5 Siswa Terbaik
+                    🏆 Top 5 Best Students
                 </div>
                 @foreach($topPerformers as $index => $performer)
                     <div class="top-performer-item">
@@ -406,8 +660,8 @@
                         <div class="performer-info">
                             <div class="performer-name">{{ $performer['student']->nama_anak }}</div>
                             <div class="performer-stats">
-                                Kelas {{ $performer['student']->kelas }} •
-                                {{ $performer['games_played'] }} game dimainkan
+                                Grade {{ $performer['student']->kelas }} •
+                                {{ $performer['games_played'] }} games played
                             </div>
                         </div>
                         <div class="performer-score">{{ $performer['avg_score'] }}</div>
@@ -419,7 +673,7 @@
         <!-- Students List -->
         <div class="section-card">
             <div class="section-title">
-                📋 Daftar Siswa {{ $filterClass ? '(Kelas ' . $filterClass . ')' : '' }}
+                📋 Student List {{ $filterClass ? '(Grade ' . $filterClass . ')' : '' }}
             </div>
 
             @if($students->count() > 0)
@@ -428,11 +682,11 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Siswa</th>
-                                <th>Kelas</th>
-                                <th>Game Dimainkan</th>
-                                <th>Rata-rata Skor</th>
-                                <th>Akurasi</th>
+                                <th>Student Name</th>
+                                <th>Grade</th>
+                                <th>Games Played</th>
+                                <th>Avg Score</th>
+                                <th>Accuracy</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -450,8 +704,8 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td><strong>{{ $student->nama_anak }}</strong></td>
-                                    <td><span class="badge-class">Kelas {{ $student->kelas }}</span></td>
-                                    <td>{{ $gamesPlayed }} game</td>
+                                    <td><span class="badge-class">Grade {{ $student->kelas }}</span></td>
+                                    <td>{{ $gamesPlayed }} games</td>
                                     <td><strong>{{ $avgScore }}</strong></td>
                                     <td>
                                         {{ $accuracy }}%
@@ -467,7 +721,7 @@
             @else
                 <div class="empty-state">
                     <div class="empty-state-icon">📚</div>
-                    <p>Belum ada siswa {{ $filterClass ? 'di kelas ' . $filterClass : '' }}</p>
+                    <p>No students found {{ $filterClass ? 'in grade ' . $filterClass : '' }}</p>
                 </div>
             @endif
         </div>
@@ -476,17 +730,17 @@
         @if($recentSessions->count() > 0)
             <div class="section-card">
                 <div class="section-title">
-                    🕐 Aktivitas Terbaru
+                    🕐 Recent Activities
                 </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Siswa</th>
+                                <th>Student</th>
                                 <th>Game</th>
-                                <th>Skor</th>
-                                <th>Akurasi</th>
-                                <th>Waktu</th>
+                                <th>Score</th>
+                                <th>Accuracy</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -506,7 +760,7 @@
                 </div>
             </div>
         @endif
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

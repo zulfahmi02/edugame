@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat Game Baru - Dashboard Guru</title>
+    <title>Create New Game - Teacher Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,81 +15,207 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
+            display: flex;
         }
 
-        .navbar {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-            text-decoration: none;
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 600;
-            margin: 0 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-nav .nav-link:hover,
-        .navbar-nav .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white !important;
-        }
-
-        .btn-logout {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-logout:hover {
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
             background: white;
-            color: #f5576c;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
         }
 
-        .container-main {
+        .sidebar-brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: #4B8BF4;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .nav-item.active {
+            background: #EBF3FF;
+            color: #4B8BF4;
+            border-left-color: #4B8BF4;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+            aspect-ratio: 1;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 1.5rem 2rem;
             max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 2rem;
         }
 
-        .page-header {
-            margin-bottom: 2rem;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            color: #64748b;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            color: #1e293b;
+            background: #f1f5f9;
         }
 
         .page-title {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 800;
             color: #1e293b;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .page-subtitle {
             color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
         }
 
         .form-section {
@@ -96,7 +223,7 @@
         }
 
         .form-section-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #1e293b;
             margin-bottom: 1rem;
@@ -117,18 +244,18 @@
             border-radius: 10px;
             padding: 0.75rem 1rem;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .form-control:focus,
         .form-select:focus {
-            border-color: #f093fb;
-            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+            border-color: #4B8BF4;
+            box-shadow: 0 0 0 3px rgba(75, 139, 244, 0.1);
         }
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
@@ -144,76 +271,64 @@
 
         .template-option label {
             display: block;
-            padding: 1.5rem;
+            padding: 1.25rem;
             background: #f8fafc;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-align: center;
         }
 
-        .template-option input[type="radio"]:checked + label {
-            border-color: #f093fb;
-            background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+        .template-option input[type="radio"]:checked+label {
+            border-color: #4B8BF4;
+            background: #EBF3FF;
         }
 
         .template-option label:hover {
-            border-color: #f093fb;
-            transform: translateY(-3px);
+            border-color: #4B8BF4;
+            transform: translateY(-2px);
         }
 
         .template-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
         .template-name {
             font-weight: 700;
             color: #1e293b;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
         }
 
         .template-type {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #64748b;
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
             color: white;
             padding: 1rem 2rem;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             width: 100%;
         }
 
         .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-back {
-            color: #64748b;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .btn-back:hover {
-            color: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(75, 139, 244, 0.3);
         }
 
         .alert {
             border-radius: 10px;
             margin-bottom: 1.5rem;
+            border: none;
         }
 
         .empty-templates {
@@ -224,61 +339,130 @@
             color: #92400e;
         }
 
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand .brand-text,
+            .nav-item span,
+            .sidebar-footer .pro-card,
+            .sidebar-footer .user-info {
+                display: none;
+            }
+
+            .sidebar-brand {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .user-profile {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
         @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                padding: 0.5rem 1rem;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                padding: 0;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            body {
+                flex-direction: column;
+            }
+
             .template-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container-main {
-                padding: 0 1rem;
-            }
-
-            .form-card {
-                padding: 1.5rem;
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('teacher.dashboard') }}">
-                👨‍🏫 Dashboard Guru
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">📚</div>
+            <div class="brand-text">
+                <div class="brand-name">EduPlay</div>
+                <div class="brand-subtitle">Teacher Portal</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ route('teacher.dashboard') }}" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('teacher.dashboard') }}">📊 Statistik</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('teacher.games') }}">🎮 Game Saya</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('teacher.schedules') }}">📅 Jadwal</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <span class="text-white me-3">{{ session('teacher_name') }}</span>
-                    <a href="{{ route('teacher.logout') }}" class="btn-logout">Logout</a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Classes</span>
+            </a>
+            <a href="{{ route('teacher.games') }}" class="nav-item active">
+                <span class="nav-icon">🎮</span>
+                <span>Games</span>
+            </a>
+            <a href="{{ route('teacher.schedules') }}" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Results</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{ substr(session('teacher_name', 'T'), 0, 1) }}</div>
+                <div class="user-info">
+                    <div class="user-name">{{ session('teacher_name') }}</div>
+                    <div class="user-email">teacher@school.edu</div>
                 </div>
             </div>
         </div>
-    </nav>
+    </aside>
 
-    <div class="container-main">
-        <a href="{{ route('teacher.games') }}" class="btn-back">
-            ← Kembali ke Game Saya
-        </a>
-
-        <div class="page-header">
-            <h1 class="page-title">➕ Buat Game Baru</h1>
-            <p class="page-subtitle">Pilih template yang disediakan admin dan buat game kuis Anda sendiri</p>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <a href="{{ route('teacher.games') }}" class="btn-back">
+                ← Back to Games
+            </a>
+            <div class="header-actions">
+                <button class="header-btn">🔔</button>
+                <button class="header-btn">⚙️</button>
+            </div>
         </div>
+
+        <h1 class="page-title">➕ Create New Game</h1>
+        <p class="page-subtitle">Select a template and create your own quiz game</p>
 
         @if($errors->any())
             <div class="alert alert-danger">
@@ -295,18 +479,20 @@
                 <form action="{{ route('teacher.games.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Pilih Template -->
+                    <!-- Select Template -->
                     <div class="form-section">
-                        <h3 class="form-section-title">📋 Pilih Template Game</h3>
+                        <h3 class="form-section-title">📋 Select Game Template</h3>
                         <div class="template-grid">
                             @foreach($templates as $template)
                                 <div class="template-option">
-                                    <input type="radio" name="template_id" id="template_{{ $template->id }}" value="{{ $template->id }}" {{ old('template_id') == $template->id ? 'checked' : '' }} required>
+                                    <input type="radio" name="template_id" id="template_{{ $template->id }}"
+                                        value="{{ $template->id }}" {{ old('template_id') == $template->id ? 'checked' : '' }}
+                                        required>
                                     <label for="template_{{ $template->id }}">
                                         <div class="template-icon">{{ $template->icon ?? '🎮' }}</div>
                                         <div class="template-name">{{ $template->name }}</div>
                                         <div class="template-type">
-                                            {{ \Illuminate\Support\Str::limit($template->description ?? (\App\Models\GameTemplate::getAvailableTypes()[$template->template_type] ?? $template->template_type), 70) }}
+                                            {{ \Illuminate\Support\Str::limit($template->description ?? (\App\Models\GameTemplate::getAvailableTypes()[$template->template_type] ?? $template->template_type), 50) }}
                                         </div>
                                     </label>
                                 </div>
@@ -314,90 +500,92 @@
                         </div>
                     </div>
 
-                    <!-- Info Game -->
+                    <!-- Game Info -->
                     <div class="form-section">
-                        <h3 class="form-section-title">🎯 Informasi Game</h3>
+                        <h3 class="form-section-title">🎯 Game Information</h3>
 
                         <div class="mb-3">
-                            <label for="title" class="form-label">Judul Game *</label>
-                            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Contoh: Kuis Matematika Kelas 5" required>
+                            <label for="title" class="form-label">Game Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}"
+                                placeholder="Example: Math Quiz Grade 5" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi singkat tentang game ini...">{{ old('description') }}</textarea>
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"
+                                placeholder="Brief description about this game...">{{ old('description') }}</textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category" class="form-label">Kategori</label>
-                                <input type="text" class="form-control" id="category" name="category" value="{{ old('category') }}" placeholder="Contoh: Matematika, IPA, Sejarah" required>
+                                <label for="category" class="form-label">Category</label>
+                                <input type="text" class="form-control" id="category" name="category"
+                                    value="{{ old('category') }}" placeholder="Example: Math, Science, History" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="class" class="form-label">Pilih Kelas</label>
+                                <label for="class" class="form-label">Select Grade</label>
                                 <select class="form-select" id="class" name="class">
-                                    <option value="">Semua Kelas</option>
+                                    <option value="">All Grades</option>
                                     @for($i = 1; $i <= 6; $i++)
-                                        <option value="{{ $i }}" {{ old('class') == $i ? 'selected' : '' }}>Kelas {{ $i }}</option>
+                                        <option value="{{ $i }}" {{ old('class') == $i ? 'selected' : '' }}>Grade {{ $i }}
+                                        </option>
                                     @endfor
                                 </select>
-                                <small class="text-muted">Game hanya muncul untuk siswa di kelas ini.</small>
+                                <small class="text-muted">Game will only appear for students in this grade.</small>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Gambar Game Section -->
+                    <!-- Game Images Section -->
                     <div class="form-section">
-                        <h3 class="form-section-title">🖼️ Gambar Game (Opsional)</h3>
+                        <h3 class="form-section-title">🖼️ Game Images (Optional)</h3>
                         <div class="mb-3">
-                            <label for="game_images" class="form-label">Upload Gambar</label>
-                            <input type="file" class="form-control" id="game_images" name="game_images[]" 
-                                   accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
-                            <small class="text-muted">Upload hingga 5 gambar (PNG, JPG, WEBP). Maksimal 2MB per file. Gambar akan membuat game lebih menarik!</small>
+                            <label for="game_images" class="form-label">Upload Images</label>
+                            <input type="file" class="form-control" id="game_images" name="game_images[]"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
+                            <small class="text-muted">Upload up to 5 images (PNG, JPG, WEBP). Max 2MB per file.</small>
                         </div>
                         <div id="image-preview" class="d-flex gap-2 flex-wrap mt-2"></div>
                     </div>
 
                     <button type="submit" class="btn-submit">
-                        🚀 Buat Game & Lanjut Tambah Soal
+                        🚀 Create Game & Add Questions
                     </button>
                 </form>
             @else
                 <div class="empty-templates">
-                    <h3>⚠️ Belum Ada Template</h3>
-                    <p>Admin belum membuat template game. Silakan hubungi admin untuk membuat template terlebih dahulu.</p>
+                    <h3>⚠️ No Templates Available</h3>
+                    <p>Admin hasn't created any game templates yet. Please contact admin to create templates first.</p>
                 </div>
             @endif
         </div>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Image preview functionality
-        document.getElementById('game_images')?.addEventListener('change', function(e) {
+        document.getElementById('game_images')?.addEventListener('change', function (e) {
             const preview = document.getElementById('image-preview');
             preview.innerHTML = '';
-            
+
             if (this.files && this.files.length > 0) {
-                // Limit to 5 files
                 if (this.files.length > 5) {
-                    alert('Maksimal 5 gambar yang bisa diupload');
+                    alert('Maximum 5 images can be uploaded');
                     this.value = '';
                     return;
                 }
-                
+
                 [...this.files].forEach((file, index) => {
-                    // Check file size (2MB = 2048KB)
                     if (file.size > 2048 * 1024) {
-                        alert(`File ${file.name} terlalu besar. Maksimal 2MB per file.`);
+                        alert(`File ${file.name} is too large. Maximum 2MB per file.`);
                         return;
                     }
-                    
+
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         const div = document.createElement('div');
                         div.style.position = 'relative';
-                        
+
                         const img = document.createElement('img');
                         img.src = e.target.result;
                         img.style.width = '100px';
@@ -405,7 +593,7 @@
                         img.style.objectFit = 'cover';
                         img.style.borderRadius = '8px';
                         img.style.border = '2px solid #e5e7eb';
-                        
+
                         div.appendChild(img);
                         preview.appendChild(div);
                     }
