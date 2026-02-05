@@ -452,9 +452,7 @@
         <section class="auth-visual">
             <div class="visual-art">
                 <img class="visual-image" src="{{ asset('images/login_ortu.png') }}" alt="Ilustrasi login orang tua">
-            </div>
-            <div class="visual-chip chip-top">🏆 Belajar Jadi Seru<span>XP, level & badge</span></div>
-            <div class="visual-chip chip-bottom">👨‍👩‍👧 Terintegrasi<span>Ortu & anak terhubung</span></div>
+            </div>            
         </section>
     </main>
 

@@ -451,9 +451,7 @@
         <section class="auth-visual">
             <div class="visual-art">
                 <img class="visual-image" src="{{ asset('images/login_guru.png') }}" alt="Ilustrasi login guru">
-            </div>
-            <div class="visual-chip chip-top">📊 Laporan Instan<span>Progres siswa real-time</span></div>
-            <div class="visual-chip chip-bottom">🗂️ Materi Terarah<span>Kelas lebih tertata</span></div>
+            </div>            
         </section>
     </main>
 
