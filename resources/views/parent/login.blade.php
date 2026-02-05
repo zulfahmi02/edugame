@@ -6,371 +6,417 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Orang Tua - Taman Belajar Sedjati</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+        :root {
+            --ink: #1f2937;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --shadow: 0 24px 60px rgba(15, 23, 42, 0.15);
+        }
+
+        * , *::before, *::after {
             box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--ink);
+            background: radial-gradient(circle at 20% 20%, #fbcfe8 0%, transparent 45%),
+                radial-gradient(circle at 80% 30%, #e9d5ff 0%, transparent 45%),
+                radial-gradient(circle at 70% 80%, #c7d2fe 0%, transparent 40%),
+                #f8fafc;
             min-height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
-            /* align-items: center; removed to allow scrolling */
-            padding: 40px 20px;
-            position: relative;
+            padding: 32px 20px 64px;
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: backgroundMove 20s linear infinite;
-            z-index: 0;
+        body.theme-parent {
+            --accent: #ec4899;
+            --accent-deep: #db2777;
+            --soft: #ffe4f1;
+            --visual-bg: linear-gradient(135deg, #fbd38d, #fbcfe8 55%, #c7d2fe 100%);
         }
 
-        @keyframes backgroundMove {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(50px, 50px);
-            }
-        }
-
-        /* Floating Decorative Elements */
-        .floating-shapes {
+        .bg-shapes {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
         }
 
         .shape {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 15s ease-in-out infinite;
+            opacity: 0.25;
+            filter: blur(0.2px);
         }
 
-        .shape1 {
-            width: 80px;
-            height: 80px;
-            top: 10%;
+        .shape.star {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #fbbf24;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            top: 14%;
+            right: 14%;
+        }
+
+        .shape.pentagon {
+            width: 64px;
+            height: 64px;
+            border: 4px solid #fb7185;
+            clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0% 38%);
+            top: 18%;
             left: 10%;
-            animation-delay: 0s;
         }
 
-        .shape2 {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
+        .shape.dot {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+            bottom: 12%;
+            left: 8%;
         }
 
-        .shape3 {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-30px) rotate(180deg);
-            }
-        }
-
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 45px;
-            border-radius: 30px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 420px;
+        .auth-shell {
+            width: min(1080px, 100%);
+            display: grid;
+            grid-template-columns: minmax(320px, 420px) minmax(320px, 1fr);
+            gap: 32px;
+            align-items: center;
             position: relative;
             z-index: 1;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            animation: slideIn 0.5s ease-out;
-            margin: auto;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .auth-card {
+            background: var(--card);
+            border-radius: 28px;
+            padding: 36px;
+            box-shadow: var(--shadow);
         }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .login-header .icon-wrapper {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .login-header h1 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 32px;
-            margin-bottom: 12px;
-            font-weight: 800;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 17px;
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            letter-spacing: 0.08em;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            color: var(--accent-deep);
+            background: var(--soft);
         }
 
-        .btn-login::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .auth-card h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 34px;
+            margin: 18px 0 10px;
         }
 
-        .btn-login:hover::before {
-            width: 400px;
-            height: 400px;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-login:active {
-            transform: translateY(-1px);
+        .lead {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 22px;
         }
 
         .alert {
-            padding: 14px;
+            padding: 12px 14px;
             border-radius: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
             font-size: 14px;
-            animation: slideIn 0.3s ease-out;
         }
 
         .alert-error {
-            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
-            color: #c33;
-            border: 2px solid #fcc;
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
         }
 
         .alert-success {
-            background: linear-gradient(135deg, #efe 0%, #dfd 100%);
-            color: #3c3;
-            border: 2px solid #cfc;
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
-        .back-link {
-            text-align: center;
-            margin-top: 25px;
+        .form-group {
+            margin-bottom: 18px;
         }
 
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 15px;
+        label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 14px;
         }
 
-        .back-link a:hover {
-            color: #764ba2;
-            text-decoration: underline;
+        .input-wrap {
+            position: relative;
         }
 
-        .demo-info {
-            margin-top: 25px;
-            padding: 18px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            border-radius: 12px;
-            font-size: 13px;
-            color: #666;
-            border-left: 4px solid #667eea;
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #94a3b8;
         }
 
-        .demo-info strong {
-            color: #333;
+        input {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            border-radius: 14px;
+            border: 1.5px solid var(--border);
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .register-link {
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
+            background: #fff;
+        }
+
+        .btn-primary {
+            width: 100%;
+            margin-top: 6px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(236, 72, 153, 0.35);
+            display: inline-flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .helper {
             text-align: center;
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 2px solid #e0e0e0;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--muted);
         }
 
-        .register-link p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        .register-link a {
-            color: #667eea;
+        .helper a {
+            color: var(--accent-deep);
             font-weight: 700;
             text-decoration: none;
-            transition: all 0.3s ease;
         }
 
-        .register-link a:hover {
-            color: #764ba2;
-            text-decoration: underline;
+        .link-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .link-row a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .auth-visual {
+            position: relative;
+            padding: 24px;
+            border-radius: 28px;
+            background: var(--visual-bg);
+            min-height: 460px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        .visual-art {
+            width: min(360px, 80%);
+            aspect-ratio: 1 / 1;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .visual-chip {
+            position: absolute;
+            background: #fff;
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+            font-size: 13px;
+            color: #334155;
+            width: 180px;
+        }
+
+        .visual-chip span {
+            display: block;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .chip-top {
+            top: 16%;
+            right: 14%;
+        }
+
+        .chip-bottom {
+            bottom: 18%;
+            left: 12%;
+        }
+
+        .moon-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.2);
+            display: grid;
+            place-items: center;
+            color: #1f2937;
+            font-size: 20px;
+        }
+
+        @media (max-width: 960px) {
+            .auth-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-visual {
+                min-height: 360px;
+            }
+
+            .chip-top {
+                right: 6%;
+            }
+
+            .chip-bottom {
+                left: 6%;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .auth-card {
+                padding: 28px 24px;
+            }
+
+            .auth-card h1 {
+                font-size: 28px;
+            }
+
+            .visual-chip {
+                width: 150px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 
-<body>
-    <div class="floating-shapes">
-        <div class="shape shape1"></div>
-        <div class="shape shape2"></div>
-        <div class="shape shape3"></div>
+<body class="theme-parent">
+    <div class="bg-shapes">
+        <div class="shape star"></div>
+        <div class="shape pentagon"></div>
+        <div class="shape dot"></div>
     </div>
 
-    <div class="login-container">
-        <div class="login-header">
-            <div class="icon-wrapper">👨‍👩‍👧‍👦</div>
-            <h1>Login Orang Tua</h1>
-            <p>Pantau perkembangan belajar anak Anda</p>
-        </div>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <span class="pill">PORTAL ORANG TUA</span>
+            <h1>Selamat Datang!</h1>
+            <p class="lead">Mulai petualangan belajar keluarga. Masuk untuk memantau progres dan jadwal anak.</p>
 
-        @if(session('error'))
-            <div class="alert alert-error">
-                {{ session('error') }}
+            @if(session('error'))
+                <div class="alert alert-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <form action="{{ route('parent.login.post') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Email Pengguna</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16v16H4z" opacity="0.2" fill="currentColor"></path>
+                            <path d="m4 6 8 6 8-6" />
+                        </svg>
+                        <input type="email" id="email" name="email" required autofocus placeholder="ortu@demo.test">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Kata Sandi</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="11" width="16" height="9" rx="2" />
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                        </svg>
+                        <input type="password" id="password" name="password" required placeholder="Masukkan kata sandi">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Masuk Sekarang
+                    <span>🚀</span>
+                </button>
+            </form>
+
+            <div class="helper">Butuh bantuan login? <a href="{{ route('home') }}">Tanya Admin</a></div>
+
+            <div class="link-row">
+                <a href="{{ route('home') }}">Kembali ke Beranda</a>
+                <a href="{{ route('parent.register') }}">Daftar Orang Tua</a>
             </div>
-        @endif
+        </section>
 
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+        <section class="auth-visual">
+            <div class="visual-art">
+                <svg width="70%" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="20" y="40" width="280" height="240" rx="32" fill="white" opacity="0.9" />
+                    <circle cx="140" cy="140" r="46" fill="#F8B4B4" />
+                    <circle cx="220" cy="160" r="30" fill="#FDE68A" />
+                    <rect x="112" y="180" width="60" height="80" rx="24" fill="#F472B6" />
+                    <rect x="200" y="186" width="40" height="70" rx="18" fill="#60A5FA" />
+                    <circle cx="128" cy="135" r="6" fill="#1F2937" />
+                    <circle cx="152" cy="135" r="6" fill="#1F2937" />
+                    <circle cx="212" cy="155" r="4" fill="#1F2937" />
+                    <circle cx="228" cy="155" r="4" fill="#1F2937" />
+                    <path d="M130 155c8 8 20 8 28 0" stroke="#1F2937" stroke-width="4" stroke-linecap="round" />
+                    <path d="M210 170c6 6 14 6 20 0" stroke="#1F2937" stroke-width="3" stroke-linecap="round" />
+                </svg>
             </div>
-        @endif
+            <div class="visual-chip chip-top">🏆 Belajar Jadi Seru<span>XP, level & badge</span></div>
+            <div class="visual-chip chip-bottom">👨‍👩‍👧 Terintegrasi<span>Ortu & anak terhubung</span></div>
+        </section>
+    </main>
 
-        <form action="{{ route('parent.login.post') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="email">📧 Email</label>
-                <input type="email" id="email" name="email" required autofocus placeholder="contoh@email.com">
-            </div>
-
-            <div class="form-group">
-                <label for="password">🔑 Password</label>
-                <input type="password" id="password" name="password" required placeholder="Masukkan password">
-            </div>
-
-            <button type="submit" class="btn-login">Login</button>
-        </form>
-
-        <div class="back-link">
-            <a href="{{ route('home') }}">← Kembali ke Beranda</a>
-        </div>
-
-        <div class="register-link">
-            <p>Belum punya akun?
-                <a href="{{ route('parent.register') }}">Daftar di sini</a>
-            </p>
-        </div>
-
-        <div class="demo-info">
-            <strong>💡 Informasi:</strong><br>
-            Silakan hubungi administrator untuk mendapatkan akun orang tua.
-        </div>
-    </div>
+    <div class="moon-btn">🌙</div>
 </body>
 
 </html>

@@ -89,9 +89,22 @@ class ParentController extends Controller
         // Get all children of this parent
         $students = $parent->students;
 
-        // Get game sessions for all children
+        // Last 7 days range (including today)
+        $rangeStart = now()->subDays(6)->startOfDay();
+        $rangeEnd = now()->endOfDay();
+
+        $dayKeys = [];
+        $dayLabels = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $dayKeys[] = $date->toDateString();
+            $dayLabels[] = $date->format('d M');
+        }
+
+        // Get game sessions for all children (last 7 days)
         $allSessions = [];
         $allSchedules = [];
+        $dailyGameCounts = [];
         $totalGamesPlayed = 0;
         $totalScore = 0;
         $totalQuestions = 0;
@@ -100,11 +113,26 @@ class ParentController extends Controller
         foreach ($students as $student) {
             $sessions = GameSession::with('game')
                 ->where('student_id', $student->id)
-                ->where('completed_at', '!=', null)
+                ->whereNotNull('completed_at')
+                ->whereBetween('completed_at', [$rangeStart, $rangeEnd])
                 ->orderBy('completed_at', 'desc')
                 ->get();
 
             $allSessions[$student->id] = $sessions;
+
+            $counts = array_fill_keys($dayKeys, 0);
+            foreach ($sessions as $session) {
+                $key = $session->completed_at->toDateString();
+                if (isset($counts[$key])) {
+                    $counts[$key]++;
+                }
+            }
+
+            $dailyGameCounts[$student->id] = [
+                'labels' => $dayLabels,
+                'values' => array_values($counts),
+                'max' => max($counts) ?: 1,
+            ];
 
             // Get schedules for this student
             $allSchedules[$student->id] = \App\Models\Schedule::active()
@@ -130,7 +158,43 @@ class ParentController extends Controller
             'allSchedules',
             'totalGamesPlayed',
             'totalScore',
-            'overallAccuracy'
+            'overallAccuracy',
+            'dailyGameCounts'
+        ));
+    }
+
+    /**
+     * Show jadwal page
+     */
+    public function jadwal()
+    {
+        if (!session('parent_id')) {
+            return redirect()->route('parent.login');
+        }
+
+        $parent = OrangTua::with('students')->findOrFail(session('parent_id'));
+        $students = $parent->students;
+
+        $allSchedules = [];
+        $totalSchedules = 0;
+
+        foreach ($students as $student) {
+            $schedules = \App\Models\Schedule::active()
+                ->forStudent($student->id)
+                ->with('teacher')
+                ->orderBy('day_of_week')
+                ->orderBy('start_time')
+                ->get();
+
+            $allSchedules[$student->id] = $schedules;
+            $totalSchedules += $schedules->count();
+        }
+
+        return view('parent.jadwal', compact(
+            'parent',
+            'students',
+            'allSchedules',
+            'totalSchedules'
         ));
     }
 

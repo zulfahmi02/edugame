@@ -441,20 +441,20 @@
 
     .game-card {
       background: white;
-      border-radius: 30px;
-      padding: 40px 30px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-      transition: all 0.4s ease;
+      border-radius: 24px;
+      padding: 35px 28px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-align: center;
       position: relative;
       overflow: hidden;
-      border: 4px solid #FFD700;
+      border: 2px solid rgba(255, 215, 0, 0.6);
     }
 
     .game-card:hover {
-      transform: translateY(-15px) scale(1.03);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-      border-color: #FFEC8B;
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(255, 215, 0, 0.15);
+      border-color: #FFD700;
     }
 
     .card-icon {
@@ -997,40 +997,32 @@
     }
 
     .weekly-card {
-      animation: pulse-glow 3s infinite;
-      border: 4px solid #FFD700;
-      /* Yellow Frame */
+      animation: pulse-glow 4s ease-in-out infinite;
+      border: 2px solid rgba(255, 215, 0, 0.8);
       position: relative;
       background: white;
-      padding-bottom: 60px;
-      /* More space at the bottom */
+      padding-bottom: 50px;
       overflow: visible;
-      /* Ensure badge can be seen outside */
     }
 
     @keyframes pulse-glow {
       0% {
-        box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(255, 215, 0, 0.3);
       }
-
       50% {
-        box-shadow: 0 0 20px 5px rgba(96, 165, 250, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 20px 4px rgba(255, 215, 0, 0.2);
       }
-
-      /* Removed transform: translateY */
       100% {
-        box-shadow: 0 0 0 0 rgba(96, 165, 250, 0);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(255, 215, 0, 0.3);
       }
     }
 
     .weekly-card:hover {
-      border-color: #FFEC8B;
+      border-color: #FFD700;
       animation: none;
-      /* Consider keeping animation or handling gracefully */
-      transform: translateY(-10px) scale(1.02);
-      /* Ensure this is the only transform on hover */
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
-      /* Smoother easing */
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 24px rgba(255, 215, 0, 0.25);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* Title Animation */
@@ -1471,26 +1463,26 @@
           <ul style="list-style: none; padding: 0; margin: 0;">
             <li style="margin-bottom: 12px;">
               <a href="#home"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>🏠</span> Beranda
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Beranda
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="#games"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>🎮</span> Permainan
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Permainan
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="#parents"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>👨‍👩‍👧</span> Untuk Orang Tua
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Untuk Orang Tua
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="{{ route('posters.index') }}"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>📸</span> Poster Edukatif
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Poster Edukatif
               </a>
             </li>
           </ul>
@@ -1502,26 +1494,26 @@
           <ul style="list-style: none; padding: 0; margin: 0;">
             <li style="margin-bottom: 12px;">
               <a href="javascript:void(0)" onclick="showLoginModal()"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>🎮</span> Login Siswa
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Login Siswa
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="{{ route('teacher.login') }}"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>👨‍🏫</span> Login Guru
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Login Guru
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="{{ route('parent.login') }}"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>👨‍👩‍👧</span> Login Orang Tua
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Login Orang Tua
               </a>
             </li>
             <li style="margin-bottom: 12px;">
               <a href="{{ route('parent.register') }}"
-                style="color: rgba(255,255,255,0.9); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
-                <span>📝</span> Daftar Akun Baru
+                style="color: rgba(255,255,255,0.9); text-decoration: none; display: inline-block; transition: all 0.3s;">
+                Daftar Akun Baru
               </a>
             </li>
           </ul>
@@ -1531,27 +1523,24 @@
         <div>
           <h4 style="font-size: 1.1rem; margin-bottom: 20px; font-weight: 700;">Hubungi Kami</h4>
           <ul style="list-style: none; padding: 0; margin: 0;">
-            <li
-              style="margin-bottom: 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;">
-              <span>📧</span> info@tamanbelajarsedjati.com
+            <li style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">
+              info@tamanbelajarsedjati.com
             </li>
-            <li
-              style="margin-bottom: 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;">
-              <span>📱</span> +62 822-3734-3764
+            <li style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">
+              +62 822-3734-3764
             </li>
-            <li
-              style="margin-bottom: 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;">
-              <span>🌐</span> https://tamanbelajarsedjati.com/
+            <li style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">
+              https://tamanbelajarsedjati.com/
             </li>
           </ul>
         </div>
       </div>
 
       <!-- Footer Bottom -->
-      <div style="border-top: 1px solid rgba(0, 126, 205, 0.2); padding-top: 30px; text-align: center;">
+      <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 30px; text-align: center;">
         <p style="margin: 0 0 15px 0; font-size: 0.95rem;">
-          © 2026 Taman Belajar Sedjati Games • Dikembangkan dengan ❤️ oleh <span
-            style="color: #FFD700; font-weight: bold;">Sedjati Flora Game ⭐</span>
+          © 2026 Taman Belajar Sedjati Games • Dikembangkan oleh <span
+            style="color: #FFD700; font-weight: bold;">Sedjati Flora Game</span>
         </p>
         <p style="margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
           Platform edukatif untuk mendukung pembelajaran bahasa anak Indonesia
