@@ -43,6 +43,49 @@
             --visual-bg: linear-gradient(135deg, #fbd38d, #fbcfe8 55%, #c7d2fe 100%);
         }
 
+        body.dark-mode {
+            --ink: #e2e8f0;
+            --muted: #94a3b8;
+            --border: #334155;
+            --card: #0f172a;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            background: radial-gradient(circle at 20% 25%, rgba(147, 51, 234, 0.35) 0%, transparent 45%),
+                radial-gradient(circle at 85% 25%, rgba(190, 18, 60, 0.35) 0%, transparent 45%),
+                radial-gradient(circle at 70% 80%, rgba(79, 70, 229, 0.35) 0%, transparent 45%),
+                #0b1120;
+        }
+
+        body.dark-mode .auth-card {
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        body.dark-mode input {
+            background: #0b1220;
+            color: var(--ink);
+            border-color: var(--border);
+        }
+
+        body.dark-mode input:focus {
+            background: #0f172a;
+        }
+
+        body.dark-mode .visual-chip {
+            background: rgba(15, 23, 42, 0.9);
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .link-row a,
+        body.dark-mode .helper,
+        body.dark-mode .lead {
+            color: var(--muted);
+        }
+
+        body.dark-mode .moon-btn {
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
         .bg-shapes {
             position: fixed;
             inset: 0;
@@ -52,35 +95,42 @@
 
         .shape {
             position: absolute;
-            opacity: 0.25;
-            filter: blur(0.2px);
+            opacity: 0.2;
+            filter: blur(0.4px);
         }
 
         .shape.star {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #fbbf24;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            width: 140px;
+            height: 140px;
+            border-radius: 42% 58% 52% 48% / 52% 46% 54% 48%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 60%),
+                linear-gradient(135deg, rgba(244, 114, 182, 0.35), rgba(251, 207, 232, 0.05));
             top: 14%;
             right: 14%;
         }
 
         .shape.pentagon {
-            width: 64px;
-            height: 64px;
-            border: 4px solid #fb7185;
-            clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0% 38%);
+            width: 120px;
+            height: 120px;
+            border-radius: 28px;
+            transform: rotate(12deg);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(253, 230, 138, 0.05));
             top: 18%;
             left: 10%;
         }
 
         .shape.dot {
-            width: 90px;
-            height: 90px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.8), rgba(251, 207, 232, 0.2), rgba(255, 255, 255, 0));
             bottom: 12%;
             left: 8%;
+        }
+
+        body.dark-mode .shape {
+            opacity: 0.12;
+            filter: blur(0.6px);
         }
 
         .auth-shell {
@@ -234,25 +284,26 @@
 
         .auth-visual {
             position: relative;
-            padding: 24px;
             border-radius: 28px;
-            background: var(--visual-bg);
             min-height: 460px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             box-shadow: var(--shadow);
+            overflow: hidden;
+            background: transparent;
         }
 
         .visual-art {
-            width: min(360px, 80%);
-            aspect-ratio: 1 / 1;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .visual-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
         }
 
         .visual-chip {
@@ -264,6 +315,7 @@
             font-size: 13px;
             color: #334155;
             width: 180px;
+            z-index: 1;
         }
 
         .visual-chip span {
@@ -273,13 +325,13 @@
         }
 
         .chip-top {
-            top: 16%;
-            right: 14%;
+            top: 18px;
+            right: 18px;
         }
 
         .chip-bottom {
-            bottom: 18%;
-            left: 12%;
+            bottom: 18px;
+            left: 18px;
         }
 
         .moon-btn {
@@ -291,10 +343,12 @@
             border-radius: 50%;
             background: #fff;
             box-shadow: 0 12px 24px rgba(15, 23, 42, 0.2);
-            display: grid;
+            display: inline-grid;
             place-items: center;
             color: #1f2937;
             font-size: 20px;
+            border: none;
+            cursor: pointer;
         }
 
         @media (max-width: 960px) {
@@ -397,26 +451,36 @@
 
         <section class="auth-visual">
             <div class="visual-art">
-                <svg width="70%" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="20" y="40" width="280" height="240" rx="32" fill="white" opacity="0.9" />
-                    <circle cx="140" cy="140" r="46" fill="#F8B4B4" />
-                    <circle cx="220" cy="160" r="30" fill="#FDE68A" />
-                    <rect x="112" y="180" width="60" height="80" rx="24" fill="#F472B6" />
-                    <rect x="200" y="186" width="40" height="70" rx="18" fill="#60A5FA" />
-                    <circle cx="128" cy="135" r="6" fill="#1F2937" />
-                    <circle cx="152" cy="135" r="6" fill="#1F2937" />
-                    <circle cx="212" cy="155" r="4" fill="#1F2937" />
-                    <circle cx="228" cy="155" r="4" fill="#1F2937" />
-                    <path d="M130 155c8 8 20 8 28 0" stroke="#1F2937" stroke-width="4" stroke-linecap="round" />
-                    <path d="M210 170c6 6 14 6 20 0" stroke="#1F2937" stroke-width="3" stroke-linecap="round" />
-                </svg>
+                <img class="visual-image" src="{{ asset('images/login_ortu.png') }}" alt="Ilustrasi login orang tua">
             </div>
             <div class="visual-chip chip-top">🏆 Belajar Jadi Seru<span>XP, level & badge</span></div>
             <div class="visual-chip chip-bottom">👨‍👩‍👧 Terintegrasi<span>Ortu & anak terhubung</span></div>
         </section>
     </main>
 
-    <div class="moon-btn">🌙</div>
+    <button class="moon-btn" type="button" aria-label="Ganti tema">🌙</button>
+
+    <script>
+        const themeToggle = document.querySelector('.moon-btn');
+        const body = document.body;
+
+        const setTheme = (mode) => {
+            body.classList.toggle('dark-mode', mode === 'dark');
+            themeToggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+            themeToggle.setAttribute('aria-label', mode === 'dark' ? 'Tema terang' : 'Tema gelap');
+        };
+
+        const savedTheme = localStorage.getItem('login-theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            setTheme(savedTheme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const nextTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem('login-theme', nextTheme);
+            setTheme(nextTheme);
+        });
+    </script>
 </body>
 
 </html>
