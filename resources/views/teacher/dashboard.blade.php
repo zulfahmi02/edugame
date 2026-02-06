@@ -21,6 +21,132 @@
             display: flex;
         }
 
+        body.dark-mode {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .sidebar {
+            background: #0b1220;
+            box-shadow: none;
+        }
+
+        body.dark-mode .sidebar-brand,
+        body.dark-mode .sidebar-footer {
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .brand-name,
+        body.dark-mode .user-name {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .brand-subtitle {
+            color: #93c5fd;
+        }
+
+        body.dark-mode .nav-item {
+            color: #cbd5f5;
+        }
+
+        body.dark-mode .nav-item:hover {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        body.dark-mode .nav-item.active {
+            background: #1f2937;
+            color: #60a5fa;
+            border-left-color: #60a5fa;
+        }
+
+        body.dark-mode .user-email {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .main-content {
+            background: #0f172a;
+        }
+
+        body.dark-mode .search-box input {
+            background: #0b1220;
+            border-color: #1f2937;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .search-box input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        body.dark-mode .header-btn {
+            background: #0b1220;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .header-btn:hover {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .section-card {
+            background: #111827;
+            box-shadow: none;
+        }
+
+        body.dark-mode .stat-value,
+        body.dark-mode .section-title,
+        body.dark-mode .performer-name {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .stat-label,
+        body.dark-mode .performer-stats,
+        body.dark-mode .empty-state {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .btn-filter {
+            background: #0b1220;
+            border-color: #1f2937;
+            color: #cbd5f5;
+        }
+
+        body.dark-mode .btn-filter:hover {
+            border-color: #60a5fa;
+            color: #60a5fa;
+        }
+
+        body.dark-mode .btn-filter.active {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        body.dark-mode .top-performer-item {
+            background: #0b1220;
+        }
+
+        body.dark-mode .top-performer-item:hover {
+            background: #1f2937;
+        }
+
+        body.dark-mode thead {
+            background: #1d4ed8;
+        }
+
+        body.dark-mode tbody td {
+            border-bottom-color: #1f2937;
+        }
+
+        body.dark-mode tbody tr:hover {
+            background: #1f2937;
+        }
+
+        body.dark-mode .progress-bar-custom {
+            background: #1f2937;
+        }
+
         /* Sidebar */
         .sidebar {
             width: 260px;
@@ -618,6 +744,7 @@
                 <input type="text" placeholder="Cari siswa...">
             </div>
             <div class="header-actions">
+                <button class="header-btn theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
             </div>
         </div>
 
@@ -788,6 +915,28 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const storageKey = 'app-theme';
+
+        const setTheme = (mode) => {
+            body.classList.toggle('dark-mode', mode === 'dark');
+            themeToggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+            themeToggle.setAttribute('aria-label', mode === 'dark' ? 'Tema terang' : 'Tema gelap');
+        };
+
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            setTheme(savedTheme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const nextTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem(storageKey, nextTheme);
+            setTheme(nextTheme);
+        });
+    </script>
 </body>
 
 </html>

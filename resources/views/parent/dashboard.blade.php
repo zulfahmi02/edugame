@@ -18,6 +18,79 @@
             min-height: 100vh;
         }
 
+        body.dark-mode {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode .top-header,
+        body.dark-mode .stat-card,
+        body.dark-mode .chart-section,
+        body.dark-mode .summary-stat-card,
+        body.dark-mode .table-section,
+        body.dark-mode .schedule-card {
+            background: #111827;
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode .top-header {
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .nav-item {
+            color: #cbd5f5;
+        }
+
+        body.dark-mode .nav-item:hover {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        body.dark-mode .nav-item.active {
+            background: #1f2937;
+            color: #60a5fa;
+        }
+
+        body.dark-mode .sidebar-brand-text,
+        body.dark-mode .user-details h4,
+        body.dark-mode .page-title h1,
+        body.dark-mode .section-title h2,
+        body.dark-mode .table-title,
+        body.dark-mode .stat-value {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .user-details p,
+        body.dark-mode .page-subtitle,
+        body.dark-mode .stat-label,
+        body.dark-mode .legend-item,
+        body.dark-mode .section-title p,
+        body.dark-mode .data-table td,
+        body.dark-mode .data-table th {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .child-selector {
+            background: #0b1220;
+            border-color: #1f2937;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .child-selector-icon {
+            background: #1e293b;
+        }
+
+        body.dark-mode .data-table tr:hover {
+            background: #1f2937;
+        }
+
+        body.dark-mode .summary-stat-card,
+        body.dark-mode .empty-state {
+            border-color: #1f2937;
+        }
+
         /* Layout */
         .app-container {
             display: flex;
@@ -184,6 +257,34 @@
             display: flex;
             align-items: center;
             gap: 16px;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            cursor: pointer;
+            display: inline-grid;
+            place-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #0b1220;
+            border-color: #1f2937;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background: #1f2937;
         }
 
         .btn-logout {
@@ -467,6 +568,14 @@
         .summary-stat-card .summary-label {
             font-size: 13px;
             color: #64748b;
+        }
+
+        body.dark-mode .summary-stat-card .summary-value {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .summary-stat-card .summary-label {
+            color: #94a3b8;
         }
 
         /* Game History Table */
@@ -803,6 +912,7 @@
                 </div>
 
                 <div class="header-actions">
+                    <button class="theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
                     <a href="{{ route('parent.logout') }}" class="btn-logout">Keluar</a>
                 </div>
             </header>
@@ -1022,6 +1132,28 @@
             // Add active class to clicked tab
             document.querySelectorAll('.child-tab')[index].classList.add('active');
         }
+    </script>
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const storageKey = 'app-theme';
+
+        const setTheme = (mode) => {
+            body.classList.toggle('dark-mode', mode === 'dark');
+            themeToggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+            themeToggle.setAttribute('aria-label', mode === 'dark' ? 'Tema terang' : 'Tema gelap');
+        };
+
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            setTheme(savedTheme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const nextTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem(storageKey, nextTheme);
+            setTheme(nextTheme);
+        });
     </script>
 </body>
 
