@@ -651,16 +651,30 @@
                 height: auto;
                 position: relative;
                 flex-direction: row;
-                padding: 0.5rem 1rem;
+                align-items: center;
+                padding: 0.5rem 0.75rem;
+                min-height: auto;
+                position: sticky;
+                top: 0;
+                background: white;
             }
 
             .sidebar-nav {
                 display: flex;
                 padding: 0;
+                gap: 0.25rem;
+                overflow-x: auto;
             }
 
             .nav-item {
-                padding: 0.5rem 1rem;
+                padding: 0.45rem 0.75rem;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                white-space: nowrap;
+            }
+
+            .nav-item.active {
+                border-bottom-color: #4B8BF4;
             }
 
             .sidebar-footer {
@@ -676,6 +690,16 @@
                 flex-direction: column;
             }
 
+            .sidebar-brand .brand-text {
+                display: none;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
             .welcome-card h1 {
                 font-size: 1.5rem;
             }
@@ -686,6 +710,12 @@
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>

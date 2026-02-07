@@ -844,6 +844,20 @@
         padding: 10px 0;
       }
 
+      .nav-item.dropdown {
+        width: 100%;
+      }
+
+      .custom-dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        margin-top: 12px !important;
+        box-shadow: none;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+      }
+
       .hero h1 {
         font-size: 2.2rem;
       }
@@ -1616,6 +1630,14 @@
     // Close mobile menu when clicking a link
     document.querySelectorAll('#navbar a').forEach(link => {
       link.addEventListener('click', () => {
+        if (!navbar.classList.contains('active')) {
+          return;
+        }
+
+        if (link.classList.contains('dropdown-toggle')) {
+          return;
+        }
+
         navbar.classList.remove('active');
         menuToggle.innerHTML = '☰';
       });
