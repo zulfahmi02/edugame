@@ -447,48 +447,67 @@
             box-shadow: 0 5px 15px rgba(75, 139, 244, 0.3);
         }
 
-        /* Mobile Menu Toggle Button */
-        .mobile-menu-toggle {
+        /* Bottom Navigation Bar (Mobile Only) */
+        .bottom-nav {
             display: none;
             position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            width: 45px;
-            height: 45px;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: white;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 8px 0;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .bottom-nav {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
+            padding: 8px 4px;
+            text-decoration: none;
+            color: #64748b;
+            transition: all 0.2s ease;
+            min-height: 64px;
+            position: relative;
         }
 
-        .mobile-menu-toggle:hover {
+        .bottom-nav-item:hover {
             background: #f8fafc;
-            transform: scale(1.05);
         }
 
-        /* Backdrop Overlay */
-        .sidebar-backdrop {
-            display: none;
-            position: fixed;
+        .bottom-nav-item.active {
+            color: #4B8BF4;
+        }
+
+        .bottom-nav-item.active::before {
+            content: '';
+            position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #4B8BF4;
+            border-radius: 0 0 3px 3px;
         }
 
-        .sidebar-backdrop.active {
-            display: block;
-            opacity: 1;
+        .bottom-nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .bottom-nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
         }
 
         @media (max-width: 1024px) {
@@ -532,76 +551,24 @@
         }
 
         @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
+            /* Hide sidebar completely on mobile */
             .sidebar {
-                width: 280px;
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100vh;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 100;
+                display: none;
             }
 
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .sidebar-brand .brand-text,
-            .nav-item span,
-            .sidebar-footer .user-info {
-                display: block;
-            }
-
-            .sidebar-brand {
-                justify-content: flex-start;
-                padding: 1.5rem;
-            }
-
-            .sidebar-nav {
-                padding: 1rem 0;
-                flex-direction: column;
-            }
-
-            .nav-item {
-                padding: 0.875rem 1.5rem;
-                justify-content: flex-start;
-                min-height: 48px;
-                border-left: 3px solid transparent;
-            }
-
-            .nav-item span {
-                display: inline;
-            }
-
-            .sidebar-footer {
-                display: block;
-            }
-
-            .user-profile {
-                justify-content: flex-start;
-            }
-
-            .btn-logout {
-                font-size: 0.85rem;
-                padding: 0.5rem 1rem;
-            }
-
-            .btn-logout::before {
-                content: '';
+            /* Show bottom navigation on mobile */
+            .bottom-nav {
+                display: grid;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 5rem 1rem 1rem 1rem;
+                padding: 1rem 1rem 80px 1rem; /* Extra bottom padding for bottom nav */
             }
 
             body {
                 flex-direction: column;
+                padding-bottom: 64px; /* Space for bottom nav */
             }
 
             .header {
@@ -641,13 +608,25 @@
 </head>
 
 <body>
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle Menu">
-        ☰
-    </button>
-
-    <!-- Backdrop Overlay -->
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+        <a href="{{ route('teacher.dashboard') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Dasbor</span>
+        </a>
+        <a href="{{ route('teacher.classes') }}" class="bottom-nav-item active">
+            <span class="bottom-nav-icon">👥</span>
+            <span class="bottom-nav-label">Kelas</span>
+        </a>
+        <a href="{{ route('teacher.games') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">🎮</span>
+            <span class="bottom-nav-label">Game</span>
+        </a>
+        <a href="{{ route('teacher.schedules') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">📈</span>
+            <span class="bottom-nav-label">Jadwal</span>
+        </a>
+    </nav>
 
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -830,51 +809,6 @@
                 const meta = item.querySelector('.game-meta')?.textContent.toLowerCase() || '';
                 item.style.display = (title.includes(query) || meta.includes(query)) ? 'flex' : 'none';
             });
-        });
-
-        // Mobile menu toggle functionality
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
-
-        function toggleMobileMenu() {
-            sidebar.classList.toggle('active');
-            sidebarBackdrop.classList.toggle('active');
-            
-            // Update hamburger icon
-            if (sidebar.classList.contains('active')) {
-                mobileMenuToggle.innerHTML = '✕';
-            } else {
-                mobileMenuToggle.innerHTML = '☰';
-            }
-        }
-
-        function closeMobileMenu() {
-            sidebar.classList.remove('active');
-            sidebarBackdrop.classList.remove('active');
-            mobileMenuToggle.innerHTML = '☰';
-        }
-
-        // Toggle menu when clicking hamburger button
-        mobileMenuToggle?.addEventListener('click', toggleMobileMenu);
-
-        // Close menu when clicking backdrop
-        sidebarBackdrop?.addEventListener('click', closeMobileMenu);
-
-        // Close menu when clicking navigation items on mobile
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    closeMobileMenu();
-                }
-            });
-        });
-
-        // Close menu when clicking logout button on mobile
-        document.querySelector('.btn-logout')?.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                closeMobileMenu();
-            }
         });
     </script>
 </body>
