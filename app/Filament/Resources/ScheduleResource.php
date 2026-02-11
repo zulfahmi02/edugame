@@ -106,7 +106,8 @@ class ScheduleResource extends Resource
                 Tables\Columns\TextColumn::make('student.kelas')
                     ->label('Kelas')
                     ->badge()
-                    ->color('primary'),
+                    ->color('primary')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('teacher.name')
                     ->label('Guru')
@@ -137,7 +138,7 @@ class ScheduleResource extends Resource
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Lokasi')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Aktif'),

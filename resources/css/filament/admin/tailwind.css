@@ -1,0 +1,175 @@
+/* Filament Admin Panel - Custom Responsive Enhancements */
+
+/* Improve touch targets for mobile devices */
+@media (max-width: 768px) {
+    /* Ensure all clickable elements have minimum 44x44px touch target */
+    .fi-ta-actions button,
+    .fi-ta-actions a,
+    .fi-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem;
+    }
+
+    /* Improve table action buttons spacing */
+    .fi-ta-actions {
+        gap: 0.5rem;
+    }
+
+    /* Better spacing for form inputs */
+    .fi-fo-field-wrp {
+        margin-bottom: 1.25rem;
+    }
+
+    /* Increase font size for better readability */
+    .fi-ta-text {
+        font-size: 0.95rem;
+    }
+
+    /* Improve modal dialogs on mobile */
+    .fi-modal-content {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    /* Better sidebar on mobile */
+    .fi-sidebar {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    /* Improve table header readability */
+    .fi-ta-header-cell {
+        font-size: 0.875rem;
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Better spacing for badges */
+    .fi-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    /* Improve filter button visibility */
+    .fi-ta-filters-trigger {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Better search input */
+    .fi-ta-search-field {
+        min-height: 44px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Optimize table columns for tablet */
+    .fi-ta-cell {
+        padding: 0.875rem 0.75rem;
+    }
+
+    /* Better form layout on tablet */
+    .fi-fo-component-ctn {
+        padding: 1rem;
+    }
+}
+
+/* Smooth transitions for responsive elements */
+.fi-sidebar,
+.fi-ta-ctn,
+.fi-modal {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Improve horizontal scrolling for tables on mobile */
+@media (max-width: 768px) {
+    .fi-ta-ctn {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Better table cell wrapping */
+    .fi-ta-cell-wrap {
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* Improve pagination on mobile */
+    .fi-pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .fi-pagination-item {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Improve dropdown menus on mobile */
+@media (max-width: 768px) {
+    .fi-dropdown-panel {
+        max-width: calc(100vw - 2rem);
+        left: 1rem !important;
+        right: 1rem !important;
+    }
+}
+
+/* Better notification positioning on mobile */
+@media (max-width: 768px) {
+    .fi-notification {
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+    }
+}
+
+/* Improve form sections on mobile */
+@media (max-width: 768px) {
+    .fi-section {
+        padding: 1rem;
+    }
+
+    .fi-section-header {
+        padding: 1rem;
+    }
+
+    .fi-section-content {
+        padding: 1rem;
+    }
+}
+
+/* Better file upload on mobile */
+@media (max-width: 768px) {
+    .fi-fo-file-upload {
+        min-height: 120px;
+    }
+
+    .fi-fo-file-upload-item {
+        width: 100%;
+    }
+}
+
+/* Improve toggle switches for touch */
+.fi-toggle {
+    min-width: 44px;
+    min-height: 24px;
+}
+
+/* Better color picker on mobile */
+@media (max-width: 768px) {
+    .fi-color-picker-trigger {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Improve date/time pickers on mobile */
+@media (max-width: 768px) {
+    .fi-datetime-picker {
+        width: 100%;
+    }
+}

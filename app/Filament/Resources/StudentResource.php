@@ -81,7 +81,7 @@ class StudentResource extends Resource
                     ->label('Orang Tua')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Terdaftar')

@@ -82,11 +82,13 @@ class TeacherResource extends Resource
                     ->label('Mata Pelajaran')
                     ->searchable()
                     ->badge()
-                    ->color('success'),
+                    ->color('success')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telepon')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('students_count')
                     ->label('Jumlah Siswa')

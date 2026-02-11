@@ -189,7 +189,8 @@ class GameResource extends Resource
                     ->badge()
                     ->color('info')
                     ->formatStateUsing(fn ($state) => $state ? "Kelas {$state}" : '-')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('questions_count')
                     ->label('Jumlah Soal')
@@ -199,7 +200,8 @@ class GameResource extends Resource
 
                 Tables\Columns\TextColumn::make('order')
                     ->label('Urutan')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Aktif')

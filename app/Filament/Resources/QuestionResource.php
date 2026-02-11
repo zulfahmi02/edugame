@@ -125,7 +125,8 @@ class QuestionResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Gambar')
                     ->circular()
-                    ->defaultImageUrl(url('/images/no-image.png')),
+                    ->defaultImageUrl(url('/images/no-image.png'))
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('difficulty')
                     ->label('Kesulitan')
@@ -140,7 +141,8 @@ class QuestionResource extends Resource
                     ->label('Poin')
                     ->sortable()
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Aktif')

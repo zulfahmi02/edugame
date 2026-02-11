@@ -92,7 +92,8 @@ class OrangTuaResource extends Resource
                     ->label('L/P')
                     ->badge()
                     ->color(fn($state) => $state === 'L' ? 'info' : 'success')
-                    ->formatStateUsing(fn($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
+                    ->formatStateUsing(fn($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
@@ -104,7 +105,8 @@ class OrangTuaResource extends Resource
                     ->label('Telepon')
                     ->searchable()
                     ->copyable()
-                    ->icon('heroicon-o-phone'),
+                    ->icon('heroicon-o-phone')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('students_count')
                     ->label('Jumlah Anak')

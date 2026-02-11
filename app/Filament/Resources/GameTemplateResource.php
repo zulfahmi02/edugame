@@ -124,7 +124,8 @@ class GameTemplateResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('icon')
-                    ->label('Icon'),
+                    ->label('Icon')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('template_type')
                     ->label('Jenis')
