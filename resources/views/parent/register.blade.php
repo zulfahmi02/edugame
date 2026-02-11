@@ -316,6 +316,43 @@
             display: block;
             font-weight: 500;
         }
+
+        /* Password toggle button */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .password-toggle:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .password-wrapper input {
+            padding-right: 50px;
+        }
     </style>
 </head>
 
@@ -368,7 +405,12 @@
 
             <div class="form-group">
                 <label for="password">🔑 Kata Sandi</label>
-                <input type="password" id="password" name="password" required placeholder="Minimal 8 karakter">
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required placeholder="Minimal 8 karakter">
+                    <button type="button" class="password-toggle" aria-label="Tampilkan password" onclick="togglePasswordField('password', this)">
+                        <span>👁️</span>
+                    </button>
+                </div>
                 <small>Kata sandi minimal 8 karakter</small>
                 @error('password')
                     <span class="error-text">{{ $message }}</span>
@@ -377,8 +419,13 @@
 
             <div class="form-group">
                 <label for="password_confirmation">🔒 Konfirmasi Kata Sandi</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" required
-                    placeholder="Ketik ulang password">
+                <div class="password-wrapper">
+                    <input type="password" id="password_confirmation" name="password_confirmation" required
+                        placeholder="Ketik ulang password">
+                    <button type="button" class="password-toggle" aria-label="Tampilkan password" onclick="togglePasswordField('password_confirmation', this)">
+                        <span>👁️</span>
+                    </button>
+                </div>
             </div>
 
 	            <div class="form-group">
@@ -406,6 +453,24 @@
             <a href="{{ route('home') }}">← Kembali ke Beranda</a>
         </div>
     </div>
+
+    <script>
+        // Generic password toggle function
+        function togglePasswordField(fieldId, button) {
+            const passwordInput = document.getElementById(fieldId);
+            const icon = button.querySelector('span');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.textContent = '🙈';
+                button.setAttribute('aria-label', 'Sembunyikan password');
+            } else {
+                passwordInput.type = 'password';
+                icon.textContent = '👁️';
+                button.setAttribute('aria-label', 'Tampilkan password');
+            }
+        }
+    </script>
 </body>
 
 </html>

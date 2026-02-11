@@ -1,7 +1,58 @@
 /* Filament Admin Panel - Custom Responsive Enhancements */
 
+/* ===== HAMBURGER MENU STYLING ===== */
+/* Improve sidebar toggle button (hamburger menu) */
+.fi-sidebar-open-btn,
+.fi-sidebar-close-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.fi-sidebar-open-btn:hover,
+.fi-sidebar-close-btn:hover {
+    background-color: rgba(251, 191, 36, 0.1) !important;
+    transform: scale(1.05);
+}
+
+/* Hamburger icon styling */
+.fi-sidebar-open-btn svg,
+.fi-sidebar-close-btn svg {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Sidebar overlay for mobile */
+@media (max-width: 1024px) {
+    .fi-sidebar-overlay {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(4px);
+    }
+
+    /* Ensure sidebar slides in smoothly */
+    .fi-sidebar {
+        transform: translateX(0);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Hamburger menu button positioning */
+    .fi-sidebar-open-btn {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 40;
+        background-color: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+}
+
 /* Improve touch targets for mobile devices */
 @media (max-width: 768px) {
+
     /* Ensure all clickable elements have minimum 44x44px touch target */
     .fi-ta-actions button,
     .fi-ta-actions a,
@@ -61,10 +112,22 @@
         min-height: 44px;
         font-size: 1rem;
     }
+
+    /* Make navigation items more touch-friendly */
+    .fi-sidebar-nav-item {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Better spacing for sidebar groups */
+    .fi-sidebar-group {
+        margin-bottom: 1rem;
+    }
 }
 
 /* Tablet optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
+
     /* Optimize table columns for tablet */
     .fi-ta-cell {
         padding: 0.875rem 0.75rem;
@@ -172,4 +235,39 @@
     .fi-datetime-picker {
         width: 100%;
     }
+}
+
+/* ===== SIDEBAR NAVIGATION IMPROVEMENTS ===== */
+/* Better sidebar navigation group headers */
+.fi-sidebar-group-label {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* Improve sidebar navigation items */
+.fi-sidebar-item {
+    border-radius: 8px;
+    margin: 0.25rem 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.fi-sidebar-item:hover {
+    background-color: rgba(251, 191, 36, 0.1);
+    transform: translateX(4px);
+}
+
+.fi-sidebar-item.active {
+    background-color: rgba(251, 191, 36, 0.2);
+    font-weight: 600;
+}
+
+/* Sidebar icons */
+.fi-sidebar-item-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
 }

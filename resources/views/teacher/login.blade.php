@@ -237,6 +237,40 @@
             background: #fff;
         }
 
+        /* Password toggle button */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 18px;
+            transition: color 0.2s ease;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent);
+        }
+
+        .password-toggle:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        input[type="password"],
+        input[type="text"].password-input {
+            padding-right: 46px;
+        }
+
         .btn-primary {
             width: 100%;
             margin-top: 6px;
@@ -431,7 +465,10 @@
                             <rect x="4" y="11" width="16" height="9" rx="2" />
                             <path d="M8 11V7a4 4 0 0 1 8 0v4" />
                         </svg>
-                        <input type="password" id="password" name="password" required placeholder="Masukkan kata sandi">
+                        <input type="password" id="password" name="password" class="password-input" required placeholder="Masukkan kata sandi">
+                        <button type="button" class="password-toggle" aria-label="Tampilkan password" onclick="togglePassword()">
+                            <span id="toggleIcon">👁️</span>
+                        </button>
                     </div>
                 </div>
 
@@ -458,6 +495,24 @@
     <button class="moon-btn" type="button" aria-label="Ganti tema">🌙</button>
 
     <script>
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const toggleButton = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+                toggleButton.setAttribute('aria-label', 'Sembunyikan password');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+                toggleButton.setAttribute('aria-label', 'Tampilkan password');
+            }
+        }
+
+        // Theme toggle functionality
         const themeToggle = document.querySelector('.moon-btn');
         const body = document.body;
 
