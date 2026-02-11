@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dasbor Orang Tua - Taman Belajar Sedjati</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -290,16 +291,22 @@
         .btn-logout {
             background: #3b82f6;
             color: white;
-            padding: 10px 20px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-logout:hover {
             background: #2563eb;
+            transform: scale(1.05);
         }
 
         /* Content Area */
@@ -866,6 +873,61 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* Bottom Navigation (Mobile Only) */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            border-top: 1px solid #e5e7eb;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .bottom-nav-item.active {
+            color: #3b82f6;
+        }
+
+        .bottom-nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 80px; /* Space for bottom nav */
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+        }
     </style>
 </head>
 
@@ -874,7 +936,9 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <div class="sidebar-brand-icon">TB</div>
+                <div class="sidebar-brand-icon" style="background: none;">
+                    <img src="{{ asset('images/logo/logo.png') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
                 <span class="sidebar-brand-text">Taman Belajar</span>
             </div>
 
@@ -913,7 +977,7 @@
 
                 <div class="header-actions">
                     <button class="theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
-                    <a href="{{ route('parent.logout') }}" class="btn-logout">Keluar</a>
+                    <a href="{{ route('parent.logout') }}" onclick="confirmLogout(event)" class="btn-logout" aria-label="Keluar">🚪</a>
                 </div>
             </header>
 
@@ -1112,6 +1176,21 @@
                 @endforelse
             </div>
         </main>
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+        <a href="{{ route('parent.dashboard') }}" class="bottom-nav-item {{ Route::is('parent.dashboard') ? 'active' : '' }}">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Dasbor</span>
+        </a>
+        <a href="{{ route('parent.jadwal') }}" class="bottom-nav-item {{ Route::is('parent.jadwal') ? 'active' : '' }}">
+            <span class="bottom-nav-icon">📅</span>
+            <span class="bottom-nav-label">Jadwal Les</span>
+        </a>
+        <a href="#" onclick="showProfile(event)" class="bottom-nav-item">
+            <span class="bottom-nav-icon">👤</span>
+            <span class="bottom-nav-label">Profil</span>
+        </a>
+    </nav>
     </div>
 
     <script>
@@ -1154,6 +1233,58 @@
             localStorage.setItem(storageKey, nextTheme);
             setTheme(nextTheme);
         });
+
+        function showProfile(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Profil Pengguna',
+                html: `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 28px; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);">
+                            {{ strtoupper(substr($parent->parent_name, 0, 1)) }}
+                        </div>
+                        <div style="text-align: center;">
+                            <h3 style="margin: 0; font-size: 1.25rem; color: #1e293b; font-weight: 700;">{{ $parent->parent_name }}</h3>
+                            <p style="margin: 4px 0 0; color: #64748b; font-size: 0.9rem;">Akun Orang Tua</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '🚪 Keluar',
+                confirmButtonColor: '#ef4444',
+                cancelButtonText: 'Tutup',
+                cancelButtonColor: '#94a3b8',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('parent.logout') }}";
+                }
+            });
+        }
+
+
+        function confirmLogout(event) {
+            event.preventDefault();
+            const logoutUrl = event.currentTarget.getAttribute('href');
+
+            Swal.fire({
+                title: 'Yakin ingin keluar?',
+                text: "Anda harus login kembali untuk mengakses halaman ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Keluar!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = logoutUrl;
+                }
+            });
+        }
     </script>
 </body>
 

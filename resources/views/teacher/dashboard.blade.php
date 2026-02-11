@@ -7,6 +7,7 @@
     <title>Dasbor - Portal Guru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -16,7 +17,7 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: #f5f7fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
             min-height: 100vh;
             display: flex;
         }
@@ -150,15 +151,209 @@
         /* Sidebar */
         .sidebar {
             width: 260px;
-            background: white;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             min-height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
+            border-right: 1px solid rgba(75, 139, 244, 0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            display: none;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .hamburger-btn:hover {
+            background: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .hamburger-btn span {
+            width: 24px;
+            height: 3px;
+            background: #667eea;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Sidebar Overlay */
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-left: 0.5rem;
+        }
+
+        /* Header Layout */
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* User Profile in Header */
+        .user-profile-header {
+            display: none; /* Hidden on desktop */
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar-header {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-info-header {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name-header {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+        }
+
+        .user-email-header {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+        }
+
+        /* Bottom Navigation for Mobile */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             z-index: 100;
+            padding: 0.5rem 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .bottom-nav {
+            display: none;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .bottom-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            text-decoration: none;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .bottom-nav-item:hover {
+            background: #f8fafc;
+        }
+
+        .bottom-nav-item.active {
+            color: #4B8BF4;
+        }
+
+        .bottom-nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #4B8BF4;
+            border-radius: 0 0 3px 3px;
+        }
+
+        .hamburger-bottom-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hamburger-bottom-btn .bottom-nav-icon {
+            font-size: 1.5rem;
+        }
+
+        .bottom-nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .bottom-nav-label {
+            font-size: 12px;
+            font-weight: 500;
         }
 
         .sidebar-brand {
@@ -172,13 +367,20 @@
         .brand-icon {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .brand-icon:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .brand-text {
@@ -203,6 +405,8 @@
         .sidebar-nav {
             padding: 1rem 0;
             flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .nav-item {
@@ -210,32 +414,58 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            color: #64748b;
+            color: #475569;
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+            transition: width 0.3s ease;
+            z-index: 0;
+        }
+
+        .nav-item:hover::before {
+            width: 100%;
         }
 
         .nav-item:hover {
-            background: #f8fafc;
+            background: linear-gradient(90deg, #f8fafc 0%, #ffffff 100%);
             color: #1e293b;
+            transform: translateX(5px);
         }
 
         .nav-item.active {
-            background: #EBF3FF;
-            color: #4B8BF4;
-            border-left-color: #4B8BF4;
+            background: linear-gradient(90deg, #EBF3FF 0%, #f0f7ff 100%);
+            color: #667eea;
+            border-left-color: #667eea;
+            font-weight: 600;
         }
 
         .nav-icon {
-            width: 24px;
-            height: 24px;
+            font-size: 1.25rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
+        .nav-item span:not(.nav-icon) {
+            position: relative;
+            z-index: 1;
+        }
         .sidebar-footer {
             padding: 1rem 1.5rem;
             border-top: 1px solid #f0f0f0;
@@ -320,7 +550,9 @@
 
         .search-box {
             position: relative;
-            width: 350px;
+            width: 240px;
+            max-width: 240px;
+            flex-shrink: 1;
         }
 
         .search-box input {
@@ -351,6 +583,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-shrink: 0;
         }
 
         .header-btn {
@@ -374,23 +607,52 @@
 
         /* Welcome Card */
         .welcome-card {
-            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 16px;
+            padding: 2.5rem;
+            border-radius: 20px;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(75, 139, 244, 0.3);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
         .welcome-card h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .welcome-card p {
-            font-size: 1rem;
-            opacity: 0.9;
+            font-size: 1.05rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
         }
 
         /* Stats Grid */
@@ -403,43 +665,70 @@
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            border-left: 4px solid;
+            padding: 1.75rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 5px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
         .stat-card.students {
-            border-color: #4B8BF4;
+            border-color: #667eea;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
         }
 
         .stat-card.games {
             border-color: #f093fb;
+            background: linear-gradient(135deg, #ffffff 0%, #fef5ff 100%);
         }
 
         .stat-card.score {
             border-color: #fbbf24;
+            background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
         }
 
         .stat-card.accuracy {
             border-color: #22c55e;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         }
 
         .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.2) rotate(10deg);
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 800;
-            color: #1e293b;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.25rem;
         }
 
@@ -452,10 +741,16 @@
         /* Section Card */
         .section-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         .section-title {
@@ -477,27 +772,50 @@
         }
 
         .btn-filter {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.25rem;
             border: 2px solid #e2e8f0;
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.85rem;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             text-decoration: none;
             color: #64748b;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-filter::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-filter:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-filter:hover {
-            border-color: #4B8BF4;
-            color: #4B8BF4;
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
 
         .btn-filter.active {
-            background: #4B8BF4;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-color: #4B8BF4;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         /* Top Performer */
@@ -505,24 +823,31 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 12px;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 15px;
             margin-bottom: 0.75rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .top-performer-item:hover {
-            background: #f1f5f9;
-            transform: translateX(5px);
+            background: linear-gradient(135deg, #EBF3FF 0%, #f0f7ff 100%);
+            transform: translateX(8px) scale(1.02);
+            border-color: #667eea;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
         }
 
         .performer-rank {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            color: #4B8BF4;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-right: 1rem;
-            min-width: 35px;
+            min-width: 40px;
         }
 
         .performer-info {
@@ -540,9 +865,12 @@
         }
 
         .performer-score {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #4B8BF4;
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* Table */
@@ -557,7 +885,7 @@
         }
 
         thead {
-            background: #4B8BF4;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
@@ -578,12 +906,13 @@
         }
 
         .badge-class {
-            background: linear-gradient(135deg, #4B8BF4 0%, #3B7DE0 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 0.35rem 0.75rem;
+            padding: 0.4rem 0.9rem;
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.8rem;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .progress-bar-custom {
@@ -614,90 +943,92 @@
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar-brand .brand-text,
-            .nav-item span,
-            .sidebar-footer .pro-card,
-            .sidebar-footer .user-info {
-                display: none;
-            }
-
-            .sidebar-brand {
-                justify-content: center;
-                padding: 1rem;
-            }
-
-            .nav-item {
-                justify-content: center;
-                padding: 1rem;
-            }
-
-            .user-profile {
-                justify-content: center;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-        }
-
         @media (max-width: 768px) {
+            /* Hide sidebar completely on mobile */
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                flex-direction: row;
-                align-items: center;
-                padding: 0.5rem 0.75rem;
-                min-height: auto;
-                position: sticky;
-                top: 0;
-                background: white;
+                display: none !important;
             }
 
-            .sidebar-nav {
+            /* Hide sidebar overlay on mobile */
+            .sidebar-overlay {
+                display: none !important;
+            }
+
+            /* Show bottom navigation */
+            .bottom-nav {
                 display: flex;
-                padding: 0;
-                gap: 0.25rem;
-                overflow-x: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 9999;
+                background: white;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                padding: 0.5rem 0;
+                border-top: 1px solid #e5e7eb;
+                justify-content: space-around;
+                align-items: center;
+                width: 100%;
             }
 
-            .nav-item {
-                padding: 0.45rem 0.75rem;
-                border-left: none;
-                border-bottom: 2px solid transparent;
-                white-space: nowrap;
-            }
-
-            .nav-item.active {
-                border-bottom-color: #4B8BF4;
-            }
-
-            .sidebar-footer {
-                display: none;
-            }
-
+            /* Adjust main content for mobile */
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
+                padding-bottom: 80px; /* Space for bottom nav */
             }
 
             body {
                 flex-direction: column;
             }
 
-            .sidebar-brand .brand-text {
-                display: none;
+            .header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                flex-wrap: nowrap;
+                padding: 1rem;
+                background: white;
+                border-radius: 16px;
+                margin-bottom: 1rem;
             }
 
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
+            .user-info-header {
+                display: none; /* Hide email on very small screens */
+            }
+
+            .user-name-header {
+                font-size: 0.85rem;
+            }
+
+            .user-avatar-header {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            /* Show user profile in header on mobile */
+            .user-profile-header {
+                display: flex;
+            }
+
+            .search-box {
+                flex: 1;
+                min-width: 0;
+                position: relative;
+                z-index: 10;
+            }
+
+            .search-box input {
+                pointer-events: auto;
+                cursor: text;
+                z-index: 11;
+                position: relative;
+            }
+
+            .welcome-card {
+                padding: 1.5rem;
             }
 
             .welcome-card h1 {
@@ -705,7 +1036,44 @@
             }
 
             .search-box {
-                width: 100%;
+                flex: 0 0 auto;
+                min-width: 0;
+                position: relative;
+                z-index: 10;
+                max-width: 200px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            /* Collapsible search for mobile */
+            .search-box.collapsed {
+                width: 40px;
+                max-width: 40px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            .search-box.collapsed input {
+                opacity: 0;
+                width: 0;
+                padding: 0;
+                margin: 0;
+            }
+
+            .search-box.collapsed .search-icon {
+                cursor: pointer;
+                font-size: 1.5rem;
+                padding: 0.5rem;
+            }
+
+            .search-box input {
+                pointer-events: auto;
+                cursor: text;
+                z-index: 11;
+                position: relative;
             }
 
             .stats-grid {
@@ -722,8 +1090,31 @@
 </head>
 
 <body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+        <a href="{{ route('teacher.dashboard') }}" class="bottom-nav-item active">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Dasbor</span>
+        </a>
+        <a href="{{ route('teacher.classes') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">👥</span>
+            <span class="bottom-nav-label">Kelas</span>
+        </a>
+        <a href="{{ route('teacher.games') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">🎮</span>
+            <span class="bottom-nav-label">Game</span>
+        </a>
+        <a href="{{ route('teacher.schedules') }}" class="bottom-nav-item">
+            <span class="bottom-nav-icon">📈</span>
+            <span class="bottom-nav-label">Jadwal</span>
+        </a>
+    </nav>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="brand-icon">📚</div>
             <div class="brand-text">
@@ -759,7 +1150,7 @@
                     <div class="user-email">{{ $teacher->email ?? 'guru@sekolah.edu' }}</div>
                 </div>
             </div>
-            <a href="{{ route('teacher.logout') }}" class="btn-logout">
+            <a href="{{ route('teacher.logout') }}" class="btn-logout" onclick="confirmLogout(event)">
                 🚪 Keluar
             </a>
         </div>
@@ -769,11 +1160,23 @@
     <main class="main-content">
         <!-- Header -->
         <div class="header">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Cari siswa...">
+            <div class="header-left">
+                <div class="user-profile-header">
+                    <div class="user-avatar-header">{{ substr($teacher->name, 0, 1) }}</div>
+                    <div class="user-info-header">
+                        <div class="user-name-header">{{ $teacher->name }}</div>
+                        <div class="user-email-header">{{ $teacher->email ?? 'guru@sekolah.edu' }}</div>
+                    </div>
+                    <a href="{{ route('teacher.logout') }}" onclick="confirmLogout(event)" style="margin-left: 10px; text-decoration: none; font-size: 1.2rem; background: #fee2e2; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        🚪
+                    </a>
+                </div>
             </div>
-            <div class="header-actions">
+            <div class="header-right">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Cari siswa...">
+                </div>
                 <button class="header-btn theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
             </div>
         </div>
@@ -966,6 +1369,80 @@
             localStorage.setItem(storageKey, nextTheme);
             setTheme(nextTheme);
         });
+
+        // Collapsible Search Box for Mobile
+        const searchBox = document.querySelector('.search-box');
+        const searchIcon = document.querySelector('.search-icon');
+        const searchInput = document.querySelector('.search-box input');
+
+        // Initialize collapsed state on mobile
+        if (window.innerWidth <= 768 && searchBox) {
+            searchBox.classList.add('collapsed');
+        }
+
+        // Toggle search box on icon click
+        if (searchIcon && searchBox) {
+            searchIcon.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.stopPropagation();
+                    searchBox.classList.toggle('collapsed');
+                    
+                    // Focus input when expanded
+                    if (!searchBox.classList.contains('collapsed')) {
+                        setTimeout(() => searchInput.focus(), 300);
+                    }
+                }
+            });
+        }
+
+        // Auto-collapse when input loses focus
+        if (searchInput && searchBox) {
+            searchInput.addEventListener('blur', () => {
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        searchBox.classList.add('collapsed');
+                    }, 200);
+                }
+            });
+        }
+
+        // Collapse search when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && searchBox && !searchBox.contains(e.target)) {
+                searchBox.classList.add('collapsed');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && searchBox) {
+                searchBox.classList.remove('collapsed');
+            } else if (window.innerWidth <= 768 && searchBox) {
+                searchBox.classList.add('collapsed');
+            }
+        });
+
+        function confirmLogout(event) {
+            event.preventDefault();
+            const logoutUrl = event.currentTarget.getAttribute('href');
+
+            Swal.fire({
+                title: 'Yakin ingin keluar?',
+                text: "Anda harus login kembali untuk mengakses halaman ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Keluar!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = logoutUrl;
+                }
+            });
+        }
     </script>
 </body>
 
