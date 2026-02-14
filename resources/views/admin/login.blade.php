@@ -121,6 +121,43 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+
+        /* Password toggle button */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .password-toggle:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .password-wrapper input {
+            padding-right: 50px;
+        }
     </style>
 </head>
 <body>
@@ -151,7 +188,12 @@
 
             <div class="form-group">
                 <label for="password">Kata Sandi</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" class="password-toggle" aria-label="Tampilkan password" onclick="togglePassword()">
+                        <span id="toggleIcon">👁️</span>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn-login">Masuk</button>
@@ -161,5 +203,24 @@
             <a href="{{ route('home') }}">← Kembali ke Beranda</a>
         </div>
     </div>
+
+    <script>
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const toggleButton = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+                toggleButton.setAttribute('aria-label', 'Sembunyikan password');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+                toggleButton.setAttribute('aria-label', 'Tampilkan password');
+            }
+        }
+    </script>
 </body>
 </html>

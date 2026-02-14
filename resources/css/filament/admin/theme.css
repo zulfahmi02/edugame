@@ -1,0 +1,49 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+/* ===== CUSTOM RESPONSIVE ENHANCEMENTS ===== */
+
+/* Hamburger Menu & Sidebar Toggle */
+.fi-sidebar-open-btn,
+.fi-sidebar-close-btn {
+    @apply min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-all duration-300;
+}
+
+.fi-sidebar-open-btn:hover,
+.fi-sidebar-close-btn:hover {
+    @apply bg-primary-50 scale-105;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+
+    /* Touch-friendly elements */
+    .fi-ta-actions button,
+    .fi-ta-actions a,
+    .fi-btn {
+        @apply min-h-[44px] min-w-[44px] p-3;
+    }
+
+    /* Sidebar navigation items */
+    .fi-sidebar-nav-item {
+        @apply min-h-[44px] px-4 py-3;
+    }
+
+    /* Better table readability */
+    .fi-ta-text {
+        @apply text-[0.95rem];
+    }
+
+    /* Improved search */
+    .fi-ta-search-field {
+        @apply min-h-[44px] text-base;
+    }
+}
+
+/* Sidebar overlay */
+@media (max-width: 1024px) {
+    .fi-sidebar-overlay {
+        @apply bg-black/50 backdrop-blur-sm;
+    }
+}

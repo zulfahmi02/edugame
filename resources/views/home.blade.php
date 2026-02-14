@@ -1404,8 +1404,16 @@
               <label class="form-label" style="font-weight: 600; color: #1e293b; font-size: 1.2rem;">
                 <span style="font-size: 2rem; margin-right: 0.5rem;">🔑</span>Kata Sandi
               </label>
-              <input type="password" class="form-control" name="password" required placeholder="Masukkan password..."
-                style="border-radius: 15px; padding: 1rem; border: 2px solid #E5E7EB; font-size: 1.1rem;">
+              <div style="position: relative;">
+                <input type="password" class="form-control" id="parentModalPassword" name="password" required placeholder="Masukkan password..."
+                  style="border-radius: 15px; padding: 1rem 3.5rem 1rem 1rem; border: 2px solid #E5E7EB; font-size: 1.1rem;">
+                <button type="button" onclick="toggleModalPassword('parentModalPassword', this)" 
+                  style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; font-size: 20px; color: #999; transition: color 0.3s ease; z-index: 10;"
+                  onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#999'"
+                  aria-label="Tampilkan password">
+                  <span>👁️</span>
+                </button>
+              </div>
             </div>
 
             <div class="d-grid gap-2">
@@ -1650,6 +1658,22 @@
         menuToggle.innerHTML = '☰';
       }
     });
+
+    // Password toggle for modal
+    function toggleModalPassword(fieldId, button) {
+      const passwordInput = document.getElementById(fieldId);
+      const icon = button.querySelector('span');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.textContent = '🙈';
+        button.setAttribute('aria-label', 'Sembunyikan password');
+      } else {
+        passwordInput.type = 'password';
+        icon.textContent = '👁️';
+        button.setAttribute('aria-label', 'Tampilkan password');
+      }
+    }
   </script>
 </body>
 
