@@ -66,6 +66,8 @@ class TeacherController extends Controller
 
         // Check if teacher exists and password matches
         if ($teacher && Hash::check($request->password, $teacher->password)) {
+            $request->session()->regenerate();
+
             session([
                 'teacher_id' => $teacher->id,
                 'teacher_name' => $teacher->name,
@@ -265,8 +267,12 @@ class TeacherController extends Controller
         }
 
         $request->validate([
-            'category' => 'nullable|string',
+            'template_id' => ['required', 'integer', 'exists:game_templates,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'category' => 'nullable|string|max:255',
             'class' => 'nullable|string|in:1,2,3,4,5,6',
+            'game_images' => 'nullable|array|max:5',
             'game_images.*' => 'nullable|image|max:2048', // Max 2MB per image
         ]);
 
@@ -298,7 +304,7 @@ class TeacherController extends Controller
             'slug' => $this->generateUniqueSlug($request->title),
             'description' => $request->description,
             'category' => $request->category,
-            'class' => $request->class,
+            'class' => $request->filled('class') ? $request->class : null,
             'game_images' => $gameImages,
             'is_active' => true,
             'order' => 0,
@@ -336,8 +342,11 @@ class TeacherController extends Controller
             ->firstOrFail();
 
         $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'description' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
             'class' => 'nullable|string|in:1,2,3,4,5,6',
+            'game_images' => 'nullable|array|max:5',
             'game_images.*' => 'nullable|image|max:2048', // Max 2MB per image
         ]);
 
@@ -374,7 +383,7 @@ class TeacherController extends Controller
             'slug' => $this->generateUniqueSlug($request->title, $game->id),
             'description' => $request->description,
             'category' => $request->category,
-            'class' => $request->class,
+            'class' => $request->filled('class') ? $request->class : null,
             'is_active' => $isActive,
             'game_images' => $gameImages,
         ]);
@@ -437,9 +446,10 @@ class TeacherController extends Controller
     /**
      * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget(['teacher_id', 'teacher_name', 'teacher_subject']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('teacher.login')->with('success', 'Berhasil logout');
     }
 

@@ -34,6 +34,8 @@ class ParentController extends Controller
 
         // Check if parent exists and password matches
         if ($parent && Hash::check($request->password, $parent->password)) {
+            $request->session()->regenerate();
+
             session([
                 'parent_id' => $parent->id,
                 'parent_name' => $parent->parent_name
@@ -68,6 +70,8 @@ class ParentController extends Controller
         ]);
 
         // Auto-login after registration
+        $request->session()->regenerate();
+
         session([
             'parent_id' => $parent->id,
             'parent_name' => $parent->parent_name
@@ -201,9 +205,10 @@ class ParentController extends Controller
     /**
      * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget(['parent_id', 'parent_name']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('parent.login')->with('success', 'Berhasil logout');
     }
 }

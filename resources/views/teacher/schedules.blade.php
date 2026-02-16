@@ -957,7 +957,18 @@
                 focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = logoutUrl;
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = logoutUrl;
+
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '_token';
+                    tokenInput.value = "{{ csrf_token() }}";
+                    form.appendChild(tokenInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             });
         }

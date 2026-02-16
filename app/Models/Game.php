@@ -32,7 +32,8 @@ class Game extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'custom_template_enabled' => 'boolean',
-        'template_config' => 'array'
+        'template_config' => 'array',
+        'game_images' => 'array',
     ];
 
     /**

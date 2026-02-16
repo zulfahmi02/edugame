@@ -7,9 +7,31 @@ use App\Models\Question;
 use App\Models\GameSession;
 use App\Models\Score;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class GameController extends Controller
 {
+    private function getLoggedInStudent(): ?\App\Models\Student
+    {
+        $studentId = session('student_id');
+
+        if (!$studentId) {
+            return null;
+        }
+
+        return \App\Models\Student::find($studentId);
+    }
+
+    private function canStudentAccessGame(\App\Models\Student $student, Game $game): bool
+    {
+        if (!filled($game->class)) {
+            return true;
+        }
+
+        return (string) $game->class === (string) $student->kelas;
+    }
+
     /**
      * Show games index (dashboard for students) - ONLY TEACHER GAMES
      */
@@ -19,13 +41,21 @@ class GameController extends Controller
             return redirect()->route('home')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $student = \App\Models\Student::find(session('student_id'));
+        $student = $this->getLoggedInStudent();
+        if (!$student) {
+            session()->forget(['student_id', 'student_name', 'student_class', 'is_student_logged_in']);
+            return redirect()->route('home')->with('show_login', true)->with('error', 'Sesi login tidak valid. Silakan login kembali.');
+        }
+
         $selectedCategory = $request->get('category');
         
         // Ambil semua kategori unik yang tersedia untuk kelas siswa ini (untuk tombol filter)
         $availableCategories = Game::where('is_active', true)
             ->whereNotNull('teacher_id')
-            ->where('class', $student->kelas)
+            ->where(function ($q) use ($student) {
+                $q->where('class', $student->kelas)
+                    ->orWhereNull('class');
+            })
             ->whereNotNull('category')
             ->distinct()
             ->pluck('category');
@@ -33,7 +63,10 @@ class GameController extends Controller
         // Tampilkan game yang sesuai kelas siswa ini
         $query = Game::where('is_active', true)
             ->whereNotNull('teacher_id')
-            ->where('class', $student->kelas);
+            ->where(function ($q) use ($student) {
+                $q->where('class', $student->kelas)
+                    ->orWhereNull('class');
+            });
 
         if ($selectedCategory) {
             $query->where('category', $selectedCategory);
@@ -53,7 +86,12 @@ class GameController extends Controller
             return redirect()->route('home')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $student = \App\Models\Student::find(session('student_id'));
+        $student = $this->getLoggedInStudent();
+        if (!$student) {
+            session()->forget(['student_id', 'student_name', 'student_class', 'is_student_logged_in']);
+            return redirect()->route('home')->with('show_login', true)->with('error', 'Sesi login tidak valid. Silakan login kembali.');
+        }
+
         $selectedCategory = $request->get('category');
 
         // Filter: hanya game admin (teacher_id NULL) dan sesuaikan dengan kelas siswa
@@ -139,7 +177,17 @@ class GameController extends Controller
             return redirect()->route('home')->with('error', 'Silakan login terlebih dahulu');
         }
 
+        $student = $this->getLoggedInStudent();
+        if (!$student) {
+            session()->forget(['student_id', 'student_name', 'student_class', 'is_student_logged_in']);
+            return redirect()->route('home')->with('show_login', true)->with('error', 'Sesi login tidak valid. Silakan login kembali.');
+        }
+
         $game = Game::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        if (!$this->canStudentAccessGame($student, $game)) {
+            return redirect()->route('games.index')->with('error', 'Game ini tidak tersedia untuk kelas kamu.');
+        }
+
         $questionsCount = $game->activeQuestions()->count();
 
         return view('game.detail', compact('game', 'questionsCount'));
@@ -156,7 +204,16 @@ class GameController extends Controller
             return redirect()->route('home')->with('show_login', true)->with('error', 'Silakan login terlebih dahulu untuk bermain!');
         }
 
+        $student = $this->getLoggedInStudent();
+        if (!$student) {
+            session()->forget(['student_id', 'student_name', 'student_class', 'is_student_logged_in']);
+            return redirect()->route('home')->with('show_login', true)->with('error', 'Sesi login tidak valid. Silakan login kembali.');
+        }
+
         $game = Game::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        if (!$this->canStudentAccessGame($student, $game)) {
+            return redirect()->route('games.index')->with('error', 'Game ini tidak tersedia untuk kelas kamu.');
+        }
 
         // Create new game session
         $session = GameSession::create([
@@ -188,7 +245,11 @@ class GameController extends Controller
         }
 
         // Legacy full-page template (stored as raw HTML)
-        if ($session->game->custom_template_enabled && filled($session->game->custom_template)) {
+        if (
+            $session->game->custom_template_enabled &&
+            filled($session->game->custom_template) &&
+            is_null($session->game->teacher_id)
+        ) {
             return view('game.custom', compact('session'));
         }
 
@@ -220,82 +281,129 @@ class GameController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $session = GameSession::findOrFail($sessionId);
-
-        if ($session->student_id != session('student_id')) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        $question = Question::findOrFail($request->question_id);
-        $answer = $request->answer;
-
-        $question->loadMissing('game.template');
-        $templateType = $question->game?->template?->template_type;
-
-        // Special handling for iframe_embed (Manual Scoring)
-        if ($templateType === 'iframe_embed') {
-            $isCorrect = true; // For embed, we assume completion is "correct"
-            $pointsEarned = is_numeric($answer) ? (int)$answer : 0;
-        } else {
-            // Check if answer is correct normally
-            $isCorrect = $question->checkAnswer($answer);
-            $pointsEarned = $isCorrect ? $question->points : 0;
-        }
-
-        // Save score
-        Score::create([
-            'student_id' => session('student_id'),
-            'game_session_id' => $sessionId,
-            'question_id' => $question->id,
-            'answer' => $answer,
-            'is_correct' => $isCorrect,
-            'points_earned' => $pointsEarned
+        $validator = Validator::make($request->all(), [
+            'question_id' => ['required', 'integer'],
+            'answer' => ['nullable'],
         ]);
 
-        // Update session stats
-        $session->increment('total_questions');
-        if ($isCorrect) {
-            $session->increment('correct_answers');
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first(),
+            ], 422);
         }
-        $session->increment('total_score', $pointsEarned);
 
-        $question->loadMissing('game.template');
-        $templateType = $question->game?->template?->template_type;
+        $questionId = (int) $request->input('question_id');
+        $submittedAnswer = $request->input('answer');
+        if (is_array($submittedAnswer)) {
+            $submittedAnswer = json_encode($submittedAnswer);
+        }
+        $answer = is_null($submittedAnswer) ? '' : (string) $submittedAnswer;
 
-        $correctAnswerForUser = $question->correct_answer;
-        if (is_string($correctAnswerForUser)) {
-            $decodedCorrect = json_decode($correctAnswerForUser, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decodedCorrect)) {
-                if (is_array($question->options)) {
-                    $correctAnswerForUser = collect($decodedCorrect)
-                        ->map(fn ($key) => $question->options[$key] ?? $key)
-                        ->implode(' → ');
-                } else {
-                    $correctAnswerForUser = collect($decodedCorrect)->implode(' → ');
-                }
-            } elseif (is_array($question->options) && array_key_exists($correctAnswerForUser, $question->options)) {
-                $correctAnswerForUser = $question->options[$correctAnswerForUser];
-            } elseif ($templateType === 'labeled_diagram' && trim($correctAnswerForUser) !== '') {
-                $correctAnswerForUser = 'Titik ' . $correctAnswerForUser;
+        $result = DB::transaction(function () use ($sessionId, $questionId, $answer) {
+            $session = GameSession::whereKey($sessionId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($session->student_id != session('student_id')) {
+                return ['error' => 'Unauthorized', 'status' => 403];
             }
+
+            if ($session->completed_at) {
+                return ['error' => 'Sesi game sudah selesai.', 'status' => 409];
+            }
+
+            $question = Question::with('game.template')
+                ->where('id', $questionId)
+                ->where('game_id', $session->game_id)
+                ->where('is_active', true)
+                ->first();
+
+            if (!$question) {
+                return ['error' => 'Soal tidak valid untuk sesi ini.', 'status' => 422];
+            }
+
+            $alreadyAnswered = Score::where('game_session_id', $sessionId)
+                ->where('question_id', $question->id)
+                ->exists();
+
+            if ($alreadyAnswered) {
+                return ['error' => 'Soal ini sudah dijawab.', 'status' => 409];
+            }
+
+            $templateType = $question->game?->template?->template_type;
+
+            if ($templateType === 'iframe_embed') {
+                $rawPoints = is_numeric($answer) ? (int) $answer : 0;
+                $maxPoints = max((int) $question->points, 0);
+                $pointsEarned = min(max($rawPoints, 0), $maxPoints);
+                $isCorrect = $pointsEarned > 0;
+            } else {
+                $isCorrect = $question->checkAnswer($answer);
+                $pointsEarned = $isCorrect ? (int) $question->points : 0;
+            }
+
+            Score::create([
+                'student_id' => session('student_id'),
+                'game_session_id' => $sessionId,
+                'question_id' => $question->id,
+                'answer' => $answer,
+                'is_correct' => $isCorrect,
+                'points_earned' => $pointsEarned,
+            ]);
+
+            $session->total_questions += 1;
+            if ($isCorrect) {
+                $session->correct_answers += 1;
+            }
+            $session->total_score += $pointsEarned;
+            $session->save();
+
+            $correctAnswerForUser = $question->correct_answer;
+            if (is_string($correctAnswerForUser)) {
+                $decodedCorrect = json_decode($correctAnswerForUser, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedCorrect)) {
+                    if (is_array($question->options)) {
+                        $correctAnswerForUser = collect($decodedCorrect)
+                            ->map(fn($key) => $question->options[$key] ?? $key)
+                            ->implode(' → ');
+                    } else {
+                        $correctAnswerForUser = collect($decodedCorrect)->implode(' → ');
+                    }
+                } elseif (is_array($question->options) && array_key_exists($correctAnswerForUser, $question->options)) {
+                    $correctAnswerForUser = $question->options[$correctAnswerForUser];
+                } elseif ($templateType === 'labeled_diagram' && trim($correctAnswerForUser) !== '') {
+                    $correctAnswerForUser = 'Titik ' . $correctAnswerForUser;
+                }
+            }
+
+            return [
+                'status' => 200,
+                'correct' => $isCorrect,
+                'points' => $pointsEarned,
+                'correct_answer' => strip_tags((string) $correctAnswerForUser),
+                'game_id' => $session->game_id,
+            ];
+        });
+
+        if (($result['status'] ?? 200) !== 200) {
+            return response()->json(['error' => $result['error'] ?? 'Terjadi kesalahan.'], $result['status']);
         }
 
-        // Check if there are more questions
-    $answeredQuestionIds = Score::where('game_session_id', $sessionId)
-        ->pluck('question_id')
-        ->toArray();
+        $answeredQuestionIds = Score::where('game_session_id', $sessionId)
+            ->pluck('question_id')
+            ->toArray();
 
-    $nextQuestion = Question::where('game_id', $session->game_id)
-        ->where('is_active', true)
-        ->whereNotIn('id', $answeredQuestionIds)
-        ->first();
+        $nextQuestion = Question::where('game_id', $result['game_id'])
+            ->where('is_active', true)
+            ->whereNotIn('id', $answeredQuestionIds)
+            ->first();
 
-    return response()->json([
-        'correct' => $isCorrect,
-        'points' => $pointsEarned,
-        'correct_answer' => $correctAnswerForUser,
-        'is_last' => !$nextQuestion
-    ]);
+        return response()->json([
+            'correct' => $result['correct'],
+            'points' => $result['points'],
+            'correct_answer' => $result['correct_answer'],
+            'is_last' => !$nextQuestion,
+        ]);
     }
 
     /**

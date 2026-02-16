@@ -26,6 +26,8 @@ class StudentController extends Controller
             return back()->with('error', 'Halo! Sepertinya nama atau kelas kamu belum terdaftar. Coba cek lagi ya, atau minta bantuan guru/orang tua untuk mendaftarkan kamu! 😊');
         }
 
+        $request->session()->regenerate();
+
         // Jika data ditemukan, simpan ke session
         session([
             'student_id' => $student->id,
@@ -47,9 +49,10 @@ class StudentController extends Controller
         return redirect()->route('games.index')->with('success', 'Selamat datang, ' . $student->nama_anak . '!');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget(['student_id', 'student_name', 'student_class', 'is_student_logged_in']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('home')->with('success', 'Sampai jumpa lagi!');
     }
 }

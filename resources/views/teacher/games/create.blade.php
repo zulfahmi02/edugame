@@ -470,9 +470,12 @@
                     <div class="user-email">guru@sekolah.edu</div>
                 </div>
             </div>
-            <a href="{{ route('teacher.logout') }}" class="btn-logout">
-                🚪 Keluar
-            </a>
+            <form action="{{ route('teacher.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    🚪 Keluar
+                </button>
+            </form>
         </div>
     </aside>
 

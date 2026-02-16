@@ -69,7 +69,10 @@
                 <button type="submit" class="btn btn-secondary" style="width: 100%;">🔄 Main Lagi</button>
             </form>
             <a href="{{ route('games.index') }}" class="btn btn-primary">🎮 Pilih Game Lain</a>
-            <a href="{{ route('student.logout') }}" class="btn btn-outline">🚪 Keluar</a>
+            <form action="{{ route('student.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline" style="width: 100%;">🚪 Keluar</button>
+            </form>
         </div>
     </div>
 

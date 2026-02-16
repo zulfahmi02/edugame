@@ -41,12 +41,17 @@
     $gameImages = is_array($session->game->game_images ?? null) ? $session->game->game_images : [];
     $gameImageUrl = $normalizeAssetPath($gameImages[0] ?? null);
 
+    $safeQuestionText = e((string) $displayQuestionText);
+    $safeQuestionImageUrl = e((string) ($questionImageUrl ?: $gameImageUrl));
+    $safeGameImageUrl = e((string) $gameImageUrl);
+    $safeCorrectAnswer = e((string) $question->correct_answer);
+
     $templateReplacements = [
-        '{{question}}' => $displayQuestionText,
-        '{{QUESTION}}' => $displayQuestionText,
-        '{{question_image_url}}' => $questionImageUrl ?: $gameImageUrl,
-        '{{game_image_url}}' => $gameImageUrl,
-        '{{correct_answer}}' => (string) $question->correct_answer,
+        '{{question}}' => $safeQuestionText,
+        '{{QUESTION}}' => $safeQuestionText,
+        '{{question_image_url}}' => $safeQuestionImageUrl,
+        '{{game_image_url}}' => $safeGameImageUrl,
+        '{{correct_answer}}' => $safeCorrectAnswer,
         '{{question_number}}' => $session->total_questions + 1,
         '{{is_first_question}}' => $session->total_questions == 0 ? 'true' : 'false',
         '{{session_id}}' => $session->id,
@@ -392,7 +397,13 @@
                     answer: answer
                 })
             })
-            .then(response => response.json())
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Terjadi kesalahan. Silakan coba lagi.');
+                }
+                return data;
+            })
             .then(data => {
                 const feedback = document.getElementById('feedback');
                 const nextBtn = document.getElementById('next-btn');
@@ -422,7 +433,11 @@
                     }
                 } else {
                     feedback.className = 'feedback incorrect';
-                    feedback.innerHTML = `❌ Salah! Jawaban yang benar: <strong>${data.correct_answer}</strong>`;
+                    feedback.innerHTML = '❌ Salah! Jawaban yang benar: <strong></strong>';
+                    const answerStrong = feedback.querySelector('strong');
+                    if (answerStrong) {
+                        answerStrong.textContent = data.correct_answer || '-';
+                    }
                 }
 
                 if (data.is_last) {
@@ -441,7 +456,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
+                alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
                 if (submitBtn) submitBtn.disabled = false;
             });
         }

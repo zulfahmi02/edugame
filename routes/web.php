@@ -20,7 +20,7 @@ Route::get('/', function () {
 // ==================== STUDENT ROUTES ====================
 // Route login student
 Route::post('/student/login', [StudentController::class, 'login'])->name('student.login');
-Route::get('/student/logout', [StudentController::class, 'logout'])->name('student.logout');
+Route::post('/student/logout', [StudentController::class, 'logout'])->name('student.logout');
 
 // Route start game - bisa diakses sebelum login (akan redirect ke home jika belum login)
 Route::match(['get', 'post'], '/games/{slug}/start', [GameController::class, 'start'])->name('games.start');
@@ -46,7 +46,7 @@ Route::post('/parent/register', [ParentController::class, 'register'])->name('pa
 Route::middleware(['CheckParentLogin'])->group(function () {
     Route::get('/parent/dashboard', [ParentController::class, 'dashboard'])->name('parent.dashboard');
     Route::get('/parent/jadwal', [ParentController::class, 'jadwal'])->name('parent.jadwal');
-    Route::get('/parent/logout', [ParentController::class, 'logout'])->name('parent.logout');
+    Route::post('/parent/logout', [ParentController::class, 'logout'])->name('parent.logout');
 });
 
 // ==================== TEACHER ROUTES ====================
@@ -57,7 +57,7 @@ Route::middleware(['CheckTeacherLogin'])->group(function () {
     Route::get('/teacher/dashboard', [App\Http\Controllers\TeacherController::class, 'dashboard'])->name('teacher.dashboard');
     Route::get('/teacher/classes', [App\Http\Controllers\TeacherController::class, 'classes'])->name('teacher.classes');
     Route::get('/teacher/students/{class}', [App\Http\Controllers\TeacherController::class, 'getStudentsByClass'])->name('teacher.students.class');
-    Route::get('/teacher/logout', [App\Http\Controllers\TeacherController::class, 'logout'])->name('teacher.logout');
+    Route::post('/teacher/logout', [App\Http\Controllers\TeacherController::class, 'logout'])->name('teacher.logout');
 
     // Teacher Games Management
     Route::get('/teacher/games', [App\Http\Controllers\TeacherController::class, 'games'])->name('teacher.games');
