@@ -674,17 +674,9 @@
                 font-size: 1.5rem;
                 padding: 0.5rem;
             }
-        }     .sidebar-footer {
+
+            .sidebar-footer {
                 display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-
-            body {
-                flex-direction: column;
             }
 
             .schedule-item {
@@ -695,6 +687,7 @@
 
             .search-box {
                 width: 100%;
+                max-width: 100%;
             }
         }
     </style>
