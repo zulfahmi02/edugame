@@ -7,6 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Project Notes
+
+- This app uses role-specific session login flows for `student`, `parent`, and `teacher`, plus Filament auth for `/admin`.
+- Logout routes are `POST` only:
+  - `/student/logout`
+  - `/parent/logout`
+  - `/teacher/logout`
+- Gameplay scoring now enforces:
+  - question must belong to the active game session
+  - one score row per `(game_session_id, question_id)`
+  - iframe embed manual score is capped to the configured question points
+- New migrations also enforce score uniqueness and ensure `students.parent_id` foreign key consistency.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
