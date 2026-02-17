@@ -88,6 +88,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
@@ -101,6 +102,33 @@
             gap: 20px;
             font-size: 14px;
             color: #666;
+            flex-wrap: wrap;
+        }
+
+        .game-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .btn-exit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ef4444;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-exit:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
         }
 
         .game-container {
@@ -212,6 +240,13 @@
             background: #059669;
         }
 
+        .action-bar {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         /* Multiple choice options styles */
         .options-container {
             display: flex;
@@ -266,6 +301,75 @@
             font-size: 16px;
             font-weight: 500;
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px 12px 80px;
+            }
+
+            .game-header {
+                padding: 12px;
+                border-radius: 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .game-info h2 {
+                font-size: 20px;
+            }
+
+            .game-stats {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .btn-exit {
+                width: 100%;
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+
+            .game-container:not(.has-custom-template) {
+                padding: 18px 14px;
+                border-radius: 14px;
+            }
+
+            .default-question {
+                font-size: 20px;
+            }
+
+            .option-item {
+                padding: 12px;
+            }
+
+            .option-key {
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+                font-size: 13px;
+            }
+
+            .option-text {
+                font-size: 14px;
+            }
+
+            .btn-submit,
+            .btn-next {
+                font-size: 15px;
+                padding: 12px;
+            }
+
+            .action-bar {
+                position: sticky;
+                bottom: 8px;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 10px;
+                border-radius: 12px;
+                box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+                backdrop-filter: blur(6px);
+                z-index: 50;
+            }
+        }
     </style>
 </head>
 <body>
@@ -279,9 +383,12 @@
                 <span>⭐ Poin: {{ $session->total_score }}</span>
             </div>
         </div>
+        <div class="game-actions">
+            <a class="btn-exit" href="{{ route('games.index') }}">✖ Keluar Game</a>
+        </div>
     </div>
 
-	    <div class="game-container {{ $activeHtmlTemplate ? 'has-custom-template' : '' }}">
+		    <div class="game-container {{ $activeHtmlTemplate ? 'has-custom-template' : '' }}">
 	        @if($activeHtmlTemplate)
 	            <!-- Custom template (game override or selected template) -->
 	            <div class="custom-template-container" id="custom-game-template">
@@ -324,19 +431,20 @@
                     @endforeach
                 </div>
                 <input type="hidden" id="answer-input" value="">
-	            @else
-	                <!-- Text input for non-multiple choice -->
-	                <input type="text" id="answer-input" class="default-answer-input" placeholder="Ketik jawaban Anda di sini..." autofocus>
-	            @endif
+		            @else
+		                <!-- Text input for non-multiple choice -->
+		                <input type="text" id="answer-input" class="default-answer-input" placeholder="Ketik jawaban Anda di sini..." autofocus>
+		            @endif
+		        @endif
 
-                <button onclick="submitAnswer()" class="btn-submit" id="submit-btn">
-                    Kirim Jawaban
-                </button>
-	        @endif
-
-	        <div id="feedback" class="feedback"></div>
-	        <button onclick="nextQuestion()" class="btn-next" id="next-btn">Soal Berikutnya →</button>
-	    </div>
+		        <div id="feedback" class="feedback"></div>
+                <div class="action-bar">
+	                <button onclick="submitAnswer()" class="btn-submit" id="submit-btn">
+	                    Kirim Jawaban
+	                </button>
+		            <button onclick="nextQuestion()" class="btn-next" id="next-btn">Soal Berikutnya →</button>
+                </div>
+		    </div>
 
     <script>
         const sessionId = {{ $session->id }};

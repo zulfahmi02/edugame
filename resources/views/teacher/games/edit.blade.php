@@ -447,14 +447,77 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; padding: 0.5rem 1rem; }
-            .sidebar-nav { display: flex; padding: 0; }
-            .nav-item { padding: 0.5rem 1rem; }
-            .sidebar-footer { display: none; }
-            .main-content { margin-left: 0; padding: 1rem; }
-            body { flex-direction: column; }
-            .options-list { grid-template-columns: 1fr; }
-            .stats-row { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: sticky;
+                top: 0;
+                flex-direction: column;
+                padding: 0;
+                z-index: 1000;
+            }
+
+            .sidebar-brand {
+                justify-content: flex-start;
+                padding: 0.75rem 1rem;
+            }
+
+            .sidebar-brand .brand-text {
+                display: flex;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                padding: 0;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                justify-content: center;
+                gap: 0.2rem;
+                padding: 0.7rem 0.25rem;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                text-align: center;
+            }
+
+            .nav-item span {
+                display: block !important;
+                font-size: 0.72rem;
+                line-height: 1.2;
+            }
+
+            .nav-item .nav-icon {
+                font-size: 1rem;
+            }
+
+            .nav-item.active {
+                border-left-color: transparent;
+                border-bottom-color: #4B8BF4;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            body {
+                flex-direction: column;
+            }
+
+            .options-list {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>

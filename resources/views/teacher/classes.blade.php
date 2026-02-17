@@ -741,8 +741,8 @@
         }
 
         .bottom-nav-label {
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 500;
             text-align: center;
         }
 
@@ -928,6 +928,7 @@
     </style>
 </head>
 
+<body>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 
@@ -1249,9 +1250,6 @@
         });
 
         // Prevent search box from triggering sidebar
-        const searchBox = document.querySelector('.search-box');
-        const searchInput = document.querySelector('.search-box input');
-        
         if (searchBox) {
             searchBox.addEventListener('click', (e) => {
                 e.stopPropagation();

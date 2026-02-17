@@ -468,7 +468,7 @@
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
                 <h2 style="color: #1e3a8a; font-size: 2rem;">📭 Belum Ada Game</h2>
                 <p style="color: #334155; font-size: 1.2rem; margin-top: 10px;">
-                    Silakan tambahkan game melalui admin panel!
+                    Tenang, game baru sedang disiapkan guru. Coba lagi sebentar lagi ya!
                 </p>
             </div>
         @endforelse
