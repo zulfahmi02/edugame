@@ -92,6 +92,167 @@
             border-color: #1f2937;
         }
 
+        body.dark-mode {
+            background: radial-gradient(circle at 20% -10%, #1e293b 0%, #0f172a 45%, #020617 100%);
+        }
+
+        body.dark-mode .main-content,
+        body.dark-mode .content-area {
+            background: transparent;
+        }
+
+        body.dark-mode .top-header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom-color: #1f2937;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .chart-section,
+        body.dark-mode .table-section,
+        body.dark-mode .schedule-section {
+            background: linear-gradient(165deg, #111827 0%, #0f172a 100%);
+            box-shadow: 0 10px 28px rgba(2, 6, 23, 0.35);
+        }
+
+        body.dark-mode .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .stat-icon.purple {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+        }
+
+        body.dark-mode .stat-icon.orange {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fdba74;
+        }
+
+        body.dark-mode .stat-icon.green {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+
+        body.dark-mode .summary-stat-card {
+            background: linear-gradient(160deg, #0b1220 0%, #111827 100%);
+        }
+
+        body.dark-mode .summary-stat-card .summary-icon.games {
+            background: rgba(59, 130, 246, 0.18);
+        }
+
+        body.dark-mode .summary-stat-card .summary-icon.correct {
+            background: rgba(34, 197, 94, 0.18);
+        }
+
+        body.dark-mode .summary-stat-card .summary-icon.accuracy {
+            background: rgba(245, 158, 11, 0.18);
+        }
+
+        body.dark-mode .bar-chart {
+            background: #0b1220;
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .bar-rail {
+            background: #1f2937;
+        }
+
+        body.dark-mode .bar-count {
+            background: #1f2937;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .bar-fill.is-zero {
+            background: #334155;
+        }
+
+        body.dark-mode .child-tab {
+            background: #0b1220;
+            border-color: #1f2937;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .child-tab:hover {
+            background: #111827;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .child-tab.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+        }
+
+        body.dark-mode .table-header {
+            border-bottom-color: #1f2937;
+        }
+
+        body.dark-mode .data-table th {
+            background: #0b1220;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .data-table td {
+            color: #e2e8f0;
+            border-bottom-color: #1f2937;
+        }
+
+        body.dark-mode .score-text {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .score-bar {
+            background: #1f2937;
+        }
+
+        body.dark-mode .schedule-card {
+            background: #0b1220;
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .schedule-day {
+            color: #93c5fd;
+        }
+
+        body.dark-mode .schedule-time {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .schedule-subject,
+        body.dark-mode .schedule-teacher {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .empty-state h3 {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .empty-state p {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .bottom-nav {
+            background: #0b1220;
+            border-top-color: #1f2937;
+            box-shadow: 0 -2px 14px rgba(2, 6, 23, 0.6);
+        }
+
+        body.dark-mode .bottom-nav-item {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .bottom-nav-item:hover {
+            background: #111827;
+        }
+
+        body.dark-mode .bottom-nav-item.active {
+            color: #60a5fa;
+        }
+
         /* Layout */
         .app-container {
             display: flex;
@@ -929,6 +1090,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>
@@ -1236,16 +1398,23 @@
 
         function showProfile(e) {
             e.preventDefault();
+            const isDark = body.classList.contains('dark-mode');
+            const modalBg = isDark ? '#0f172a' : '#ffffff';
+            const modalNameColor = isDark ? '#e2e8f0' : '#1e293b';
+            const modalRoleColor = isDark ? '#94a3b8' : '#64748b';
+
             Swal.fire({
                 title: 'Profil Pengguna',
+                background: modalBg,
+                color: modalNameColor,
                 html: `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px;">
                         <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 28px; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);">
                             {{ strtoupper(substr($parent->parent_name, 0, 1)) }}
                         </div>
                         <div style="text-align: center;">
-                            <h3 style="margin: 0; font-size: 1.25rem; color: #1e293b; font-weight: 700;">{{ $parent->parent_name }}</h3>
-                            <p style="margin: 4px 0 0; color: #64748b; font-size: 0.9rem;">Akun Orang Tua</p>
+                            <h3 style="margin: 0; font-size: 1.25rem; color: ${modalNameColor}; font-weight: 700;">{{ $parent->parent_name }}</h3>
+                            <p style="margin: 4px 0 0; color: ${modalRoleColor}; font-size: 0.9rem;">Akun Orang Tua</p>
                         </div>
                     </div>
                 `,

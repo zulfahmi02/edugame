@@ -26,6 +26,7 @@
         tr:hover { background: #f9fafb; }
         .actions { display: flex; gap: 5px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

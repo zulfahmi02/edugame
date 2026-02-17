@@ -66,13 +66,34 @@
         }
 
         body.dark-mode .main-content {
-            background: #0f172a;
+            background: radial-gradient(circle at 15% -10%, #1e293b 0%, #0f172a 45%, #020617 100%);
+        }
+
+        body.dark-mode .dashboard-header {
+            background: #111827 !important;
+            border: 1px solid #1f2937;
+        }
+
+        body.dark-mode .user-name-header {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .user-email-header {
+            color: #94a3b8;
         }
 
         body.dark-mode .search-box input {
             background: #0b1220;
             border-color: #1f2937;
             color: #e2e8f0;
+        }
+
+        body.dark-mode .search-box input::placeholder {
+            color: #64748b;
+        }
+
+        body.dark-mode .search-box .search-icon {
+            color: #cbd5e1;
         }
 
         body.dark-mode .search-box input:focus {
@@ -89,16 +110,58 @@
             color: #ffffff;
         }
 
+        body.dark-mode .welcome-card {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 55%, #3730a3 100%);
+            box-shadow: 0 14px 40px rgba(2, 6, 23, 0.55);
+        }
+
         body.dark-mode .stat-card,
         body.dark-mode .section-card {
             background: #111827;
             box-shadow: none;
         }
 
+        body.dark-mode .section-card {
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .stat-card.students {
+            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            border-left-color: #60a5fa;
+        }
+
+        body.dark-mode .stat-card.games {
+            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            border-left-color: #a78bfa;
+        }
+
+        body.dark-mode .stat-card.score {
+            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            border-left-color: #fbbf24;
+        }
+
+        body.dark-mode .stat-card.accuracy {
+            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            border-left-color: #34d399;
+        }
+
         body.dark-mode .stat-value,
         body.dark-mode .section-title,
         body.dark-mode .performer-name {
             color: #e2e8f0;
+        }
+
+        body.dark-mode .stat-value,
+        body.dark-mode .performer-score {
+            background: none;
+            -webkit-text-fill-color: #e2e8f0;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .performer-rank {
+            background: none;
+            -webkit-text-fill-color: #93c5fd;
+            color: #93c5fd;
         }
 
         body.dark-mode .stat-label,
@@ -146,6 +209,28 @@
 
         body.dark-mode .progress-bar-custom {
             background: #1f2937;
+        }
+
+        body.dark-mode .table-responsive {
+            border: 1px solid #1f2937;
+        }
+
+        body.dark-mode .bottom-nav {
+            background: #0b1220;
+            border-top-color: #1f2937;
+            box-shadow: 0 -2px 12px rgba(2, 6, 23, 0.65);
+        }
+
+        body.dark-mode .bottom-nav-item {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .bottom-nav-item:hover {
+            background: #111827;
+        }
+
+        body.dark-mode .bottom-nav-item.active {
+            color: #60a5fa;
         }
 
         /* Sidebar */
@@ -577,6 +662,8 @@
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
+            cursor: pointer;
+            user-select: none;
         }
 
         .header-actions {
@@ -603,6 +690,14 @@
         .header-btn:hover {
             background: #f1f5f9;
             color: #1e293b;
+        }
+
+        .dashboard-search-box {
+            margin-left: auto;
+        }
+
+        .dashboard-theme-toggle {
+            flex-shrink: 0;
         }
 
         /* Welcome Card */
@@ -876,7 +971,9 @@
         /* Table */
         .table-responsive {
             border-radius: 12px;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -905,11 +1002,27 @@
             background: #f8fafc;
         }
 
+        .table-students th,
+        .table-students td,
+        .table-activities th,
+        .table-activities td {
+            white-space: nowrap;
+        }
+
+        .table-students td:nth-child(2),
+        .table-activities td:nth-child(2) {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
         .badge-class {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 0.4rem 0.9rem;
             border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
             font-weight: 600;
             font-size: 0.8rem;
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
@@ -982,12 +1095,15 @@
                 flex-direction: column;
             }
 
-            .header {
-                flex-direction: row;
+            .header.dashboard-header {
+                display: grid !important;
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-areas:
+                    "left theme"
+                    "search search";
                 align-items: center;
-                justify-content: space-between;
-                gap: 1rem;
-                flex-wrap: nowrap;
+                column-gap: 0.75rem;
+                row-gap: 0.75rem;
                 padding: 1rem;
                 background: white;
                 border-radius: 16px;
@@ -1013,18 +1129,46 @@
                 display: flex;
             }
 
-            .search-box {
-                flex: 1;
+            .header.dashboard-header .dashboard-header-left {
+                grid-area: left;
+                width: auto !important;
+                min-width: 0;
+                display: flex !important;
+                align-items: center;
+                flex-wrap: nowrap !important;
+                gap: 0.75rem !important;
+                justify-content: flex-start !important;
+            }
+
+            .header.dashboard-header .dashboard-theme-toggle {
+                grid-area: theme;
+                justify-self: end;
+            }
+
+            .header.dashboard-header .dashboard-search-box {
+                grid-area: search;
+                width: 100% !important;
+                max-width: none !important;
+                margin-left: 0 !important;
+                display: block;
                 min-width: 0;
                 position: relative;
                 z-index: 10;
             }
 
-            .search-box input {
+            .header.dashboard-header .dashboard-search-box input {
+                opacity: 1 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0.75rem 1rem 0.75rem 2.75rem !important;
                 pointer-events: auto;
                 cursor: text;
                 z-index: 11;
                 position: relative;
+            }
+
+            .header.dashboard-header .dashboard-search-box .search-icon {
+                cursor: pointer;
             }
 
             .welcome-card {
@@ -1035,49 +1179,71 @@
                 font-size: 1.5rem;
             }
 
-            .search-box {
-                flex: 0 0 auto;
-                min-width: 0;
-                position: relative;
-                z-index: 10;
-                max-width: 200px;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-            }
-
-            /* Collapsible search for mobile */
-            .search-box.collapsed {
-                width: 40px;
-                max-width: 40px;
-                background: white;
-                border-radius: 50%;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
-
-            .search-box.collapsed input {
-                opacity: 0;
-                width: 0;
-                padding: 0;
-                margin: 0;
-            }
-
-            .search-box.collapsed .search-icon {
-                cursor: pointer;
-                font-size: 1.5rem;
-                padding: 0.5rem;
-            }
-
-            .search-box input {
-                pointer-events: auto;
-                cursor: text;
-                z-index: 11;
-                position: relative;
-            }
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .table-students {
+                min-width: 760px !important;
+            }
+
+            .table-activities {
+                min-width: 720px !important;
+            }
+
+            .table-students th:nth-child(1),
+            .table-students td:nth-child(1) {
+                width: 56px;
+            }
+
+            .table-students th:nth-child(2),
+            .table-students td:nth-child(2) {
+                min-width: 170px;
+            }
+
+            .table-students th:nth-child(3),
+            .table-students td:nth-child(3) {
+                min-width: 120px;
+            }
+
+            .table-students th:nth-child(4),
+            .table-students td:nth-child(4) {
+                min-width: 130px;
+            }
+
+            .table-students th:nth-child(5),
+            .table-students td:nth-child(5) {
+                min-width: 130px;
+            }
+
+            .table-students th:nth-child(6),
+            .table-students td:nth-child(6) {
+                min-width: 150px;
+            }
+
+            .table-activities th:nth-child(1),
+            .table-activities td:nth-child(1) {
+                min-width: 120px;
+            }
+
+            .table-activities th:nth-child(2),
+            .table-activities td:nth-child(2) {
+                min-width: 220px;
+            }
+
+            .table-activities th:nth-child(3),
+            .table-activities td:nth-child(3) {
+                min-width: 90px;
+            }
+
+            .table-activities th:nth-child(4),
+            .table-activities td:nth-child(4) {
+                min-width: 110px;
+            }
+
+            .table-activities th:nth-child(5),
+            .table-activities td:nth-child(5) {
+                min-width: 120px;
             }
         }
 
@@ -1087,6 +1253,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>
@@ -1159,8 +1326,8 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Header -->
-        <div class="header">
-            <div class="header-left">
+        <div class="header dashboard-header">
+            <div class="header-left dashboard-header-left">
                 <div class="user-profile-header">
                     <div class="user-avatar-header">{{ substr($teacher->name, 0, 1) }}</div>
                     <div class="user-info-header">
@@ -1172,13 +1339,11 @@
                     </a>
                 </div>
             </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" placeholder="Cari siswa...">
-                </div>
-                <button class="header-btn theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
+            <div class="search-box dashboard-search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Cari siswa, game, atau skor...">
             </div>
+            <button class="header-btn theme-toggle dashboard-theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
         </div>
 
         <!-- Welcome Card -->
@@ -1263,7 +1428,7 @@
 
             @if($students->count() > 0)
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-students">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -1318,7 +1483,7 @@
                     🕐 Recent Activities
                 </div>
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-activities">
                         <thead>
                             <tr>
                                 <th>Siswa</th>
@@ -1370,57 +1535,60 @@
             setTheme(nextTheme);
         });
 
-        // Collapsible Search Box for Mobile
-        const searchBox = document.querySelector('.search-box');
-        const searchIcon = document.querySelector('.search-icon');
-        const searchInput = document.querySelector('.search-box input');
+        // Search input behavior for dashboard filtering
+        const searchBox = document.querySelector('.dashboard-search-box') || document.querySelector('.search-box');
+        const searchIcon = document.querySelector('.dashboard-search-box .search-icon') || document.querySelector('.search-icon');
+        const searchInput = document.getElementById('searchInput') || document.querySelector('.dashboard-search-box input') || document.querySelector('.search-box input');
 
-        // Initialize collapsed state on mobile
-        if (window.innerWidth <= 768 && searchBox) {
-            searchBox.classList.add('collapsed');
-        }
-
-        // Toggle search box on icon click
-        if (searchIcon && searchBox) {
-            searchIcon.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.stopPropagation();
-                    searchBox.classList.toggle('collapsed');
-                    
-                    // Focus input when expanded
-                    if (!searchBox.classList.contains('collapsed')) {
-                        setTimeout(() => searchInput.focus(), 300);
-                    }
-                }
-            });
-        }
-
-        // Auto-collapse when input loses focus
-        if (searchInput && searchBox) {
-            searchInput.addEventListener('blur', () => {
-                if (window.innerWidth <= 768) {
-                    setTimeout(() => {
-                        searchBox.classList.add('collapsed');
-                    }, 200);
-                }
-            });
-        }
-
-        // Collapse search when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && searchBox && !searchBox.contains(e.target)) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && searchBox) {
+        const showSearchInput = () => {
+            if (searchBox) {
                 searchBox.classList.remove('collapsed');
-            } else if (window.innerWidth <= 768 && searchBox) {
-                searchBox.classList.add('collapsed');
             }
-        });
+        };
+
+        showSearchInput();
+
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchInput.focus();
+            });
+        }
+
+        if (searchBox && searchInput) {
+            searchBox.addEventListener('click', () => {
+                searchInput.focus();
+            });
+        }
+
+        window.addEventListener('resize', showSearchInput);
+
+        // Search functionality for dashboard sections.
+        const topPerformerItems = document.querySelectorAll('.top-performer-item');
+        const studentRows = document.querySelectorAll('.table-students tbody tr');
+        const activityRows = document.querySelectorAll('.table-activities tbody tr');
+
+        const matchesQuery = (text, query) => text.toLowerCase().includes(query);
+
+        const filterElements = (elements, query) => {
+            let visibleCount = 0;
+            elements.forEach((el) => {
+                const content = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                const isVisible = query === '' || matchesQuery(content, query);
+                el.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+            });
+            return visibleCount;
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = (e.target.value || '').trim().toLowerCase();
+                filterElements(topPerformerItems, query);
+                filterElements(studentRows, query);
+                filterElements(activityRows, query);
+            });
+        }
 
         function confirmLogout(event) {
             event.preventDefault();

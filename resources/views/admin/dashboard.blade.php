@@ -141,6 +141,7 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

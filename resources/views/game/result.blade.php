@@ -27,6 +27,7 @@
         .btn-outline { background: white; color: #667eea; border: 2px solid #667eea; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="result-container">

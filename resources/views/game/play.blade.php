@@ -371,6 +371,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="game-header">

@@ -450,11 +450,13 @@
             .sidebar {
                 width: 100%;
                 height: auto;
+                min-height: 0;
                 position: sticky;
                 top: 0;
                 flex-direction: column;
                 padding: 0;
                 z-index: 1000;
+                border-bottom: 1px solid #e5e7eb;
             }
 
             .sidebar-brand {
@@ -467,35 +469,67 @@
             }
 
             .sidebar-nav {
-                display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                padding: 0;
+                display: flex;
+                justify-content: space-around;
+                align-items: stretch;
+                flex: none;
+                padding: 8px 0;
                 border-top: 1px solid #e5e7eb;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                background: #ffffff;
+                box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.08);
+                z-index: 1001;
             }
 
             .nav-item {
                 flex-direction: column;
                 justify-content: center;
                 gap: 0.2rem;
-                padding: 0.7rem 0.25rem;
+                flex: 1 1 25%;
+                min-height: 64px;
+                padding: 8px 4px;
                 border-left: none;
-                border-bottom: 3px solid transparent;
+                border-bottom: none;
                 text-align: center;
+                position: relative;
             }
 
             .nav-item span {
                 display: block !important;
-                font-size: 0.72rem;
                 line-height: 1.2;
             }
 
             .nav-item .nav-icon {
-                font-size: 1rem;
+                font-size: 24px;
+                margin-bottom: 4px;
+            }
+
+            .nav-item span:not(.nav-icon) {
+                font-size: 12px;
+                font-weight: 500;
             }
 
             .nav-item.active {
+                background: transparent;
+                color: #4B8BF4;
                 border-left-color: transparent;
-                border-bottom-color: #4B8BF4;
+                border-bottom-color: transparent;
+            }
+
+            .nav-item.active::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 40px;
+                height: 3px;
+                background: #4B8BF4;
+                border-radius: 0 0 3px 3px;
             }
 
             .sidebar-footer {
@@ -505,6 +539,7 @@
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
+                padding-bottom: 88px;
             }
 
             body {
@@ -520,6 +555,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>

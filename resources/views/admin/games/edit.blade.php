@@ -26,6 +26,7 @@
         .checkbox-group input[type="checkbox"] { width: auto; }
         .current-thumbnail { max-width: 200px; border-radius: 10px; margin-top: 10px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

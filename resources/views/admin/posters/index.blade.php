@@ -132,6 +132,7 @@
             border: 1px solid #6ee7b7;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>

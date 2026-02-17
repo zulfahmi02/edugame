@@ -162,6 +162,10 @@
       color: #3b82f6;
     }
 
+    .mobile-nav-overlay {
+      display: none;
+    }
+
     nav ul {
       list-style: none;
       display: flex;
@@ -810,52 +814,165 @@
     }
 
     @media (max-width: 768px) {
-      .mobile-menu-toggle {
-        display: block;
+      header#header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        gap: 10px !important;
+        padding: 12px 16px !important;
       }
 
-      nav {
+      .logo-container {
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .logo {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+      }
+
+      .logo-text {
+        font-size: clamp(1rem, 4.8vw, 1.35rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: calc(100vw - 130px);
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid #dbe3ee;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+        font-size: 1.9rem;
+        line-height: 1;
+        padding: 0;
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: none;
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+
+      .mobile-nav-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.38);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        z-index: 998;
+      }
+
+      body.mobile-nav-open .mobile-nav-overlay {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      body.mobile-nav-open {
+        overflow: hidden;
+      }
+
+      #navbar {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 80%;
-        max-width: 300px;
+        width: min(82vw, 320px);
         height: 100vh;
-        background: white;
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
-        padding: 100px 40px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        box-shadow: -16px 0 36px rgba(2, 6, 23, 0.18);
+        border-left: 1px solid #e2e8f0;
+        padding: 86px 16px 24px;
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        z-index: 999;
+        z-index: 1000;
+        overflow-y: auto;
       }
 
-      nav.active {
+      #navbar.active {
         right: 0;
       }
 
-      nav ul {
+      #navbar ul {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 30px;
+        align-items: stretch;
+        gap: 10px;
+        width: 100%;
       }
 
-      nav a {
-        font-size: 1.3rem;
+      #navbar ul>li {
         width: 100%;
-        padding: 10px 0;
+      }
+
+      #navbar ul>li>a {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 1.08rem;
+        font-weight: 700;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f1f5f9;
+        color: #1e293b;
+      }
+
+      #navbar ul>li>a::after {
+        display: none;
+      }
+
+      #navbar ul>li>a:hover {
+        transform: none;
+        background: #e2e8f0;
+        color: #1d4ed8;
       }
 
       .nav-item.dropdown {
         width: 100%;
       }
 
+      .nav-login-btn {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 4px;
+        padding: 12px 14px !important;
+        border-radius: 14px;
+        box-shadow: none;
+      }
+
       .custom-dropdown-menu {
         position: static;
         float: none;
         width: 100%;
-        margin-top: 12px !important;
+        margin-top: 8px !important;
+        padding: 8px;
+        border-radius: 14px;
         box-shadow: none;
         border: 1px solid #e2e8f0;
         background: #ffffff;
+      }
+
+      .custom-dropdown-item {
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 1.02rem;
+      }
+
+      .dropdown-divider {
+        margin: 8px 0;
       }
 
       .hero h1 {
@@ -1058,6 +1175,7 @@
       transform: none !important;
     }
   </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>
@@ -1119,6 +1237,7 @@
       ☰
     </button>
   </header>
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
 
   <main>
     <section class="hero" id="home">
@@ -1126,7 +1245,7 @@
         <h1>Belajar Bahasa <br>Sambil Bermain Dengan Permainan Yang Seru!</h1>
         <p>Ayo mulai petualangan belajar bahasamu sekarang!</p>
 
-        <button class="btn-primary" onclick="showLoginModal()">🚀 Mulai Bermain</button>
+        <button class="btn-primary" type="button" onclick="scrollToWeeklyGames()">🚀 Mulai Bermain</button>
       </div>
 
       <div class="hero-image">
@@ -1136,7 +1255,7 @@
 
     <!-- Weekly Games Section -->
 
-    <section class="weekly-games-section">
+    <section class="weekly-games-section" id="weeklyGamesSection">
       <div style="text-align: center; margin-bottom: 60px; position: relative; z-index: 2;">
         <h2 style="font-size: 3rem; font-weight: 800; color: #1e3a8a; margin-bottom: 15px;">
           🔥 Game Spesial Minggu Ini
@@ -1585,6 +1704,20 @@
       modal.show();
     }
 
+    function scrollToWeeklyGames() {
+      const section = document.getElementById('weeklyGamesSection');
+      if (!section) return;
+
+      const header = document.getElementById('header');
+      const headerOffset = header ? header.offsetHeight + 12 : 100;
+      const targetY = section.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      });
+    }
+
     function openPosterModal(imageSrc, title) {
       event.stopPropagation();
       const modal = document.getElementById('posterModal');
@@ -1629,10 +1762,18 @@
     // Mobile Menu Toggle logic
     const menuToggle = document.getElementById('menuToggle');
     const navbar = document.getElementById('navbar');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+
+    const setMobileMenuState = (open) => {
+      navbar.classList.toggle('active', open);
+      document.body.classList.toggle('mobile-nav-open', open);
+      menuToggle.innerHTML = open ? '✕' : '☰';
+      menuToggle.setAttribute('aria-label', open ? 'Tutup Navigasi' : 'Buka Navigasi');
+    };
 
     menuToggle.addEventListener('click', () => {
-      navbar.classList.toggle('active');
-      menuToggle.innerHTML = navbar.classList.contains('active') ? '✕' : '☰';
+      const shouldOpen = !navbar.classList.contains('active');
+      setMobileMenuState(shouldOpen);
     });
 
     // Close mobile menu when clicking a link
@@ -1646,16 +1787,29 @@
           return;
         }
 
-        navbar.classList.remove('active');
-        menuToggle.innerHTML = '☰';
+        setMobileMenuState(false);
       });
     });
+
+    if (mobileNavOverlay) {
+      mobileNavOverlay.addEventListener('click', () => {
+        if (navbar.classList.contains('active')) {
+          setMobileMenuState(false);
+        }
+      });
+    }
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!navbar.contains(e.target) && !menuToggle.contains(e.target) && navbar.classList.contains('active')) {
-        navbar.classList.remove('active');
-        menuToggle.innerHTML = '☰';
+        setMobileMenuState(false);
+      }
+    });
+
+    // Reset mobile nav state on wider viewport.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navbar.classList.contains('active')) {
+        setMobileMenuState(false);
       }
     });
 

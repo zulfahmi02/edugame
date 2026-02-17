@@ -354,6 +354,7 @@
             padding-right: 50px;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 
 <body>

@@ -26,6 +26,14 @@
             position: relative;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+
         .header h1 {
             font-size: 2.5rem;
             color: #1e3a8a;
@@ -34,9 +42,6 @@
         }
 
         .back-btn {
-            position: absolute;
-            top: 0;
-            left: 0;
             background: white;
             color: #1e3a8a;
             padding: 10px 20px;
@@ -53,6 +58,40 @@
         .back-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: white;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.14);
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout:hover {
+            background: #fff1f2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(30, 58, 138, 0.2);
+        }
+
+        @media (max-width: 640px) {
+            .header-actions {
+                gap: 8px;
+            }
+
+            .back-btn,
+            .btn-logout {
+                padding: 9px 13px;
+                font-size: 0.9rem;
+            }
         }
 
         /* Stats Cards */
@@ -152,13 +191,22 @@
             padding: 60px 20px;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <a href="{{ route('games.index') }}" class="back-btn">
-                <span>⬅️</span> Kembali
-            </a>
+            <div class="header-actions">
+                <a href="{{ route('games.index') }}" class="back-btn">
+                    <span>⬅️</span> Kembali
+                </a>
+                @if(session('student_id'))
+                    <form action="{{ route('student.logout') }}" method="POST" class="logout-form">
+                        @csrf
+                        <button type="submit" class="btn-logout">🚪 Keluar</button>
+                    </form>
+                @endif
+            </div>
             <h1>📜 Riwayat Perjalananmu</h1>
             <p style="color: #64748b;">Lihat progress belajar hebatmu di sini!</p>
         </header>

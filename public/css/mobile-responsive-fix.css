@@ -1,0 +1,318 @@
+/*
+ * Global mobile responsiveness patch for legacy inline-style pages.
+ * This file intentionally uses strong selectors and !important rules
+ * to override per-page inline CSS across all Blade views.
+ */
+
+:root {
+    --mobile-gutter: 16px;
+    --mobile-gutter-lg: 20px;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+.table-responsive,
+.table-section,
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1100px) {
+    .container,
+    .content-area,
+    .main-content {
+        padding-left: var(--mobile-gutter-lg) !important;
+        padding-right: var(--mobile-gutter-lg) !important;
+    }
+
+    .games-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 20px !important;
+        padding-left: var(--mobile-gutter-lg) !important;
+        padding-right: var(--mobile-gutter-lg) !important;
+    }
+
+    .games-grid,
+    .posters-grid,
+    .login-cards,
+    .summary-grid,
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden !important;
+    }
+
+    /* Generic top bars */
+    header,
+    .header,
+    .top-header,
+    .navbar {
+        padding: 12px var(--mobile-gutter) !important;
+        gap: 10px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .navbar-user,
+    .header-actions,
+    .header-left,
+    .header-right {
+        width: 100%;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        justify-content: flex-start !important;
+    }
+
+    .navbar-brand,
+    .logo-text {
+        font-size: clamp(1rem, 4.6vw, 1.25rem) !important;
+        line-height: 1.2 !important;
+        word-break: break-word;
+    }
+
+    /* Prevent stretched mobile sidebar tabs (teacher game create/edit pages) */
+    .sidebar {
+        min-height: 0 !important;
+    }
+
+    .sidebar-nav {
+        flex: none !important;
+    }
+
+    .container,
+    .content-area,
+    .main-content,
+    .game-content,
+    .result-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: var(--mobile-gutter) !important;
+        padding-right: var(--mobile-gutter) !important;
+    }
+
+    .result-container {
+        padding-top: 28px !important;
+        padding-bottom: 28px !important;
+        border-radius: 16px !important;
+    }
+
+    /* Grid simplification */
+    .games-container,
+    .games-grid,
+    .posters-grid,
+    .login-cards,
+    .summary-grid,
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    /* Home section layout */
+    .hero,
+    .parents-content {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 16px !important;
+    }
+
+    .hero,
+    .games-section,
+    .weekly-games-section,
+    .parents-section {
+        padding-left: var(--mobile-gutter) !important;
+        padding-right: var(--mobile-gutter) !important;
+    }
+
+    .weekly-games-section {
+        margin-top: 24px !important;
+        margin-bottom: 24px !important;
+        border-radius: 20px !important;
+    }
+
+    .hero-content,
+    .hero-image,
+    .parents-image,
+    .parents-text {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Card and list stacks */
+    .game-meta,
+    .history-item,
+    .table-header,
+    .actions,
+    .child-tabs,
+    .sidebar-user,
+    .user-info {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .history-item .score-badge {
+        width: 100%;
+        max-width: 180px;
+    }
+
+    /* Buttons */
+    .play-btn,
+    .btn-start,
+    .btn-history,
+    .filter-btn,
+    .actions .btn,
+    .actions button,
+    .actions a {
+        width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+
+    /* Back button from absolute to normal flow */
+    .back-btn {
+        position: static !important;
+        display: inline-flex !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Large headings */
+    .page-header {
+        padding: 36px var(--mobile-gutter) !important;
+    }
+
+    h1,
+    .page-header h1,
+    .game-content h1 {
+        font-size: clamp(1.4rem, 6vw, 2rem) !important;
+        line-height: 1.2 !important;
+    }
+
+    .welcome-box {
+        padding: 12px 18px !important;
+        border-radius: 16px !important;
+        font-size: 1rem !important;
+    }
+
+    .game-banner {
+        height: 220px !important;
+        font-size: 80px !important;
+    }
+
+    .game-placeholder {
+        height: 170px !important;
+        font-size: 3.2rem !important;
+    }
+
+    /* Filter and utility button rows */
+    .filter-section,
+    .filter-buttons {
+        width: 100% !important;
+    }
+
+    .filter-buttons {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        justify-content: flex-start !important;
+    }
+
+    .filter-btn {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 0;
+        width: auto !important;
+    }
+
+    .poster-card {
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    .poster-card .poster-image-container {
+        height: 280px !important;
+    }
+
+    /* Ensure wide tables scroll on mobile */
+    .table-section,
+    .table-responsive {
+        overflow-x: auto !important;
+    }
+
+    .table-section .data-table,
+    .table-responsive table,
+    table.data-table,
+    table.table {
+        min-width: 560px !important;
+    }
+
+    /* Bootstrap modals used in home login flows */
+    .modal-dialog {
+        margin: 0.75rem auto !important;
+        width: calc(100% - 1.25rem) !important;
+        max-width: 100% !important;
+    }
+
+    .modal-content {
+        border-radius: 18px !important;
+    }
+
+    .modal-header,
+    .modal-body {
+        padding: 1rem !important;
+    }
+
+    .modal-title {
+        font-size: 1.35rem !important;
+        line-height: 1.25 !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .sidebar-nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    .nav-item {
+        padding: 0.6rem 0.2rem !important;
+    }
+
+    .nav-item span:not(.nav-icon) {
+        font-size: 0.68rem !important;
+        line-height: 1.15 !important;
+    }
+
+    .stats-grid .stat-card,
+    .summary-card,
+    .stat-card {
+        padding: 16px !important;
+    }
+
+    .poster-card .poster-image-container {
+        height: 240px !important;
+    }
+}

@@ -125,12 +125,14 @@
         }
 
         .btn-logout {
-            background: #ef4444;
-            color: white;
+            background: rgba(255, 255, 255, 0.92);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            backdrop-filter: blur(6px);
         }
 
         .btn-logout:hover {
-            background: #dc2626;
+            background: #fff1f2;
         }
 
         .container {
@@ -176,9 +178,6 @@
         }
 
         .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             background: #FFD700;
             color: #1e293b;
             padding: 12px 24px;
@@ -186,13 +185,60 @@
             text-decoration: none;
             font-weight: bold;
             box-shadow: 0 8px 20px rgba(255,215,0,0.4);
-            z-index: 3;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
         }
 
         .back-btn:hover {
             background: #FFEC8B;
             transform: scale(1.05);
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .page-actions {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .page-actions a,
+        .page-actions button,
+        .page-actions form {
+            pointer-events: auto;
+        }
+
+        .page-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .page-actions {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+            }
+
+            .back-btn {
+                padding: 10px 16px;
+                font-size: 0.95rem;
+            }
+
+            .btn-logout {
+                padding: 10px 12px;
+                font-size: 0.92rem;
+            }
         }
 
         .games-grid {
@@ -330,6 +376,7 @@
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="bubbles">
@@ -339,7 +386,17 @@
         <div class="bubble"></div>
     </div>
 
-    <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+    <div class="page-actions">
+        <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+        <div class="page-actions-right">
+            @if(session('student_id'))
+                <form action="{{ route('student.logout') }}" method="POST" class="logout-form">
+                    @csrf
+                    <button type="submit" class="btn btn-logout">🚪 Keluar</button>
+                </form>
+            @endif
+        </div>
+    </div>
 
     <div class="container">
         <div class="page-header">

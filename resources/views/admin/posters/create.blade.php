@@ -23,6 +23,7 @@
         .btn-secondary { background: #6b7280; color: white; }
         .btn:hover { transform: translateY(-2px); }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

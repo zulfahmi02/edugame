@@ -45,8 +45,8 @@ class StudentController extends Controller
             return redirect()->route('games.start', $gameSlug);
         }
 
-        // Redirect ke halaman pilihan game
-        return redirect()->route('games.index')->with('success', 'Selamat datang, ' . $student->nama_anak . '!');
+        // Default redirect ke halaman game mingguan/admin (bukan game buatan guru)
+        return redirect()->route('games.all')->with('success', 'Selamat datang, ' . $student->nama_anak . '!');
     }
 
     public function logout(Request $request)

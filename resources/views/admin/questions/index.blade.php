@@ -31,6 +31,7 @@
         .badge-hard { background: #fee2e2; color: #991b1b; }
         .actions { display: flex; gap: 5px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

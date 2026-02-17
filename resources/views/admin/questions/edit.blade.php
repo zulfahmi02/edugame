@@ -26,6 +26,7 @@
         .checkbox-group input[type="checkbox"] { width: auto; }
         .game-info { background: #f0f4ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
     <div class="navbar">

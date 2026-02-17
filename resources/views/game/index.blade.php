@@ -16,6 +16,94 @@
             overflow-x: hidden;
         }
 
+        body.dark-mode {
+            background: radial-gradient(circle at 20% -10%, #1e293b 0%, #0f172a 45%, #020617 100%);
+            color: #e2e8f0;
+        }
+
+        .page-actions {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .page-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-actions a,
+        .page-actions button,
+        .page-actions form {
+            pointer-events: auto;
+        }
+
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid rgba(30, 58, 138, 0.2);
+            background: rgba(255, 255, 255, 0.92);
+            color: #1e3a8a;
+            cursor: pointer;
+            display: inline-grid;
+            place-items: center;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-1px);
+            background: #ffffff;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: rgba(11, 18, 32, 0.92);
+            border-color: #1f2937;
+            color: #e2e8f0;
+            box-shadow: 0 10px 26px rgba(2, 6, 23, 0.5);
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background: #111827;
+        }
+
+        @media (max-width: 768px) {
+            .page-actions {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .logout-form {
+                position: static;
+            }
+
+            .btn-logout {
+                padding: 10px 12px;
+                font-size: 0.92rem;
+            }
+
+            .back-btn {
+                padding: 10px 16px;
+                font-size: 0.95rem;
+            }
+        }
+
         /* Efek Gelembung */
         .bubbles {
             position: fixed;
@@ -64,6 +152,11 @@
             transform: scale(1.1);
         }
 
+        body.dark-mode .bubble {
+            background: rgba(59, 130, 246, 0.22);
+            box-shadow: 0 0 22px rgba(59, 130, 246, 0.38);
+        }
+
         .bubble.popping {
             animation: pop 0.3s ease-out forwards;
         }
@@ -92,6 +185,11 @@
             z-index: 2;
             margin: 0;
         }
+
+        body.dark-mode header {
+            background: rgba(15, 23, 42, 0.42);
+        }
+
         h1 {
             font-size: 3rem;
             color: #1e3a8a;
@@ -99,10 +197,20 @@
             margin-bottom: 15px;
             font-weight: 700;
         }
+
+        body.dark-mode h1 {
+            color: #e2e8f0;
+            text-shadow: 0 2px 18px rgba(15, 23, 42, 0.6);
+        }
+
         header p {
             font-size: 1.1rem;
             color: #334155;
             margin-bottom: 30px;
+        }
+
+        body.dark-mode header p {
+            color: #cbd5e1;
         }
 
         .welcome-box {
@@ -117,9 +225,12 @@
             font-weight: 600;
         }
 
+        body.dark-mode .welcome-box {
+            background: linear-gradient(135deg, #334155, #1d4ed8);
+            box-shadow: 0 10px 28px rgba(2, 6, 23, 0.55);
+        }
+
         .back-btn {
-            position: absolute;
-            top: 20px; left: 20px;
             background: #FFD700;
             color: #1e293b;
             padding: 12px 24px;
@@ -127,12 +238,59 @@
             text-decoration: none;
             font-weight: bold;
             box-shadow: 0 8px 20px rgba(255,215,0,0.4);
-            z-index: 3;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
         }
+
+        body.dark-mode .back-btn {
+            background: #334155;
+            color: #e2e8f0;
+            box-shadow: 0 8px 22px rgba(2, 6, 23, 0.5);
+        }
+
         .back-btn:hover {
             background: #FFEC8B;
             transform: scale(1.05);
+        }
+
+        body.dark-mode .back-btn:hover {
+            background: #475569;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.92);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 11px 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+            transition: all 0.25s ease;
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-logout:hover {
+            background: #fff1f2;
+            color: #7f1d1d;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+        }
+
+        body.dark-mode .btn-logout {
+            background: rgba(11, 18, 32, 0.92);
+            color: #fecaca;
+            border-color: #7f1d1d;
+            box-shadow: 0 8px 20px rgba(2, 6, 23, 0.45);
+        }
+
+        body.dark-mode .btn-logout:hover {
+            background: #1f2937;
         }
 
         .games-container {
@@ -156,11 +314,24 @@
             box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
         }
+
+        body.dark-mode .game-card {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: #1f2937;
+            box-shadow: 0 18px 38px rgba(2, 6, 23, 0.55);
+        }
+
         .game-card:hover {
             transform: translateY(-15px) scale(1.05);
             box-shadow: 0 25px 60px rgba(255, 255, 255, 0.7);
             border-color: #FFFFFF;
         }
+
+        body.dark-mode .game-card:hover {
+            box-shadow: 0 24px 48px rgba(2, 6, 23, 0.65);
+            border-color: #334155;
+        }
+
         .game-placeholder {
             background: #E0F7FA;
             height: 200px;
@@ -172,15 +343,30 @@
             font-size: 4.5rem;
             color: #87CEEB;
         }
+
+        body.dark-mode .game-placeholder {
+            background: #0b1220;
+            color: #334155;
+        }
+
         .game-card h3 {
             font-size: 1.8rem;
             color: #1e3a8a;
             margin: 15px 0;
         }
+
+        body.dark-mode .game-card h3 {
+            color: #e2e8f0;
+        }
+
         .game-card p {
             font-size: 1.1rem;
             color: #334155;
             margin-bottom: 25px;
+        }
+
+        body.dark-mode .game-card p {
+            color: #cbd5e1;
         }
         .play-btn {
             background: #FFD700;
@@ -195,9 +381,20 @@
             text-decoration: none;
             display: inline-block;
         }
+
+        body.dark-mode .play-btn {
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: #f8fafc;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+        }
+
         .play-btn:hover {
             background: #FFEC8B;
             transform: translateY(-3px);
+        }
+
+        body.dark-mode .play-btn:hover {
+            background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
         }
 
         footer {
@@ -207,6 +404,19 @@
             color: #1e3a8a;
             position: relative;
             z-index: 2;
+        }
+
+        body.dark-mode footer {
+            background: rgba(2, 6, 23, 0.74);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .empty-title {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-mode .empty-subtitle {
+            color: #cbd5e1 !important;
         }
     </style>
     <style>
@@ -230,10 +440,20 @@
             animation: pulse-btn 2s infinite;
         }
 
+        body.dark-mode .btn-history {
+            background: linear-gradient(135deg, #334155, #1d4ed8);
+            box-shadow: 0 10px 25px rgba(2, 6, 23, 0.45);
+        }
+
         .btn-history:hover {
             transform: scale(1.1) translateY(-5px);
             box-shadow: 0 15px 35px rgba(37, 99, 235, 0.6);
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        body.dark-mode .btn-history:hover {
+            box-shadow: 0 16px 34px rgba(2, 6, 23, 0.62);
+            background: linear-gradient(135deg, #1e293b, #1d4ed8);
         }
 
         .btn-history:active {
@@ -246,6 +466,7 @@
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
 <body>
 
@@ -356,7 +577,18 @@
         document.head.appendChild(style);
     </script>
 
-    <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+    <div class="page-actions">
+        <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+        <div class="page-actions-right">
+            @if(session('student_id'))
+                <form action="{{ route('student.logout') }}" method="POST" class="logout-form">
+                    @csrf
+                    <button type="submit" class="btn-logout">🚪 Keluar</button>
+                </form>
+            @endif
+            <button class="theme-toggle" type="button" aria-label="Ganti tema">🌙</button>
+        </div>
+    </div>
 
     <header>
         <h1>🌊 Permainan Kelas {{ $student->kelas ?? 'Taman Belajar Sedjati' }} 🫧</h1>
@@ -411,6 +643,30 @@
                     border-color: #3b82f6;
                     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
                 }
+
+                body.dark-mode .filter-section p {
+                    color: #cbd5e1 !important;
+                }
+
+                body.dark-mode .filter-btn {
+                    background: #0b1220;
+                    color: #cbd5e1;
+                    border-color: #1f2937;
+                    box-shadow: 0 8px 18px rgba(2, 6, 23, 0.4);
+                }
+
+                body.dark-mode .filter-btn:hover {
+                    border-color: #60a5fa;
+                    color: #e2e8f0;
+                    box-shadow: 0 10px 22px rgba(2, 6, 23, 0.55);
+                }
+
+                body.dark-mode .filter-btn.active {
+                    background: #2563eb;
+                    border-color: #3b82f6;
+                    color: #ffffff;
+                    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+                }
             </style>
         @endif
 
@@ -432,6 +688,18 @@
                 background: #f0f9ff !important;
                 transform: translateY(-3px);
                 box-shadow: 0 12px 25px rgba(30, 58, 138, 0.3);
+            }
+
+            body.dark-mode .btn-history {
+                background: #0b1220 !important;
+                color: #e2e8f0 !important;
+                border-color: #1f2937;
+                box-shadow: 0 12px 28px rgba(2, 6, 23, 0.55);
+            }
+
+            body.dark-mode .btn-history:hover {
+                background: #111827 !important;
+                box-shadow: 0 14px 32px rgba(2, 6, 23, 0.62);
             }
             
             @keyframes slideIn {
@@ -466,8 +734,8 @@
             </div>
         @empty
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-                <h2 style="color: #1e3a8a; font-size: 2rem;">📭 Belum Ada Game</h2>
-                <p style="color: #334155; font-size: 1.2rem; margin-top: 10px;">
+                <h2 class="empty-title" style="color: #1e3a8a; font-size: 2rem;">📭 Belum Ada Game</h2>
+                <p class="empty-subtitle" style="color: #334155; font-size: 1.2rem; margin-top: 10px;">
                     Tenang, game baru sedang disiapkan guru. Coba lagi sebentar lagi ya!
                 </p>
             </div>
@@ -477,6 +745,33 @@
     <footer>
         <p>&copy; 2026 Taman Belajar Sedjati. Belajar bahasa jadi menyenangkan!</p>
     </footer>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const storageKey = 'app-theme';
+
+        const setTheme = (mode) => {
+            body.classList.toggle('dark-mode', mode === 'dark');
+            if (themeToggle) {
+                themeToggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', mode === 'dark' ? 'Tema terang' : 'Tema gelap');
+            }
+        };
+
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            setTheme(savedTheme);
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const nextTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+                localStorage.setItem(storageKey, nextTheme);
+                setTheme(nextTheme);
+            });
+        }
+    </script>
 
 </body>
 </html>
