@@ -891,15 +891,27 @@
         position: fixed;
         top: 0;
         right: -100%;
-        width: min(82vw, 320px);
-        height: 100vh;
+        width: min(88vw, 360px);
+        height: 100dvh;
         background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        box-shadow: -16px 0 36px rgba(2, 6, 23, 0.18);
+        box-shadow: -20px 0 40px rgba(2, 6, 23, 0.2);
         border-left: 1px solid #e2e8f0;
-        padding: 86px 16px 24px;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        padding: 88px 14px 24px;
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
         overflow-y: auto;
+      }
+
+      #navbar::before {
+        content: 'Menu';
+        position: absolute;
+        top: 22px;
+        left: 14px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
       }
 
       #navbar.active {
@@ -921,12 +933,13 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        font-size: 1.08rem;
-        font-weight: 700;
+        font-size: 1rem;
+        font-weight: 650;
         width: 100%;
         padding: 12px 14px;
         border-radius: 14px;
-        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
         color: #1e293b;
       }
 
@@ -936,7 +949,8 @@
 
       #navbar ul>li>a:hover {
         transform: none;
-        background: #e2e8f0;
+        background: #eff6ff;
+        border-color: #bfdbfe;
         color: #1d4ed8;
       }
 
@@ -950,7 +964,15 @@
         margin-top: 4px;
         padding: 12px 14px !important;
         border-radius: 14px;
+        background: linear-gradient(135deg, #fde047, #facc15) !important;
+        border: 1px solid #f59e0b !important;
+        color: #1e293b !important;
         box-shadow: none;
+      }
+
+      .nav-login-btn:hover {
+        transform: none !important;
+        box-shadow: none !important;
       }
 
       .custom-dropdown-menu {
@@ -959,16 +981,17 @@
         width: 100%;
         margin-top: 8px !important;
         padding: 8px;
-        border-radius: 14px;
+        border-radius: 12px;
         box-shadow: none;
         border: 1px solid #e2e8f0;
-        background: #ffffff;
+        background: #f8fafc;
       }
 
       .custom-dropdown-item {
         padding: 10px 12px;
         border-radius: 10px;
-        font-size: 1.02rem;
+        font-size: 0.98rem;
+        font-weight: 600;
       }
 
       .dropdown-divider {
@@ -1289,22 +1312,10 @@
 
             <p>{{ Str::limit($game->description, 80) }}</p>
 
-            @if(session('student_id'))
-              {{-- User sudah login --}}
-              @if($game->slug == 'mencocokan-bahasa-inggris-arab' || $game->slug == 'tts-alat-tulis' || $game->slug == 'menghitung-huruf-hijaiyah')
-                <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
-                  @csrf
-                  <button type="submit" class="game-btn">🚀 Mainkan</button>
-                </form>
-              @else
-                <!-- For custom games -->
-                <a href="{{ route('games.show', $game->slug) }}" class="game-btn"
-                  style="text-decoration: none; display: inline-block;">🚀 Mainkan</a>
-              @endif
-            @else
-              {{-- User belum login - tampilkan modal login --}}
-              <button type="button" class="game-btn" onclick="showLoginModal()">🚀 Mainkan</button>
-            @endif
+            <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
+              @csrf
+              <button type="submit" class="game-btn">🚀 Mainkan</button>
+            </form>
           </div>
         @empty
           <div
@@ -1349,19 +1360,12 @@
               </div>
             @endif
             <p>{{ Str::limit($game->description, 80) }}</p>
-            @if(session('student_id'))
-              <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">
-                  🚀 Ayo Mainkan Sekarang
-                </button>
-              </form>
-            @else
-              <button type="button" class="game-btn" style="border: none; cursor: pointer; width: 100%;"
-                onclick="showLoginModal()">
+            <form action="{{ route('games.start', $game->slug) }}" method="POST" style="margin: 0;">
+              @csrf
+              <button type="submit" class="game-btn" style="border: none; cursor: pointer; width: 100%;">
                 🚀 Ayo Mainkan Sekarang
               </button>
-            @endif
+            </form>
           </div>
         @empty
           <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">

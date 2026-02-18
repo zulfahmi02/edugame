@@ -16,6 +16,22 @@
         .form-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 500; }
         .form-group input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; }
         .form-group input:focus { outline: none; border-color: #667eea; }
+        .password-field { position: relative; }
+        .password-field input { padding-right: 46px; }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            color: #64748b;
+            padding: 2px;
+            line-height: 1;
+        }
+        .password-toggle:hover { color: #4338ca; }
         .form-actions { display: flex; gap: 10px; margin-top: 30px; }
         .btn { padding: 12px 30px; border-radius: 8px; text-decoration: none; font-size: 14px; border: none; cursor: pointer; transition: all 0.3s; }
         .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
@@ -51,7 +67,10 @@
 
                 <div class="form-group">
                     <label for="password">Kata Sandi Baru (Kosongkan jika tidak ingin mengubah)</label>
-                    <input type="password" id="password" name="password" placeholder="Minimal 6 karakter">
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" placeholder="Minimal 6 karakter">
+                        <button type="button" class="password-toggle" aria-label="Tampilkan password" onclick="togglePassword('password', this)">👁️</button>
+                    </div>
                     <small style="color: #666; display: block; margin-top: 5px;">Isi hanya jika ingin mengganti password</small>
                 </div>
 
@@ -62,5 +81,17 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function togglePassword(fieldId, button) {
+            const input = document.getElementById(fieldId);
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            button.textContent = isPassword ? '🙈' : '👁️';
+            button.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
+        }
+    </script>
 </body>
 </html>

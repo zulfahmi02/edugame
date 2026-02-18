@@ -843,95 +843,60 @@
     </nav>
 
     <script>
-        // Collapsible Search Box for Mobile
         const searchBox = document.querySelector('.search-box');
-        const searchIcon = document.querySelector('.search-icon');
-        const searchInput = document.querySelector('.search-box input');
+        const searchIcon = searchBox?.querySelector('.search-icon');
+        const searchInput = document.getElementById('searchInput');
+        const sectionCards = Array.from(document.querySelectorAll('.section-card'));
 
-        // Initialize collapsed state on mobile
-        if (window.innerWidth <= 768 && searchBox) {
-            searchBox.classList.add('collapsed');
+        const normalizeText = (value) => (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', (event) => {
+                event.preventDefault();
+                searchInput.focus();
+            });
         }
 
-        // Toggle search box on icon click
-        if (searchIcon && searchBox) {
-            searchIcon.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.stopPropagation();
-                    searchBox.classList.toggle('collapsed');
-                    
-                    // Focus input when expanded
-                    if (!searchBox.classList.contains('collapsed')) {
-                        setTimeout(() => searchInput.focus(), 300);
+        if (searchBox && searchInput) {
+            searchBox.addEventListener('click', (event) => {
+                if (event.target !== searchInput) {
+                    searchInput.focus();
+                }
+            });
+        }
+
+        const applyScheduleFilter = () => {
+            const query = normalizeText(searchInput?.value);
+
+            sectionCards.forEach((card) => {
+                const scheduleItems = Array.from(card.querySelectorAll('.schedule-item'));
+
+                if (scheduleItems.length === 0) {
+                    const cardMatches = query === '' || normalizeText(card.textContent).includes(query);
+                    card.style.display = cardMatches ? '' : 'none';
+                    return;
+                }
+
+                const dayTitleText = normalizeText(card.querySelector('.day-title')?.textContent || '');
+                const dayMatches = query !== '' && dayTitleText.includes(query);
+                let visibleItems = 0;
+
+                scheduleItems.forEach((item) => {
+                    const itemMatches = query === '' || dayMatches || normalizeText(item.textContent).includes(query);
+                    item.style.display = itemMatches ? '' : 'none';
+                    if (itemMatches) {
+                        visibleItems += 1;
                     }
-                }
+                });
+
+                card.style.display = (query === '' || dayMatches || visibleItems > 0) ? '' : 'none';
             });
-        }
+        };
 
-        // Auto-collapse when input loses focus
-        if (searchInput && searchBox) {
-            searchInput.addEventListener('blur', () => {
-                if (window.innerWidth <= 768) {
-                    setTimeout(() => {
-                        searchBox.classList.add('collapsed');
-                    }, 200);
-                }
-            });
-        }
-
-        // Collapse search when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && searchBox && !searchBox.contains(e.target)) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && searchBox) {
-                searchBox.classList.remove('collapsed');
-            } else if (window.innerWidth <= 768 && searchBox) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Search functionality
         if (searchInput) {
-            searchInput.addEventListener('input', function (e) {
-                const query = e.target.value.toLowerCase();
-                const items = document.querySelectorAll('.schedule-item');
-                // Note: logic might differ for schedules, simplified for now
-                items.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    if (text.includes(query)) {
-                        item.style.display = 'flex'; // grid or flex? schedule-item check css
-                        // It seems schedule-item structure is flex or block.
-                        // Let's check css for schedule-item. 
-                        // Assuming 'flex' or check display style.
-                        // Wait, schedule-item might be flex. 
-                        // I'll set it to '' (empty string) to revert to css default?
-                        // Or just toggle a hidden class. But style.display is standard.
-                        // Let's assume 'flex' because user didn't complain about search yet.
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                
-                // Hide section if all items hidden
-                document.querySelectorAll('.section-card').forEach(card => {
-                    const visibleItems = card.querySelectorAll('.schedule-item:not([style*="display: none"])');
-                    if (visibleItems.length === 0) {
-                        card.style.display = 'none';
-                    } else {
-                        card.style.display = 'block';
-                    }
-                });
-            });
+            searchInput.addEventListener('input', applyScheduleFilter);
+            applyScheduleFilter();
         }
-
-        // Prevent search box from triggering sidebar (legacy code cleanup)
-        // ... (removed obsolete sidebar code)
     </script>
     <script>
         function confirmLogout(event) {

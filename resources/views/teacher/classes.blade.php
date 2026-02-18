@@ -1136,70 +1136,61 @@
     </nav>
 
     <script>
-        // Collapsible Search Box for Mobile
         const searchBox = document.querySelector('.search-box');
-        const searchIcon = document.querySelector('.search-icon');
-        const searchInput = document.querySelector('.search-box input');
+        const searchIcon = searchBox?.querySelector('.search-icon');
+        const searchInput = document.getElementById('searchInput');
+        const classCards = Array.from(document.querySelectorAll('.class-card'));
 
-        // Initialize collapsed state on mobile
-        if (window.innerWidth <= 768 && searchBox) {
-            searchBox.classList.add('collapsed');
+        const normalizeText = (value) => (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', (event) => {
+                event.preventDefault();
+                searchInput.focus();
+            });
         }
 
-        // Toggle search box on icon click
-        if (searchIcon && searchBox) {
-            searchIcon.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.stopPropagation();
-                    searchBox.classList.toggle('collapsed');
-                    
-                    // Focus input when expanded
-                    if (!searchBox.classList.contains('collapsed')) {
-                        setTimeout(() => searchInput.focus(), 300);
+        if (searchBox && searchInput) {
+            searchBox.addEventListener('click', (event) => {
+                if (event.target !== searchInput) {
+                    searchInput.focus();
+                }
+            });
+        }
+
+        const applySearchFilter = () => {
+            const query = normalizeText(searchInput?.value);
+
+            classCards.forEach((card) => {
+                const gameItems = Array.from(card.querySelectorAll('.game-item'));
+                const headerText = normalizeText(
+                    `${card.querySelector('.class-name')?.textContent || ''} ${card.querySelector('.class-count')?.textContent || ''}`
+                );
+
+                if (gameItems.length === 0) {
+                    const cardMatches = query === '' || normalizeText(card.textContent).includes(query);
+                    card.style.display = cardMatches ? '' : 'none';
+                    return;
+                }
+
+                const headerMatches = query !== '' && headerText.includes(query);
+                let visibleGames = 0;
+
+                gameItems.forEach((item) => {
+                    const itemMatches = query === '' || headerMatches || normalizeText(item.textContent).includes(query);
+                    item.style.display = itemMatches ? 'flex' : 'none';
+                    if (itemMatches) {
+                        visibleGames += 1;
                     }
-                }
-            });
-        }
-
-        // Auto-collapse when input loses focus
-        if (searchInput && searchBox) {
-            searchInput.addEventListener('blur', () => {
-                if (window.innerWidth <= 768) {
-                    setTimeout(() => {
-                        searchBox.classList.add('collapsed');
-                    }, 200);
-                }
-            });
-        }
-
-        // Collapse search when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && searchBox && !searchBox.contains(e.target)) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && searchBox) {
-                searchBox.classList.remove('collapsed');
-            } else if (window.innerWidth <= 768 && searchBox) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Search functionality
-        const searchInputEl = document.getElementById('searchInput');
-        if (searchInputEl) {
-            searchInputEl.addEventListener('input', function (e) {
-                const query = e.target.value.toLowerCase();
-                const gameItems = document.querySelectorAll('.game-item');
-                gameItems.forEach(item => {
-                    const title = item.querySelector('.game-title')?.textContent.toLowerCase() || '';
-                    const meta = item.querySelector('.game-meta')?.textContent.toLowerCase() || '';
-                    item.style.display = (title.includes(query) || meta.includes(query)) ? 'flex' : 'none';
                 });
+
+                card.style.display = (query === '' || headerMatches || visibleGames > 0) ? '' : 'none';
             });
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', applySearchFilter);
+            applySearchFilter();
         }
 
         // Hamburger Menu Toggle
@@ -1208,6 +1199,10 @@
         const sidebarOverlay = document.getElementById('sidebarOverlay');
 
         const toggleSidebar = () => {
+            if (!sidebar || !sidebarOverlay || !hamburgerBtn) {
+                return;
+            }
+
             sidebar.classList.toggle('active');
             sidebarOverlay.classList.toggle('active');
             hamburgerBtn.classList.toggle('active');
@@ -1242,10 +1237,10 @@
 
         // Close sidebar on window resize if it's open and screen becomes larger
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+            if (window.innerWidth > 768 && sidebar && sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                hamburgerBtn.classList.remove('active');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });

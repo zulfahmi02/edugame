@@ -1127,99 +1127,62 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Tab filtering
-        document.querySelectorAll('.tab-item').forEach(tab => {
-            tab.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                // Update active tab
-                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-
-                const filter = this.dataset.filter;
-                const cards = document.querySelectorAll('.game-card');
-
-                cards.forEach(card => {
-                    if (filter === 'all' || card.dataset.status === filter) {
-                        card.style.display = 'block';
-                    } else if (filter === 'shared') {
-                        card.style.display = 'none';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
-
-
-    <script>
-        // Collapsible Search Box for Mobile
+        const tabItems = Array.from(document.querySelectorAll('.tab-item'));
+        const gameCards = Array.from(document.querySelectorAll('.game-card'));
         const searchBox = document.querySelector('.search-box');
-        const searchIcon = document.querySelector('.search-icon');
-        const searchInput = document.querySelector('.search-box input');
+        const searchIcon = searchBox?.querySelector('.search-icon');
+        const searchInput = document.getElementById('searchInput');
+        let activeFilter = 'all';
 
-        // Initialize collapsed state on mobile
-        if (window.innerWidth <= 768 && searchBox) {
-            searchBox.classList.add('collapsed');
+        const normalizeText = (value) => (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+
+        const applyGameFilters = () => {
+            const query = normalizeText(searchInput?.value);
+
+            gameCards.forEach((card) => {
+                const cardStatus = card.dataset.status || '';
+                const cardText = normalizeText(`${card.dataset.title || ''} ${card.textContent || ''}`);
+                const statusMatches = activeFilter === 'all'
+                    ? true
+                    : activeFilter === 'shared'
+                        ? false
+                        : cardStatus === activeFilter;
+                const searchMatches = query === '' || cardText.includes(query);
+
+                card.style.display = (statusMatches && searchMatches) ? 'block' : 'none';
+            });
+        };
+
+        tabItems.forEach((tab) => {
+            tab.addEventListener('click', (event) => {
+                event.preventDefault();
+                tabItems.forEach((item) => item.classList.remove('active'));
+                tab.classList.add('active');
+                activeFilter = tab.dataset.filter || 'all';
+                applyGameFilters();
+            });
+        });
+
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', (event) => {
+                event.preventDefault();
+                searchInput.focus();
+            });
         }
 
-        // Toggle search box on icon click
-        if (searchIcon && searchBox) {
-            searchIcon.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.stopPropagation();
-                    searchBox.classList.toggle('collapsed');
-                    
-                    // Focus input when expanded
-                    if (!searchBox.classList.contains('collapsed')) {
-                        setTimeout(() => searchInput.focus(), 300);
-                    }
+        if (searchBox && searchInput) {
+            searchBox.addEventListener('click', (event) => {
+                if (event.target !== searchInput) {
+                    searchInput.focus();
                 }
             });
         }
 
-        // Auto-collapse when input loses focus
-        if (searchInput && searchBox) {
-            searchInput.addEventListener('blur', () => {
-                if (window.innerWidth <= 768) {
-                    setTimeout(() => {
-                        searchBox.classList.add('collapsed');
-                    }, 200);
-                }
-            });
+        if (searchInput) {
+            searchInput.addEventListener('input', applyGameFilters);
         }
 
-        // Collapse search when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && searchBox && !searchBox.contains(e.target)) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && searchBox) {
-                searchBox.classList.remove('collapsed');
-            } else if (window.innerWidth <= 768 && searchBox) {
-                searchBox.classList.add('collapsed');
-            }
-        });
-
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-            const query = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.game-card');
-
-            cards.forEach(card => {
-                const title = card.dataset.title.toLowerCase();
-                if (title.includes(query)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+        applyGameFilters();
 
         // Delete confirmation
         document.querySelectorAll('.delete-form').forEach(form => {
@@ -1242,9 +1205,6 @@
                 });
             });
         });
-
-        // Prevent search box from triggering sidebar (legacy code cleanup)
-        // ... (removed obsolete sidebar code)
     </script>
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="bottom-nav" style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important; width: 100% !important;">

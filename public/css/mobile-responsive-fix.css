@@ -257,6 +257,99 @@ iframe {
         height: 280px !important;
     }
 
+    /* Keep search input usable on mobile (disable collapsed-only icon state). */
+    .search-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .search-box.collapsed {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        border-radius: 14px !important;
+        justify-content: flex-start !important;
+    }
+
+    .search-box.collapsed input {
+        width: 100% !important;
+        max-width: 100% !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        margin-left: 0.5rem !important;
+        position: static !important;
+    }
+
+    .search-box.collapsed .search-icon {
+        margin-right: 0 !important;
+    }
+
+    /* Responsive patch for custom templates: Word Magnet + Word Search. */
+    .magnet-game,
+    .wordsearch-game {
+        padding: 14px !important;
+    }
+
+    .question-box,
+    .hint-box {
+        font-size: clamp(1rem, 4.4vw, 1.2rem) !important;
+        line-height: 1.35 !important;
+        margin-bottom: 16px !important;
+    }
+
+    .magnet-board {
+        gap: 8px !important;
+        margin-bottom: 16px !important;
+        min-height: 0 !important;
+    }
+
+    .word-magnet {
+        padding: 10px 12px !important;
+        font-size: clamp(0.82rem, 3.6vw, 1rem) !important;
+        line-height: 1.2 !important;
+        max-width: 100% !important;
+        word-break: break-word !important;
+        text-align: center !important;
+    }
+
+    .answer-zone {
+        min-height: 72px !important;
+        padding: 14px !important;
+        font-size: 0.92rem !important;
+        line-height: 1.45 !important;
+    }
+
+    .magnet-reset {
+        width: 100% !important;
+        max-width: 240px !important;
+    }
+
+    .word-grid {
+        width: min(100%, 460px) !important;
+        max-width: 100% !important;
+        margin-bottom: 16px !important;
+        padding: 10px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .grid-cell {
+        width: clamp(26px, 8vw, 40px) !important;
+        height: clamp(26px, 8vw, 40px) !important;
+        font-size: clamp(0.78rem, 3.8vw, 1rem) !important;
+    }
+
+    .answer-box {
+        max-width: 100% !important;
+    }
+
+    .answer-box input {
+        font-size: 16px !important;
+        padding: 12px 14px !important;
+    }
+
     /* Ensure wide tables scroll on mobile */
     .table-section,
     .table-responsive {
