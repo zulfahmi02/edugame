@@ -293,10 +293,9 @@ iframe {
     }
 
     .wordsearch-game {
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        overflow-x: hidden !important;
     }
 
     .question-box,
@@ -334,19 +333,24 @@ iframe {
     }
 
     .word-grid {
-        width: max-content !important;
-        max-width: none !important;
+        display: grid !important;
+        grid-template-columns: repeat(var(--ws-cols, 8), minmax(0, 1fr)) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin-bottom: 16px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        padding: 8px !important;
-        gap: 4px !important;
+        padding: 6px !important;
+        gap: 3px !important;
+        box-sizing: border-box !important;
     }
 
     .grid-cell {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.95rem !important;
+        width: auto !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+        font-size: clamp(0.75rem, 2.8vw, 0.95rem) !important;
+        line-height: 1 !important;
     }
 
     .answer-box {

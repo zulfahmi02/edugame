@@ -485,28 +485,37 @@
 
                 const columnCount = Math.max(1, Math.round(Math.sqrt(cells.length)));
                 const gameBox = grid.closest('.wordsearch-game') || grid.parentElement;
-                const containerWidth = Math.max(220, gameBox?.clientWidth || window.innerWidth || 320);
-                const gridStyles = window.getComputedStyle(grid);
-                const gap = parseFloat(gridStyles.columnGap || gridStyles.gap || '4') || 4;
-                const safePadding = 20; // keep room for card padding on mobile
-                const rawCellSize = (containerWidth - safePadding - (gap * (columnCount - 1))) / columnCount;
-                const cellSize = Math.max(24, Math.min(40, Math.floor(rawCellSize)));
-                const fontSize = Math.max(14, Math.round(cellSize * 0.46));
+                const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-                grid.style.setProperty('grid-template-columns', `repeat(${columnCount}, ${cellSize}px)`, 'important');
-                grid.style.setProperty('width', 'max-content', 'important');
-                grid.style.setProperty('max-width', 'none', 'important');
-                grid.style.setProperty('margin-left', 'auto', 'important');
-                grid.style.setProperty('margin-right', 'auto', 'important');
+                grid.style.setProperty('--ws-cols', String(columnCount));
+
+                if (!isMobile) {
+                    return;
+                }
+
+                const boxWidth = Math.max(240, gameBox?.clientWidth || window.innerWidth || 320);
+                const gap = 3;
+                const horizontalPadding = 12; // 6px left + 6px right
+                const rawCellSize = (boxWidth - horizontalPadding - (gap * (columnCount - 1))) / columnCount;
+                const cellSize = Math.max(22, Math.floor(rawCellSize));
+                const fontSize = Math.max(12, Math.min(18, Math.floor(cellSize * 0.46)));
+
+                grid.style.setProperty('display', 'grid', 'important');
+                grid.style.setProperty('grid-template-columns', `repeat(${columnCount}, minmax(0, 1fr))`, 'important');
+                grid.style.setProperty('width', '100%', 'important');
+                grid.style.setProperty('max-width', '100%', 'important');
+                grid.style.setProperty('padding', '6px', 'important');
+                grid.style.setProperty('gap', `${gap}px`, 'important');
+                grid.style.setProperty('box-sizing', 'border-box', 'important');
 
                 if (gameBox) {
-                    gameBox.style.setProperty('overflow-x', 'auto', 'important');
-                    gameBox.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+                    gameBox.style.setProperty('overflow-x', 'hidden', 'important');
                 }
 
                 cells.forEach((cell) => {
-                    cell.style.setProperty('width', `${cellSize}px`, 'important');
-                    cell.style.setProperty('height', `${cellSize}px`, 'important');
+                    cell.style.setProperty('width', 'auto', 'important');
+                    cell.style.setProperty('height', 'auto', 'important');
+                    cell.style.setProperty('aspect-ratio', '1 / 1', 'important');
                     cell.style.setProperty('font-size', `${fontSize}px`, 'important');
                 });
             };
