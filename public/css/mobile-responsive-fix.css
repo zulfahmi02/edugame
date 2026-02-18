@@ -292,6 +292,13 @@ iframe {
         padding: 14px !important;
     }
 
+    .wordsearch-game {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
     .question-box,
     .hint-box {
         font-size: clamp(1rem, 4.4vw, 1.2rem) !important;
@@ -327,18 +334,19 @@ iframe {
     }
 
     .word-grid {
-        width: min(100%, 460px) !important;
-        max-width: 100% !important;
+        width: max-content !important;
+        max-width: none !important;
         margin-bottom: 16px !important;
-        padding: 10px !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 8px !important;
+        gap: 4px !important;
     }
 
     .grid-cell {
-        width: clamp(26px, 8vw, 40px) !important;
-        height: clamp(26px, 8vw, 40px) !important;
-        font-size: clamp(0.78rem, 3.8vw, 1rem) !important;
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.95rem !important;
     }
 
     .answer-box {
@@ -348,6 +356,11 @@ iframe {
     .answer-box input {
         font-size: 16px !important;
         padding: 12px 14px !important;
+    }
+
+    .answer-hint {
+        color: #475569 !important;
+        font-size: 12px !important;
     }
 
     /* Ensure wide tables scroll on mobile */

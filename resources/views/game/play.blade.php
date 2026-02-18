@@ -467,6 +467,61 @@
                 }
             });
 
+        function setupWordSearchResponsiveLayout() {
+            if (templateType !== 'word_search') {
+                return;
+            }
+
+            const grid = document.getElementById('word-grid');
+            if (!grid) {
+                return;
+            }
+
+            const fitGrid = () => {
+                const cells = Array.from(grid.querySelectorAll('.grid-cell'));
+                if (cells.length === 0) {
+                    return;
+                }
+
+                const columnCount = Math.max(1, Math.round(Math.sqrt(cells.length)));
+                const gameBox = grid.closest('.wordsearch-game') || grid.parentElement;
+                const containerWidth = Math.max(220, gameBox?.clientWidth || window.innerWidth || 320);
+                const gridStyles = window.getComputedStyle(grid);
+                const gap = parseFloat(gridStyles.columnGap || gridStyles.gap || '4') || 4;
+                const safePadding = 20; // keep room for card padding on mobile
+                const rawCellSize = (containerWidth - safePadding - (gap * (columnCount - 1))) / columnCount;
+                const cellSize = Math.max(24, Math.min(40, Math.floor(rawCellSize)));
+                const fontSize = Math.max(14, Math.round(cellSize * 0.46));
+
+                grid.style.setProperty('grid-template-columns', `repeat(${columnCount}, ${cellSize}px)`, 'important');
+                grid.style.setProperty('width', 'max-content', 'important');
+                grid.style.setProperty('max-width', 'none', 'important');
+                grid.style.setProperty('margin-left', 'auto', 'important');
+                grid.style.setProperty('margin-right', 'auto', 'important');
+
+                if (gameBox) {
+                    gameBox.style.setProperty('overflow-x', 'auto', 'important');
+                    gameBox.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+                }
+
+                cells.forEach((cell) => {
+                    cell.style.setProperty('width', `${cellSize}px`, 'important');
+                    cell.style.setProperty('height', `${cellSize}px`, 'important');
+                    cell.style.setProperty('font-size', `${fontSize}px`, 'important');
+                });
+            };
+
+            fitGrid();
+            window.addEventListener('resize', fitGrid);
+            window.addEventListener('orientationchange', () => setTimeout(fitGrid, 120));
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupWordSearchResponsiveLayout);
+        } else {
+            setupWordSearchResponsiveLayout();
+        }
+
         // Function to select option (for multiple choice)
         function selectOption(element, value) {
             // Remove selected class from all options
