@@ -28,23 +28,25 @@ return [
 </div>',
     'css_style' => '
 .iframe-container { text-align: center; padding: 10px; }
-.iframe-display { 
-    background: #000; 
-    border-radius: 20px; 
-    overflow: hidden; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+.iframe-display {
+    background: #1a1a2e;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     margin-bottom: 25px;
     position: relative;
-    padding-bottom: 75%; /* Aspect ratio 4:3 */
-    height: 0;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 400px;
 }
-.iframe-display iframe { 
+.iframe-display iframe {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100% !important; 
-    height: 100% !important; 
+    width: 100% !important;
+    height: 100% !important;
     border: none;
+    border-radius: 18px;
 }
 .score-input-card {
     background: white;
@@ -79,10 +81,10 @@ return [
 }
 .btn-score-save:hover { transform: scale(1.05); }
 .score-note { font-size: 0.8rem; margin-top: 15px; font-style: italic; }
-
-@media (min-width: 768px) {
+@media (max-width: 768px) {
     .iframe-display {
-        padding-bottom: 56.25%; /* Aspect ratio 16:9 on desktop */
+        aspect-ratio: 4 / 3;
+        min-height: 280px;
     }
 }',
     'js_code' => '

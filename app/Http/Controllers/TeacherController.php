@@ -294,7 +294,7 @@ class TeacherController extends Controller
                 $path = $image->store('games/images', 'public');
                 $images[] = $path;
             }
-            $gameImages = json_encode($images);
+            $gameImages = $images; // Model cast handles JSON encoding automatically
         }
 
         $game = Game::create([
@@ -304,7 +304,7 @@ class TeacherController extends Controller
             'slug' => $this->generateUniqueSlug($request->title),
             'description' => $request->description,
             'category' => $request->category,
-            'class' => $request->filled('class') ? $request->class : null,
+            'class' => $request->filled('class') ? $request->input('class') : null,
             'game_images' => $gameImages,
             'is_active' => true,
             'order' => 0,
@@ -358,9 +358,21 @@ class TeacherController extends Controller
         }
 
         // Handle image uploads
-        $gameImages = $game->game_images; // Keep existing images
+        // Decode existing images (handle double-encoded legacy data)
+        $existingRaw = $game->game_images;
+        if (is_array($existingRaw)) {
+            $existingImages = $existingRaw;
+        } elseif (is_string($existingRaw)) {
+            $existingImages = json_decode($existingRaw, true) ?? [];
+            if (is_string($existingImages)) {
+                $existingImages = json_decode($existingImages, true) ?? [];
+            }
+        } else {
+            $existingImages = [];
+        }
+        $gameImages = $existingImages; // start from clean array
+
         if ($request->hasFile('game_images')) {
-            $existingImages = is_string($gameImages) ? json_decode($gameImages, true) : ($gameImages ?? []);
             $newImages = [];
             $files = $request->file('game_images');
 
@@ -373,9 +385,8 @@ class TeacherController extends Controller
                 $newImages[] = $path;
             }
 
-            // Merge existing and new images
-            $allImages = array_merge($existingImages, $newImages);
-            $gameImages = json_encode($allImages);
+            // Merge existing and new images as plain array (model cast handles encoding)
+            $gameImages = array_merge($existingImages, $newImages);
         }
 
         $game->update([
@@ -383,7 +394,7 @@ class TeacherController extends Controller
             'slug' => $this->generateUniqueSlug($request->title, $game->id),
             'description' => $request->description,
             'category' => $request->category,
-            'class' => $request->filled('class') ? $request->class : null,
+            'class' => $request->filled('class') ? $request->input('class') : null,
             'is_active' => $isActive,
             'game_images' => $gameImages,
         ]);
@@ -771,9 +782,14 @@ class TeacherController extends Controller
             $correctAnswer = strtoupper(trim((string) $request->correct_answer));
         } elseif ($templateType === 'iframe_embed') {
             $request->validate([
-                'question_text' => 'required|string',
+                'question_text' => 'nullable|string',
                 'correct_answer' => 'required|string',
             ]);
+
+            // Auto-fill if empty
+            if (!$request->question_text) {
+                $request->merge(['question_text' => 'Mainkan game di bawah ini']);
+            }
 
             $options = null;
             $correctAnswer = $request->correct_answer; // No trimming/uppercasing to preserve iframe code

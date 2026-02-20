@@ -44,7 +44,10 @@
     $safeQuestionText = e((string) $displayQuestionText);
     $safeQuestionImageUrl = e((string) ($questionImageUrl ?: $gameImageUrl));
     $safeGameImageUrl = e((string) $gameImageUrl);
-    $safeCorrectAnswer = e((string) $question->correct_answer);
+    // For iframe_embed, correct_answer contains raw iframe HTML - do NOT escape it
+    $safeCorrectAnswer = ($templateType === 'iframe_embed')
+        ? (string) $question->correct_answer
+        : e((string) $question->correct_answer);
 
     $templateReplacements = [
         '{{question}}' => $safeQuestionText,

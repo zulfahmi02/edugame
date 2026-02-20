@@ -717,8 +717,26 @@
         @forelse($games as $game)
             <div class="game-card">
                 <div class="game-placeholder">
-                    @if($game->thumbnail)
-                        <img src="{{ asset($game->thumbnail) }}" alt="{{ $game->title }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                    @php
+                        $rawGI = $game->game_images;
+                        if (is_array($rawGI)) {
+                            $gameImagesArr = $rawGI;
+                        } elseif (is_string($rawGI)) {
+                            $gameImagesArr = json_decode($rawGI, true) ?? [];
+                            // Handle double-encoded: if still a string, decode again
+                            if (is_string($gameImagesArr)) {
+                                $gameImagesArr = json_decode($gameImagesArr, true) ?? [];
+                            }
+                        } else {
+                            $gameImagesArr = [];
+                        }
+                        $firstImg = $gameImagesArr[0] ?? null;
+                        $cardImage = $game->thumbnail
+                            ? asset($game->thumbnail)
+                            : ($firstImg ? \Illuminate\Support\Facades\Storage::url($firstImg) : null);
+                    @endphp
+                    @if($cardImage)
+                        <img src="{{ $cardImage }}" alt="{{ $game->title }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
                     @else
                         🎮
                     @endif
