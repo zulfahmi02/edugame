@@ -1342,7 +1342,26 @@
         @endphp
 
         @forelse($teacherGames as $game)
+          @php
+            $rawGI = $game->game_images;
+            if (is_array($rawGI)) {
+                $gImgs = $rawGI;
+            } elseif (is_string($rawGI)) {
+                $gImgs = json_decode($rawGI, true) ?? [];
+                if (is_string($gImgs)) { $gImgs = json_decode($gImgs, true) ?? []; }
+            } else {
+                $gImgs = [];
+            }
+            $thumbImg = $game->thumbnail
+                ? asset($game->thumbnail)
+                : (!empty($gImgs[0]) ? \Illuminate\Support\Facades\Storage::url($gImgs[0]) : null);
+          @endphp
           <div class="game-card">
+            @if($thumbImg)
+              <div style="width:100%;height:160px;border-radius:15px 15px 0 0;overflow:hidden;margin-bottom:15px;">
+                <img src="{{ $thumbImg }}" alt="{{ $game->title }}" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+            @else
             <div class="card-icon">
               @if($game->template)
                 {{ $game->template->icon }}
@@ -1350,6 +1369,7 @@
                 📚
               @endif
             </div>
+            @endif
             <h3>{{ $game->title }}</h3>
             @if($game->class)
               <div style="margin-bottom: 15px;">

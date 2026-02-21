@@ -72,6 +72,9 @@ Route::middleware(['CheckTeacherLogin'])->group(function () {
     Route::put('/teacher/games/{id}/questions/{questionId}', [App\Http\Controllers\TeacherController::class, 'updateQuestion'])->name('teacher.games.questions.update');
     Route::delete('/teacher/games/{id}/questions/{questionId}', [App\Http\Controllers\TeacherController::class, 'deleteQuestion'])->name('teacher.games.questions.delete');
 
+    // Teacher Game Images Management
+    Route::delete('/teacher/games/{id}/images', [App\Http\Controllers\TeacherController::class, 'deleteGameImage'])->name('teacher.games.image.delete');
+
     // Teacher Schedules (View Only - Created by Admin)
     Route::get('/teacher/schedules', [App\Http\Controllers\TeacherController::class, 'schedules'])->name('teacher.schedules');
 });

@@ -1068,12 +1068,33 @@
                                 ];
                                 $templateName = strtolower($game->template->name ?? 'default');
                                 $bgColor = $templateColors[$templateName] ?? $templateColors['default'];
+
+                                // Resolve thumbnail image
+                                $rawGI = $game->game_images;
+                                if (is_array($rawGI)) {
+                                    $gameImagesArr = $rawGI;
+                                } elseif (is_string($rawGI)) {
+                                    $gameImagesArr = json_decode($rawGI, true) ?? [];
+                                    if (is_string($gameImagesArr)) {
+                                        $gameImagesArr = json_decode($gameImagesArr, true) ?? [];
+                                    }
+                                } else {
+                                    $gameImagesArr = [];
+                                }
+                                $firstImg = $gameImagesArr[0] ?? null;
+                                $cardImage = $game->thumbnail
+                                    ? asset($game->thumbnail)
+                                    : ($firstImg ? \Illuminate\Support\Facades\Storage::url($firstImg) : null);
                             @endphp
+                            @if($cardImage)
+                                <img src="{{ $cardImage }}" alt="{{ $game->title }}" style="width:100%;height:100%;object-fit:cover;">
+                            @else
                             <div class="game-thumbnail-placeholder"
                                 style="background: {{ $bgColor }}; width: 100%; height: 100%;">
                                 <div class="game-thumbnail-icon">{{ $game->template->icon ?? '🎯' }}</div>
                                 <div class="game-thumbnail-text">{{ strtoupper($game->template->name ?? 'GAME') }}</div>
                             </div>
+                            @endif
                             <span class="game-badge {{ $game->is_active ? 'badge-published' : 'badge-draft' }}">
                                 {{ $game->is_active ? 'Dipublikasikan' : 'Draf' }}
                             </span>

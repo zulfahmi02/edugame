@@ -708,39 +708,74 @@
                 <!-- Game Images Section -->
                 <div class="mb-3">
                     <label class="form-label">📷 Gambar Game</label>
-                    
-                    @if($game->game_images)
-                        @php
-                            $existingImages = is_string($game->game_images) ? json_decode($game->game_images, true) : $game->game_images;
-                        @endphp
-                        @if(is_array($existingImages) && count($existingImages) > 0)
-                            <div class="mb-3">
-                                <small class="text-muted d-block mb-2">Gambar yang ada:</small>
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                    @foreach($existingImages as $image)
-                                        <div style="position: relative;">
-                                            <img src="{{ asset('storage/' . $image) }}" alt="Gambar Game" 
-                                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
-                                        </div>
-                                    @endforeach
-                                </div>
+
+                    @php
+                        $rawGI = $game->game_images;
+                        if (is_array($rawGI)) {
+                            $existingImages = $rawGI;
+                        } elseif (is_string($rawGI)) {
+                            $existingImages = json_decode($rawGI, true) ?? [];
+                            if (is_string($existingImages)) {
+                                $existingImages = json_decode($existingImages, true) ?? [];
+                            }
+                        } else {
+                            $existingImages = [];
+                        }
+                    @endphp
+
+                    @if(count($existingImages) > 0)
+                        <div class="mb-3 p-3" style="background:#f8fafc; border-radius:10px; border:1px solid #e5e7eb;">
+                            <small class="text-muted d-block mb-2 fw-semibold">📁 Gambar yang ada (klik ✕ untuk hapus):</small>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                @foreach($existingImages as $image)
+                                    <div style="position: relative; display: inline-block;">
+                                        @php
+                                            $imgUrl = \Illuminate\Support\Facades\Storage::url($image);
+                                        @endphp
+                                        <img src="{{ $imgUrl }}" alt="Gambar Game"
+                                            style="width: 110px; height: 110px; object-fit: cover; border-radius: 10px; border: 2px solid #e5e7eb; display:block;">
+                                        {{-- Delete button — form is OUTSIDE the update form to avoid nested form bug --}}
+                                        <button type="button"
+                                            onclick="confirmDeleteImage('{{ $image }}')"
+                                            title="Hapus gambar"
+                                            style="position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:#ef4444;border:none;color:white;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(239,68,68,0.5);transition:transform .15s;">
+                                            ✕
+                                        </button>
+                                    </div>
+                                @endforeach
                             </div>
-                        @endif
+                            @if(count($existingImages) >= 5)
+                                <small class="text-warning d-block mt-2">⚠️ Batas maksimal 5 gambar tercapai. Hapus gambar lama untuk menambah yang baru.</small>
+                            @endif
+                        </div>
+                    @else
+                        <div class="mb-2 p-2" style="background:#f8fafc; border-radius:8px; border:1px dashed #d1d5db;">
+                            <small class="text-muted">Belum ada gambar. Unggah gambar di bawah ini.</small>
+                        </div>
                     @endif
 
-                    <input class="form-control" type="file" id="game_images" name="game_images[]" 
-                        accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
-                    <small class="text-muted">Unggah gambar baru (PNG, JPG, WEBP). Maks 5 gambar, maks 2MB per file.</small>
-                    
-                    <!-- Preview Area -->
-                    <div id="imagePreview" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;"></div>
+                    @if(count($existingImages) < 5)
+                        <input class="form-control" type="file" id="game_images" name="game_images[]"
+                            accept="image/png,image/jpeg,image/jpg,image/webp" multiple>
+                        <small class="text-muted">Tambah gambar baru (PNG, JPG, WEBP). Maks {{ 5 - count($existingImages) }} gambar lagi, maks 2MB per file.</small>
+
+                        <!-- Preview Area -->
+                        <div id="imagePreview" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;"></div>
+                    @endif
                 </div>
 
                 <button type="submit" class="btn-update">
                     💾 Simpan Perubahan
                 </button>
-            </form>
+            </form>{{-- END: update game form --}}
         </div>
+
+        {{-- Single shared delete-image form — placed OUTSIDE the update form --}}
+        <form id="deleteImageForm" action="" method="POST" style="display:none;">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" id="deleteImagePath" name="image_path" value="">
+        </form>
 
         <!-- Questions Section -->
         <div class="section-card">
@@ -1126,6 +1161,32 @@
                 reader.readAsDataURL(file);
             });
         });
+
+        // Custom SweetAlert2 confirmation for image deletion
+        // Uses a single shared form OUTSIDE the update form to avoid nested-form bug
+        function confirmDeleteImage(imagePath) {
+            Swal.fire({
+                title: 'Hapus Gambar?',
+                text: 'Gambar ini akan dihapus secara permanen dan tidak bisa dikembalikan.',
+                icon: 'warning',
+                iconColor: '#ef4444',
+                showCancelButton: true,
+                confirmButtonText: '🗑️ Ya, Hapus!',
+                cancelButtonText: '❌ Batal',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                reverseButtons: true,
+                background: '#fff',
+                backdrop: 'rgba(15,23,42,0.55)',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('deleteImageForm');
+                    form.action = '{{ route("teacher.games.image.delete", $game->id) }}';
+                    document.getElementById('deleteImagePath').value = imagePath;
+                    form.submit();
+                }
+            });
+        }
     </script>
 </body>
 

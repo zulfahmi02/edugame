@@ -347,7 +347,7 @@ class TeacherController extends Controller
             'category' => 'nullable|string|max:255',
             'class' => 'nullable|string|in:1,2,3,4,5,6',
             'game_images' => 'nullable|array|max:5',
-            'game_images.*' => 'nullable|image|max:2048', // Max 2MB per image
+            'game_images.*' => 'sometimes|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
         $isActive = $request->has('is_active');
@@ -376,9 +376,12 @@ class TeacherController extends Controller
             $newImages = [];
             $files = $request->file('game_images');
 
+            // Filter out any non-valid file entries (can happen with empty file inputs)
+            $files = array_filter($files, fn($f) => $f && $f->isValid());
+
             // Limit total images to 5
-            $totalAllowed = 5 - count($existingImages);
-            $filesToProcess = array_slice($files, 0, $totalAllowed);
+            $totalAllowed = max(0, 5 - count($existingImages));
+            $filesToProcess = array_slice(array_values($files), 0, $totalAllowed);
 
             foreach ($filesToProcess as $image) {
                 $path = $image->store('games/images', 'public');
@@ -399,8 +402,8 @@ class TeacherController extends Controller
             'game_images' => $gameImages,
         ]);
 
-        return redirect()->route('teacher.games')
-            ->with('success', 'Game berhasil diupdate!');
+        return redirect()->route('teacher.games.edit', $game->id)
+            ->with('success', 'Game berhasil diupdate! Gambar telah disimpan.');
     }
 
     /**
@@ -861,5 +864,47 @@ class TeacherController extends Controller
 
         return redirect()->route('teacher.games.edit', $game->id)
             ->with('success', 'Soal berhasil dihapus!');
+    }
+
+    /**
+     * Delete a single game image
+     */
+    public function deleteGameImage(Request $request, $id)
+    {
+        if (!session('teacher_id')) {
+            return redirect()->route('teacher.login');
+        }
+
+        $game = Game::where('id', $id)
+            ->where('teacher_id', session('teacher_id'))
+            ->firstOrFail();
+
+        $imageToDelete = $request->input('image_path');
+
+        // Decode existing images
+        $existingRaw = $game->game_images;
+        if (is_array($existingRaw)) {
+            $existingImages = $existingRaw;
+        } elseif (is_string($existingRaw)) {
+            $existingImages = json_decode($existingRaw, true) ?? [];
+            if (is_string($existingImages)) {
+                $existingImages = json_decode($existingImages, true) ?? [];
+            }
+        } else {
+            $existingImages = [];
+        }
+
+        // Remove the specific image
+        $updatedImages = array_values(array_filter($existingImages, fn($img) => $img !== $imageToDelete));
+
+        // Delete the actual file from storage
+        if (Storage::disk('public')->exists($imageToDelete)) {
+            Storage::disk('public')->delete($imageToDelete);
+        }
+
+        $game->update(['game_images' => count($updatedImages) > 0 ? $updatedImages : null]);
+
+        return redirect()->route('teacher.games.edit', $game->id)
+            ->with('success', 'Gambar berhasil dihapus!');
     }
 }
