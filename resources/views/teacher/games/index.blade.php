@@ -796,15 +796,23 @@
             }
 
             .header {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                gap: 1rem;
-                flex-wrap: nowrap;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
                 padding: 1rem;
                 background: white;
                 border-radius: 16px;
                 margin-bottom: 1rem;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .header-right {
+                width: 100%;
             }
 
             .user-info-header {
@@ -826,38 +834,20 @@
                 display: flex;
             }
 
+            /* Search box: full-width, always visible on mobile */
             .search-box {
-                flex: 0 0 auto;
-                min-width: 0;
+                width: 100%;
+                max-width: 100%;
                 position: relative;
                 z-index: 10;
-                max-width: 240px;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center; /* Center icon vertically */
-                justify-content: flex-end; /* Align right */
             }
 
-            /* Collapsible search for mobile */
-            .search-box.collapsed {
-                width: 40px; /* Fixed width for icon */
-                max-width: 40px;
-                background: white; /* Ensure visible background */
-                border-radius: 50%; /* Circular button look */
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
-
-            .search-box.collapsed input {
-                opacity: 0;
-                width: 0;
-                padding: 0;
-                margin: 0;
-            }
-
-            .search-box.collapsed .search-icon {
-                cursor: pointer;
-                font-size: 1.5rem;
-                padding: 0.5rem;
+            .search-box input {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.75rem 1rem 0.75rem 2.75rem;
+                border-radius: 12px;
+                border: 1.5px solid #e2e8f0;
             }
 
             .header-actions {
@@ -889,10 +879,6 @@
                 flex-direction: column;
                 gap: 1rem;
                 text-align: center;
-            }
-
-            .search-box {
-                width: 100%;
             }
 
             .games-grid {
