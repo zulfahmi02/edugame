@@ -1087,7 +1087,7 @@
                         </div>
                         <div class="game-content">
                             <div class="game-category">
-                                KELAS {{ rand(1, 6) }} - {{ strtoupper($game->template->name ?? 'UMUM') }}
+                                KELAS {{ $game->class ?? 'SEMUA' }} - {{ strtoupper($game->template->name ?? 'UMUM') }}
                             </div>
                             <h3 class="game-title">{{ $game->title }}</h3>
                             <div class="game-stats">

@@ -134,22 +134,22 @@ class GameController extends Controller
         $total_score = $history_sessions->sum('total_score');
         $highest_score = $history_sessions->max('total_score') ?? 0;
         
-        // Split Scores: Weekly Games (Bahasa Indonesia) vs Teacher Games
+        // Split Scores: Weekly Games (Admin) vs Teacher Games
         $weekly_game_score = $history_sessions->filter(function ($session) {
-            return $session->game && $session->game->category === 'Bahasa Indonesia';
+            return $session->game && is_null($session->game->teacher_id);
         })->sum('total_score');
 
         $teacher_game_score = $history_sessions->filter(function ($session) {
-            return $session->game && $session->game->category !== 'Bahasa Indonesia';
+            return $session->game && !is_null($session->game->teacher_id);
         })->sum('total_score');
 
         // Split Sessions for Display
         $weekly_sessions = $history_sessions->filter(function ($session) {
-            return $session->game && $session->game->category === 'Bahasa Indonesia';
+            return $session->game && is_null($session->game->teacher_id);
         });
 
         $teacher_sessions = $history_sessions->filter(function ($session) {
-            return $session->game && $session->game->category !== 'Bahasa Indonesia';
+            return $session->game && !is_null($session->game->teacher_id);
         });
 
         // Average Score

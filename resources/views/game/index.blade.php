@@ -598,9 +598,14 @@
                 🎉 Selamat datang, {{ session('student_name') }}! 🎉
             </div>
             <br>
-            <a href="{{ route('games.history') }}" class="btn-history" style="text-decoration: none;">
-                <span style="font-size: 1.5rem;">📜</span> Riwayat Nilai Saya
-            </a>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                <a href="{{ route('games.history') }}" class="btn-history" style="text-decoration: none; margin-top: 0; background: #f0f9ff !important; color: #1e3a8a !important; border: 2px solid #bae6fd !important;">
+                    <span style="font-size: 1.5rem;">📜</span> Riwayat Nilai Saya
+                </a>
+                <a href="{{ route('games.all') }}" class="btn-history" style="text-decoration: none; margin-top: 0; background: #fffbeb !important; color: #92400e !important; border: 2px solid #fde68a !important;">
+                    <span style="font-size: 1.5rem;">🔥</span> Game Spesial Mingguan
+                </a>
+            </div>
         @endif
 
         @if($availableCategories->count() > 0)

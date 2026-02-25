@@ -242,7 +242,7 @@
 
         <!-- Weekly Games History -->
         <div class="history-card" style="margin-bottom: 30px; border-left: 5px solid #FFD700;">
-            <h2 style="margin-bottom: 20px; margin-left: 10px; color: #1e3a8a;">🔥 Riwayat Game Bahasa Mingguan</h2>
+            <h2 style="margin-bottom: 20px; margin-left: 10px; color: #1e3a8a;">🔥 Riwayat Game Mingguan (Admin)</h2>
             
             @forelse($weekly_sessions as $history)
                 <div class="history-item">
