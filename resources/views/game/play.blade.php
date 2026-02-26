@@ -1,9 +1,21 @@
 @php
     $template = $session->game->template;
+    $customEnabled = $session->game->custom_template_enabled;
+    
+    // Determine template type (default to quiz if not set)
     $templateType = $template->template_type ?? 'quiz';
-    $activeHtmlTemplate = $session->game->html_template ?: ($template->html_template ?? null);
-    $activeCssStyle = $session->game->css_style ?: ($template->css_style ?? '');
-    $activeJsCode = $session->game->js_code ?: ($template->js_code ?? '');
+    
+    // Logic: Only use custom fields if custom_template_enabled is TRUE.
+    // Otherwise, always fall back to the selected template's data.
+    if ($customEnabled) {
+        $activeHtmlTemplate = $session->game->html_template ?: ($template->html_template ?? null);
+        $activeCssStyle = $session->game->css_style ?: ($template->css_style ?? '');
+        $activeJsCode = $session->game->js_code ?: ($template->js_code ?? '');
+    } else {
+        $activeHtmlTemplate = $template->html_template ?? null;
+        $activeCssStyle = $template->css_style ?? '';
+        $activeJsCode = $template->js_code ?? '';
+    }
 
     $displayQuestionText = $question->question_text;
     if ($templateType === 'hangman') {
@@ -58,7 +70,11 @@
         '{{question_number}}' => $session->total_questions + 1,
         '{{is_first_question}}' => $session->total_questions == 0 ? 'true' : 'false',
         '{{session_id}}' => $session->id,
+        '{{category}}' => e($session->game->category ?: 'Umum'),
+        '{{game_title}}' => e($session->game->title),
     ];
+
+    $isWeeklyGame = is_null($session->game->teacher_id);
 @endphp
 
 <!DOCTYPE html>
@@ -160,6 +176,35 @@
 
 	        /* Custom CSS from database will be injected here */
 	        {!! $activeCssStyle !!}
+
+        /* Weekly Game Theme (Ocean/Bubbles) */
+        body.is-weekly-game {
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 60%, #FFFFFF 100%) !important;
+            overflow-x: hidden;
+        }
+
+        .bubbles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .bubble {
+            position: absolute; bottom: -150px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+            animation: rise linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-50vh) translateX(30px) rotate(180deg); opacity: 0.8; }
+            100% { transform: translateY(-140vh) translateX(60px) rotate(360deg); opacity: 0; }
+        }
+        .bubble:nth-child(1) { width: 60px; height: 60px; left: 8%; animation-duration: 15s; }
+        .bubble:nth-child(2) { width: 80px; height: 80px; left: 22%; animation-duration: 20s; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 40px; height: 40px; left: 35%; animation-duration: 12s; animation-delay: 5s; }
+        .bubble:nth-child(4) { width: 100px; height: 100px; left: 50%; animation-duration: 22s; animation-delay: 1s; }
+        .bubble:nth-child(5) { width: 70px; height: 70px; left: 65%; animation-duration: 18s; animation-delay: 7s; }
 
         .default-question {
             font-size: 24px;
@@ -376,7 +421,16 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/mobile-responsive-fix.css') }}">
 </head>
-<body>
+<body class="{{ $isWeeklyGame ? 'is-weekly-game' : '' }} theme-{{ Str::slug($session->game->category ?: 'umum') }}">
+    @if($isWeeklyGame)
+        <div class="bubbles">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+        </div>
+    @endif
     <div class="game-header">
         <div class="game-info">
             <h2>{{ $session->game->title }}</h2>

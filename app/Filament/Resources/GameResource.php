@@ -39,9 +39,10 @@ class GameResource extends Resource
                         Forms\Components\Select::make('template_id')
                             ->label('Template Game')
                             ->relationship('template', 'name')
+                            ->required()
                             ->searchable()
                             ->preload()
-                            ->helperText('Pilih template yang akan digunakan (misal: Quiz Pilihan Ganda, TTS, dll).')
+                            ->helperText('Pilih model permainan yang akan digunakan (Quiz, TTS, dsb).')
                             ->visible(fn(Forms\Get $get) => !$get('custom_template_enabled')),
 
                         Forms\Components\TextInput::make('title')
@@ -118,23 +119,32 @@ class GameResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Template Custom')
+                Forms\Components\Section::make('Kustomisasi Lanjutan')
+                    ->description('Hanya gunakan jika Anda ingin memodifikasi kode template secara spesifik untuk game ini.')
                     ->schema([
                         Forms\Components\Toggle::make('custom_template_enabled')
-                            ->label('Gunakan Template Custom')
+                            ->label('Aktifkan Mode Kustom')
                             ->live()
-                            ->helperText('Aktifkan jika ingin menggunakan HTML/CSS/JS custom'),
+                            ->helperText('Jika aktif, kode di bawah akan menimpa template standar.'),
 
                         Forms\Components\Textarea::make('html_template')
-                            ->label('Kode Template Custom (HTML/CSS/JS)')
-                            ->rows(15)
+                            ->label('Kode HTML Kustom')
+                            ->rows(10)
                             ->columnSpanFull()
-                            ->placeholder('Masukkan seluruh kode HTML, <style>, dan <script> di sini')
+                            ->placeholder('Masukkan kode HTML di sini')
                             ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
-
-                        // Hidden fields tetap ada di database untuk kompatibilitas, tapi disembunyikan dari UI
-                        Forms\Components\Hidden::make('css_style'),
-                        Forms\Components\Hidden::make('js_code'),
+                            
+                        Forms\Components\Textarea::make('css_style')
+                            ->label('Kode CSS Kustom')
+                            ->rows(5)
+                            ->columnSpanFull()
+                            ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
+                            
+                        Forms\Components\Textarea::make('js_code')
+                            ->label('Kode JS Kustom')
+                            ->rows(5)
+                            ->columnSpanFull()
+                            ->visible(fn(Forms\Get $get) => $get('custom_template_enabled')),
                     ])
                     ->collapsed()
                     ->columnSpanFull(),
@@ -154,6 +164,63 @@ class GameResource extends Resource
                             ->helperText('Semakin kecil angka, semakin di atas'),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Daftar Soal')
+                    ->schema([
+                        Forms\Components\Repeater::make('questions')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\Textarea::make('question_text')
+                                    ->label('Teks Pertanyaan')
+                                    ->required()
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                                
+                                Forms\Components\FileUpload::make('image')
+                                    ->label('Gambar Pertanyaan')
+                                    ->image()
+                                    ->directory('questions/images')
+                                    ->columnSpanFull(),
+
+                                Forms\Components\TextInput::make('correct_answer')
+                                    ->label('Jawaban Benar')
+                                    ->required(),
+
+                                Forms\Components\KeyValue::make('options')
+                                    ->label('Pilihan Jawaban (JSON)')
+                                    ->keyLabel('Opsi')
+                                    ->valueLabel('Nilai')
+                                    ->addActionLabel('Tambah Opsi'),
+
+                                Forms\Components\Grid::make(3)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('points')
+                                            ->label('Poin')
+                                            ->numeric()
+                                            ->default(10)
+                                            ->required(),
+                                        
+                                        Forms\Components\Select::make('difficulty')
+                                            ->label('Kesulitan')
+                                            ->options([
+                                                'easy' => 'Mudah',
+                                                'medium' => 'Sedang',
+                                                'hard' => 'Sulit',
+                                            ])
+                                            ->default('medium'),
+
+                                        Forms\Components\Toggle::make('is_active')
+                                            ->label('Aktif')
+                                            ->default(true),
+                                    ]),
+                            ])
+                            ->itemLabel(fn (array $state): ?string => $state['question_text'] ?? 'Soal Baru')
+                            ->collapsible()
+                            ->collapsed()
+                            ->addActionLabel('Tambah Soal Baru')
+                            ->columnSpanFull(),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
