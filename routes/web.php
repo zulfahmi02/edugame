@@ -46,6 +46,7 @@ Route::post('/parent/register', [ParentController::class, 'register'])->name('pa
 Route::middleware(['CheckParentLogin'])->group(function () {
     Route::get('/parent/dashboard', [ParentController::class, 'dashboard'])->name('parent.dashboard');
     Route::get('/parent/jadwal', [ParentController::class, 'jadwal'])->name('parent.jadwal');
+    Route::post('/parent/bill/{id}/pay', [ParentController::class, 'payBill'])->name('parent.bill.pay');
     Route::post('/parent/logout', [ParentController::class, 'logout'])->name('parent.logout');
 });
 

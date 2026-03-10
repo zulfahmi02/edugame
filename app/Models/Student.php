@@ -47,4 +47,10 @@ class Student extends Model
     {
         return $this->hasMany(GameSession::class);
     }
+
+    // Relasi ke bills
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

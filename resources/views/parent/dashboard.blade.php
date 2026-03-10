@@ -1362,6 +1362,63 @@
                                 </div>
                             @endif
                         </div>
+
+                        <!-- Bills Table -->
+                        <div class="table-section">
+                            <div class="table-header">
+                                <h2 class="table-title">Tagihan Pembayaran</h2>
+                            </div>
+
+                            @if($allBills[$student->id]->count() > 0)
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nominal</th>
+                                            <th>Tipe</th>
+                                            <th>Jatuh Tempo</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($allBills[$student->id] as $bill)
+                                            <tr>
+                                                <td style="font-weight: 600; color: #1e293b;">Rp {{ number_format($bill->amount, 0, ',', '.') }}</td>
+                                                <td>
+                                                    <span class="category-badge {{ $bill->billing_type == 'perbulan' ? 'math' : 'language' }}">
+                                                        {{ ucfirst($bill->billing_type) }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ $bill->due_date->format('d M Y') }}</td>
+                                                <td>
+                                                    @if($bill->status == 'paid')
+                                                        <span class="stat-badge positive" style="display:inline-block; padding: 4px 10px;">Lunas</span>
+                                                    @else
+                                                        <span class="stat-badge negative" style="display:inline-block; padding: 4px 10px;">Belum Lunas</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($bill->status == 'unpaid')
+                                                        <button type="button" onclick="openPaymentModal({{ $bill->id }}, {{ $bill->amount }})" style="background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">Bayar</button>
+                                                    @else
+                                                        <span style="color: #94a3b8; font-size: 13px;">
+                                                            ✓ Menggunakan {{ $bill->payment_method ?? '-' }}<br>
+                                                            <small>{{ $bill->paid_at ? $bill->paid_at->format('d M Y') : '-' }}</small>
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">💳</div>
+                                    <h3>Tidak ada tagihan</h3>
+                                    <p>{{ $student->nama_anak }} tidak memiliki tagihan pembayaran saat ini.</p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 @empty
                     <div class="empty-state">
@@ -1406,6 +1463,96 @@
 
             // Add active class to clicked tab
             document.querySelectorAll('.child-tab')[index].classList.add('active');
+        }
+
+        function openPaymentModal(billId, amount) {
+            const formattedAmount = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+            
+            Swal.fire({
+                title: 'Pilih Metode Pembayaran',
+                html: `
+                    <p style="margin-bottom: 20px;">Total yang harus dibayar: <strong>${formattedAmount}</strong></p>
+                    <div style="text-align: left;">
+                        <label style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <input type="radio" name="payment_method" value="Transfer Bank" style="margin-right: 12px;" checked>
+                            <span style="flex: 1;">Transfer Bank (Virtual Account)</span>
+                            <span style="font-size: 20px;">🏦</span>
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <input type="radio" name="payment_method" value="E-Wallet (Gopay/OVO/Dana)" style="margin-right: 12px;">
+                            <span style="flex: 1;">E-Wallet (GoPay/OVO/Dana)</span>
+                            <span style="font-size: 20px;">📱</span>
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;">
+                            <input type="radio" name="payment_method" value="QRIS" style="margin-right: 12px;">
+                            <span style="flex: 1;">QRIS</span>
+                            <span style="font-size: 20px;">📷</span>
+                        </label>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Lanjutkan Pembayaran',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#94a3b8',
+                preConfirm: () => {
+                    const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                    return selectedMethod;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    processPayment(billId, result.value);
+                }
+            });
+        }
+
+        function processPayment(billId, method) {
+            // Simulasi loading
+            Swal.fire({
+                title: 'Memproses Pembayaran...',
+                text: 'Harap tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Lakukan AJAX request
+            fetch(\`/parent/bill/\${billId}/pay\`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ payment_method: method })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembayaran Berhasil!',
+                        text: 'Terima kasih atas pembayaran Anda.',
+                        confirmButtonColor: '#22c55e'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message || 'Terjadi kesalahan saat memproses pembayaran.'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Terjadi kesalahan pada server.'
+                });
+            });
         }
     </script>
     <script>

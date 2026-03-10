@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OrangTua;
 use App\Models\Student;
 use App\Models\GameSession;
+use App\Models\Bill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ParentRegisterRequest;
@@ -155,16 +156,60 @@ class ParentController extends Controller
 
         $overallAccuracy = $totalQuestions > 0 ? round(($totalCorrect / $totalQuestions) * 100, 2) : 0;
 
+        // Fetch bills for students
+        $allBills = [];
+        foreach ($students as $student) {
+            $allBills[$student->id] = Bill::where('student_id', $student->id)
+                ->orderBy('due_date', 'asc')
+                ->get();
+        }
+
         return view('parent.dashboard', compact(
             'parent',
             'students',
             'allSessions',
             'allSchedules',
+            'allBills',
             'totalGamesPlayed',
             'totalScore',
             'overallAccuracy',
             'dailyGameCounts'
         ));
+    }
+
+    /**
+     * Process simulated bill payment
+     */
+    public function payBill(Request $request, $id)
+    {
+        if (!session('parent_id')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $request->validate([
+            'payment_method' => 'required|string'
+        ]);
+
+        $bill = Bill::findOrFail($id);
+
+        // Optional: verify that the bill belongs to one of this parent's students
+        $parent = OrangTua::with('students')->findOrFail(session('parent_id'));
+        $studentIds = $parent->students->pluck('id')->toArray();
+
+        if (!in_array($bill->student_id, $studentIds)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $bill->update([
+            'status' => 'paid',
+            'payment_method' => $request->payment_method,
+            'paid_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil dikonfirmasi!'
+        ]);
     }
 
     /**
